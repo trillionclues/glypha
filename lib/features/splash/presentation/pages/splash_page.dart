@@ -88,7 +88,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
             if (mounted) context.goNamed(AppRoute.home.name);
           }
         },
-        unauthenticated: () => context.goNamed(AppRoute.home.name),
+        unauthenticated: () => context.goNamed(AppRoute.login.name),
         error: (_) => context.goNamed(AppRoute.home.name),
       );
     });
