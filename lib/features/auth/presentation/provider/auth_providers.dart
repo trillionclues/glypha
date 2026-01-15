@@ -12,20 +12,3 @@ Future<bool> needsAdditionalDetails(
   final authService = ref.watch(authServiceProvider);
   return await authService.needsAdditionalDetails(userId);
 }
-
-@override
-Future<void> updateAdditionalDetails(
-  Ref ref, {
-  required String userId,
-  required String phoneNumber,
-  required String educationLevel,
-  required List<String> interests,
-}) async {
-  final authService = ref.watch(authServiceProvider);
-  return await authService.updateAdditionalDetails(
-    userId: userId,
-    phoneNumber: phoneNumber,
-    educationLevel: educationLevel,
-    interests: interests,
-  );
-}

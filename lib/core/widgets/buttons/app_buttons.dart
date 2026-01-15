@@ -11,7 +11,7 @@ class AppButton extends StatelessWidget {
   final IconData? icon;
   final double? width;
 
-  AppButton({
+  const AppButton({
     super.key,
     required this.text,
     required this.onPressed,

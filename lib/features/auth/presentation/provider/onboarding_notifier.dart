@@ -1,6 +1,6 @@
 import 'package:glypha/core/failure/failure.dart';
 import 'package:glypha/core/services/auth_service.dart';
-import 'package:glypha/features/auth/presentation/provider/onbaording_state.dart';
+import 'package:glypha/features/auth/presentation/provider/onboarding_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'onboarding_notifier.g.dart';
@@ -12,12 +12,20 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     return const OnboardingState();
   }
 
-  void setPhoneNumber(String phoneNumber) {
-    state = state.copyWith(phoneNumber: phoneNumber);
+  // void setPhoneNumber(String phoneNumber) {
+  //   state = state.copyWith(phoneNumber: phoneNumber);
+  // }
+
+  // void setEducationLevel(String level) {
+  //   state = state.copyWith(educationLevel: level);
+  // }
+
+  void setDailyGoal(String goal) {
+    state = state.copyWith(dailyGoal: goal);
   }
 
-  void setEducationLevel(String level) {
-    state = state.copyWith(educationLevel: level);
+  void setLearningStyle(String style) {
+    state = state.copyWith(learningStyle: style);
   }
 
   void toggleInterest(String interest) {
@@ -49,9 +57,9 @@ class OnboardingNotifier extends _$OnboardingNotifier {
       final authService = ref.read(authServiceProvider);
       await authService.updateAdditionalDetails(
         userId: userId,
-        phoneNumber: state.phoneNumber,
-        educationLevel: state.educationLevel,
-        interests: state.interests,
+        interests: state.interests.isEmpty ? null : state.interests,
+        dailyGoal: state.dailyGoal.isEmpty ? null : state.dailyGoal,
+        learningStyle: state.learningStyle.isEmpty ? null : state.learningStyle,
       );
 
       state = state.copyWith(isLoading: false);
@@ -68,14 +76,18 @@ class OnboardingNotifier extends _$OnboardingNotifier {
     }
   }
 
+  Future<bool> completeOnboarding(String userId) async {
+    return submitDetails(userId);
+  }
+
   bool canProceedFromStep(int step) {
     switch (step) {
       case 0:
-        return state.phoneNumber.length >= 10;
+        return state.dailyGoal.isNotEmpty;
       case 1:
-        return state.educationLevel.isNotEmpty;
-      case 2:
         return state.interests.isNotEmpty;
+      case 2:
+        return state.learningStyle.isNotEmpty; // Represents habit/time choice
       default:
         return false;
     }

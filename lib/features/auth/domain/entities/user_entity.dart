@@ -1,24 +1,36 @@
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:json_annotation/json_annotation.dart';
 
-part 'user_entity.freezed.dart';
 part 'user_entity.g.dart';
 
-@freezed
-class UserEntity with _$UserEntity {
-  const factory UserEntity({
-    required String id,
-    required String email,
-    String? displayName,
-    String? photoUrl,
-    @Default(false) bool? isEmailVerified,
+@JsonSerializable()
+class UserEntity {
+  final String id;
+  final String email;
+  final String? displayName;
+  final String? photoUrl;
+  final bool isEmailVerified;
 
-    // Aditional details
-    String? phoneNumber,
-    String? educationLevel,
-    List<String>? interests,
-    DateTime? createdAt,
-  }) = _UserEntity;
+  // Additional details from onboarding
+  final List<String>? interests;
+  final DateTime? createdAt;
+  final String? dailyGoal;
+  final String? learningStyle;
+  final bool isOnboardingCompleted;
+
+  const UserEntity({
+    required this.id,
+    required this.email,
+    this.displayName,
+    this.photoUrl,
+    this.isEmailVerified = false,
+    this.interests,
+    this.createdAt,
+    this.dailyGoal,
+    this.learningStyle,
+    this.isOnboardingCompleted = false,
+  });
 
   factory UserEntity.fromJson(Map<String, dynamic> json) =>
       _$UserEntityFromJson(json);
+  Map<String, dynamic> toJson() => _$UserEntityToJson(this);
 }

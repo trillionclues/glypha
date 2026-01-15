@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glypha/app/routes/route_paths.dart';
 import 'package:glypha/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:glypha/features/auth/presentation/provider/auth_providers.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
 import 'package:go_router/go_router.dart';
 
 class SplashPage extends ConsumerStatefulWidget {
@@ -74,23 +75,25 @@ class _SplashPageState extends ConsumerState<SplashPage>
     final theme = Theme.of(context);
 
     ref.listen(authNotifierProvider, (previous, next) async {
+      // Ensure splash is visible for at least 2 seconds
       await Future.delayed(const Duration(seconds: 2));
 
-      next.whenOrNull(
-        authenticated: (user) async {
-          final needsDetails = await ref.read(
-            needsAdditionalDetailsProvider(user.id).future,
-          );
+      if (next is AuthAuthenticated) {
+        final user = next.user;
+        final needsDetails = await ref.read(
+          needsAdditionalDetailsProvider(user.id).future,
+        );
 
+        if (mounted) {
           if (needsDetails) {
-            if (mounted) context.goNamed(AppRoute.additionalDetails.name);
+            context.goNamed(AppRoute.onboarding.name);
           } else {
-            if (mounted) context.goNamed(AppRoute.home.name);
+            context.goNamed(AppRoute.home.name);
           }
-        },
-        unauthenticated: () => context.goNamed(AppRoute.login.name),
-        error: (_) => context.goNamed(AppRoute.home.name),
-      );
+        }
+      } else if (next is AuthUnauthenticated || next is AuthError) {
+        if (mounted) context.goNamed(AppRoute.login.name);
+      }
     });
 
     return Scaffold(

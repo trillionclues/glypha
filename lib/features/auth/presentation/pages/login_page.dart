@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glypha/app/routes/route_paths.dart';
 import 'package:glypha/core/providers/app_bar_provider.dart';
-import 'package:glypha/core/themes/app_theme.dart';
+
 import 'package:glypha/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:glypha/features/auth/presentation/provider/auth_providers.dart';
 import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
@@ -79,172 +79,139 @@ class _LoginPageState extends ConsumerState<LoginPage>
   Widget build(BuildContext context) {
     final state = ref.watch(authNotifierProvider);
     final theme = Theme.of(context);
-    final screenHeight = MediaQuery.of(context).size.height;
 
-    ref.listen(authNotifierProvider, (prev, next) {
-      next.maybeWhen(
-        authenticated: (user) async {
-          final needsDetails = await ref.read(
-            needsAdditionalDetailsProvider(user.id).future,
-          );
-          if (_isMounted) {
-            if (needsDetails) {
-              context.goNamed(AppRoute.additionalDetails.name);
-            } else {
-              context.goNamed(AppRoute.home.name);
-            }
+    ref.listen(authNotifierProvider, (prev, next) async {
+      if (next is AuthAuthenticated) {
+        final user = next.user;
+        final needsDetails = await ref.read(
+          needsAdditionalDetailsProvider(user.id).future,
+        );
+        if (_isMounted) {
+          if (needsDetails) {
+            context.goNamed(AppRoute.onboarding.name);
+          } else {
+            context.goNamed(AppRoute.home.name);
           }
-        },
-        error: (failure) {
-          if (_isMounted) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(failure.message),
-                backgroundColor: Colors.red.shade400,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
+        }
+      } else if (next is AuthError) {
+        final failure = next.failure;
+        if (_isMounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(failure.message),
+              backgroundColor: Colors.red.shade400,
+              behavior: SnackBarBehavior.floating,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
               ),
-            );
-          }
-        },
-        orElse: () {},
-      );
+            ),
+          );
+        }
+      }
     });
 
     return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 32),
-          child: SizedBox(
-            height: screenHeight -
-                MediaQuery.of(context).padding.top -
-                MediaQuery.of(context).padding.bottom -
-                40,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(height: screenHeight * 0.15),
-                FadeTransition(
-                  opacity: _fadeAnimation,
-                  child: SlideTransition(
-                    position: _slideAnimation,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          height: 100,
-                          width: 100,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24),
-                            gradient: const LinearGradient(
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                              colors: [
-                                AppTheme.primaryOrange,
-                                AppTheme.lightOrange,
-                              ],
-                            ),
-                          ),
-                          child: Center(
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                const Icon(
-                                  Icons.school_rounded,
-                                  size: 50,
-                                  color: Colors.white,
-                                ),
-                                Positioned(
-                                  right: -4,
-                                  bottom: -4,
-                                  child: Container(
-                                    width: 16,
-                                    height: 16,
-                                    decoration: BoxDecoration(
-                                      color: Colors.white,
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: AppTheme.primaryOrange,
-                                        width: 2,
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Column(
+            children: [
+              const Spacer(flex: 3),
+              FadeTransition(
+                opacity: _fadeAnimation,
+                child: SlideTransition(
+                  position: _slideAnimation,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          color: theme.colorScheme.primary.withOpacity(0.1),
+                        ),
+                        child: Center(
+                          child: Icon(
+                            Icons.school_rounded,
+                            size: 48,
+                            color: theme.colorScheme.primary,
                           ),
                         ),
-                        const SizedBox(height: 24),
-                        Stack(
-                          clipBehavior: Clip.none,
+                      ),
+                      const SizedBox(height: 32),
+                      Text(
+                        'Glypha',
+                        style: theme.textTheme.headlineLarge?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          letterSpacing: -0.5,
+                          fontSize: 32,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      Text.rich(
+                        TextSpan(
+                          text: 'Make learning addictive\n',
+                          style: theme.textTheme.bodyLarge?.copyWith(
+                            color: theme.colorScheme.onSurface
+                                .withValues(alpha: 0.6),
+                            height: 1.5,
+                            fontSize: 16,
+                          ),
                           children: [
-                            Text(
-                              'glypha',
-                              style: theme.textTheme.headlineMedium?.copyWith(
-                                letterSpacing: -1,
-                              ),
-                            ),
-                            Positioned(
-                              right: -8,
-                              bottom: 6,
-                              child: Container(
-                                width: 8,
-                                height: 8,
-                                decoration: BoxDecoration(
-                                  color: theme.colorScheme.primary,
-                                  shape: BoxShape.circle,
-                                ),
+                            TextSpan(
+                              text: 'With AI Games',
+                              style: TextStyle(
+                                color: theme.colorScheme.primary,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                          'Make learning addictive with AI games',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodyMedium?.copyWith(
-                            color:
-                                theme.colorScheme.onBackground.withOpacity(0.7),
-                          ),
-                        ),
-                        const SizedBox(height: 48),
-                        SizedBox(
-                            width: double.infinity,
-                            child: SocialLoginButton(
-                              type: SocialLoginType.google,
-                              isLoading:
-                                  state.isLoadingProvider(LoginProvider.google),
-                              onPressed: handleGoogleSignIn,
-                            )),
-                        const SizedBox(height: 14),
-                        SizedBox(
-                          width: double.infinity,
-                          child: SocialLoginButton(
-                            type: SocialLoginType.apple,
-                            isLoading:
-                                state.isLoadingProvider(LoginProvider.apple),
-                            onPressed: handleAppleSignIn,
-                          ),
-                        ),
-                        const SizedBox(height: 30),
-                        Text(
-                          'By continuing, you agree to our Terms of Service and Privacy Policy.',
-                          textAlign: TextAlign.center,
-                          style: theme.textTheme.bodySmall?.copyWith(
-                            fontSize: 12,
-                            color:
-                                theme.colorScheme.onBackground.withOpacity(0.4),
-                            height: 1.4,
-                          ),
-                        ),
-                      ],
-                    ),
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              ),
+              const Spacer(flex: 4),
+              Column(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child: SocialLoginButton(
+                      type: SocialLoginType.apple,
+                      isLoading: state.isLoadingProvider(LoginProvider.apple),
+                      onPressed: handleAppleSignIn,
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  SizedBox(
+                      width: double.infinity,
+                      child: SocialLoginButton(
+                        type: SocialLoginType.google,
+                        isLoading:
+                            state.isLoadingProvider(LoginProvider.google),
+                        onPressed: handleGoogleSignIn,
+                      )),
+                  const SizedBox(height: 24),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'By continuing, you agree to our Terms of Service and Privacy Policy.',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodySmall?.copyWith(
+                        fontSize: 12,
+                        color: theme.colorScheme.onBackground.withOpacity(0.4),
+                        height: 1.4,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ],
           ),
         ),
       ),

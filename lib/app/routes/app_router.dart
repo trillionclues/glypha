@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:glypha/app/routes/route_paths.dart';
-import 'package:glypha/features/auth/presentation/pages/additional_details_page.dart';
+import 'package:glypha/features/auth/presentation/pages/onboarding_page.dart';
 import 'package:glypha/features/auth/presentation/pages/login_page.dart';
 import 'package:glypha/features/home/presentation/pages/home_page.dart';
 import 'package:glypha/features/home/presentation/pages/shell_scaffold.dart';
@@ -8,6 +8,7 @@ import 'package:glypha/features/leaderboard/presentation/leaderboard_page.dart';
 import 'package:glypha/features/practice/presentation/practice_page.dart';
 import 'package:glypha/features/profile/presentation/profile_page.dart';
 import 'package:glypha/features/splash/presentation/pages/splash_page.dart';
+import 'package:glypha/features/game/presentation/game_page.dart';
 import 'package:go_router/go_router.dart';
 
 final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
@@ -31,9 +32,15 @@ class AppRouter {
           builder: (context, state) => const LoginPage(),
         ),
         GoRoute(
-          path: AdditionalDetailsPage.route,
-          name: AppRoute.additionalDetails.name,
-          builder: (context, state) => const AdditionalDetailsPage(),
+          path: OnboardingPage.route,
+          name: AppRoute.onboarding.name,
+          builder: (context, state) => const OnboardingPage(),
+        ),
+        GoRoute(
+          path: GamePage.route,
+          name: AppRoute.game.name,
+          parentNavigatorKey: _rootNavigatorKey,
+          builder: (context, state) => const GamePage(),
         ),
         StatefulShellRoute.indexedStack(
             builder: (context, state, navigationShell) {

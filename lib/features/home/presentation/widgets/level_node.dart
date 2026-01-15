@@ -21,25 +21,25 @@ class LevelNode extends StatelessWidget {
     return GestureDetector(
       onTap: level.isLocked
           ? () {
-        HapticFeedback.heavyImpact();
-        _showLockedFeedback(context);
-      }
+              HapticFeedback.heavyImpact();
+              _showLockedFeedback(context);
+            }
           : () {
-        HapticFeedback.mediumImpact();
-        _showLevelBottomSheet(context);
-      },
+              HapticFeedback.mediumImpact();
+              _showLevelBottomSheet(context);
+            },
       child: Column(
         children: [
           level.isCurrent
               ? AnimatedBuilder(
-            animation: pulseController,
-            builder: (context, child) {
-              final scale = 1.0 +
-                  (math.sin(pulseController.value * 2 * math.pi) * 0.08);
-              return Transform.scale(scale: scale, child: child);
-            },
-            child: LevelCircle(level: level),
-          )
+                  animation: pulseController,
+                  builder: (context, child) {
+                    final scale = 1.0 +
+                        (math.sin(pulseController.value * 2 * math.pi) * 0.08);
+                    return Transform.scale(scale: scale, child: child);
+                  },
+                  child: LevelCircle(level: level),
+                )
               : LevelCircle(level: level),
           const SizedBox(height: 8),
           Container(
@@ -91,6 +91,7 @@ class LevelNode extends StatelessWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
+      useRootNavigator: true,
       backgroundColor: Colors.transparent,
       builder: (context) => LevelBottomSheet(level: level),
     );

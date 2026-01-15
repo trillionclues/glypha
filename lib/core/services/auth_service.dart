@@ -137,9 +137,15 @@ class AuthService {
       if (!userDoc.exists) return true;
 
       final data = userDoc.data()!;
+      // If explicit flag is present, use it
+      if (data['isOnboardingCompleted'] == true) return false;
+
+      // Fallback to checking fields (legacy or if flag missing)
       return data['phoneNumber'] == null ||
           data['educationLevel'] == null ||
-          (data['interests'] as List?)?.isEmpty != false;
+          (data['interests'] as List?)?.isEmpty != false ||
+          data['dailyGoal'] == null ||
+          data['learningStyle'] == null;
     } catch (e) {
       return true;
     }
@@ -147,15 +153,16 @@ class AuthService {
 
   Future<void> updateAdditionalDetails({
     required String userId,
-    required String phoneNumber,
-    required String educationLevel,
-    required List<String> interests,
+    List<String>? interests,
+    String? dailyGoal,
+    String? learningStyle,
   }) async {
     try {
       await _firestore.collection('users').doc(userId).update({
-        'phoneNumber': phoneNumber,
-        'educationLevel': educationLevel,
-        'interests': interests,
+        if (interests != null) 'interests': interests,
+        'dailyGoal': dailyGoal,
+        'learningStyle': learningStyle,
+        'isOnboardingCompleted': true,
         'updatedAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
@@ -175,11 +182,12 @@ class AuthService {
         displayName: firebaseUser.displayName,
         photoUrl: firebaseUser.photoURL,
         isEmailVerified: firebaseUser.emailVerified,
-        phoneNumber: data['phoneNumber'],
-        educationLevel: data['educationLevel'],
         interests: data['interests'] != null
             ? List<String>.from(data['interests'])
             : null,
+        dailyGoal: data['dailyGoal'],
+        learningStyle: data['learningStyle'],
+        isOnboardingCompleted: data['isOnboardingCompleted'] ?? false,
         createdAt: data['createdAt'] != null
             ? (data['createdAt'] as Timestamp).toDate()
             : null,
@@ -203,9 +211,10 @@ class AuthService {
       'displayName': user.displayName,
       'photoUrl': user.photoURL,
       'isEmailVerified': user.emailVerified,
-      'phoneNumber': null,
-      'educationLevel': null,
       'interests': [],
+      'dailyGoal': null,
+      'learningStyle': null,
+      'isOnboardingCompleted': false,
       'createdAt': FieldValue.serverTimestamp(),
       'updatedAt': FieldValue.serverTimestamp(),
     });

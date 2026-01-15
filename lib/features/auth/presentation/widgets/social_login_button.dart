@@ -25,8 +25,10 @@ class SocialLoginButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: isApple ? theme.colorScheme.onBackground : Colors.white,
-          foregroundColor: isApple ? theme.colorScheme.background : Colors.black87,
+          backgroundColor:
+              isApple ? theme.colorScheme.onBackground : Colors.white,
+          foregroundColor:
+              isApple ? theme.colorScheme.background : Colors.black87,
           disabledBackgroundColor: Colors.grey.shade300,
           elevation: 0,
           side: isApple
@@ -35,36 +37,52 @@ class SocialLoginButton extends StatelessWidget {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(14),
           ),
-          padding: const EdgeInsets.symmetric(vertical: 14),
+          padding: const EdgeInsets.symmetric(vertical: 18),
         ),
         child: isLoading
-            ? SizedBox(
-          height: 20,
-          width: 20,
-          child: CircularProgressIndicator(
-            strokeWidth: 2,
-            valueColor: AlwaysStoppedAnimation<Color>(
-              isApple ? theme.colorScheme.background : Colors.black87,
-            ),
-          ),
-        )
+            ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: 18,
+                    width: 18,
+                    child: CircularProgressIndicator(
+                      strokeWidth: 2,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        isApple ? theme.colorScheme.background : Colors.black87,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Text(
+                    'Signing in...',
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: isApple
+                          ? theme.colorScheme.background
+                          : Colors.black87,
+                    ),
+                  ),
+                ],
+              )
             : Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            _buildIcon(isApple, theme),
-            const SizedBox(width: 12),
-            Text(
-              _getButtonText(),
-              style: TextStyle(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: isApple
-                    ? theme.colorScheme.background
-                    : Colors.black87,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildIcon(isApple, theme),
+                  const SizedBox(width: 12),
+                  Text(
+                    _getButtonText(),
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: isApple
+                          ? theme.colorScheme.background
+                          : Colors.black87,
+                    ),
+                  ),
+                ],
               ),
-            ),
-          ],
-        ),
       ),
     );
   }
@@ -72,15 +90,15 @@ class SocialLoginButton extends StatelessWidget {
   Widget _buildIcon(bool isApple, ThemeData theme) {
     return type == SocialLoginType.google
         ? SvgPicture.asset(
-      'assets/icons/google.svg',
-      height: 22,
-      width: 22,
-    )
+            'assets/icons/google.svg',
+            height: 22,
+            width: 22,
+          )
         : Icon(
-      Icons.apple,
-      size: 22,
-      color: theme.colorScheme.background,
-    );
+            Icons.apple,
+            size: 22,
+            color: theme.colorScheme.background,
+          );
   }
 
   String _getButtonText() {

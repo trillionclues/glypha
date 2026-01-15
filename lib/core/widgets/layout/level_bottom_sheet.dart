@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:glypha/features/home/data/model/level_data.dart';
+import 'package:go_router/go_router.dart';
 
 class LevelBottomSheet extends StatelessWidget {
   final LevelData level;
@@ -23,7 +24,7 @@ class LevelBottomSheet extends StatelessWidget {
             left: 24,
             right: 24,
             top: 24,
-            bottom: bottomPadding > 0 ? bottomPadding : 100,
+            bottom: bottomPadding > 0 ? bottomPadding : 40,
           ),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -139,8 +140,7 @@ class LevelBottomSheet extends StatelessWidget {
                       onPressed: () {
                         HapticFeedback.mediumImpact();
                         Navigator.pop(context);
-                        // Start game
-                        // context.goNamed(AppRoute.game.name, pathParameters: {...});
+                        context.pushNamed('game');
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.primary,

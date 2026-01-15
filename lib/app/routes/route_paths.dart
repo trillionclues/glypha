@@ -3,10 +3,12 @@ enum AppRoute {
   welcome,
 
   login,
-  additionalDetails,
+  onboarding,
 
   home,
   leaderboard,
   practice,
-  profile
+  profile,
+
+  game
 }

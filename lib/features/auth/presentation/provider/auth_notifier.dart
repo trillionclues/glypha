@@ -10,7 +10,7 @@ class AuthNotifier extends _$AuthNotifier {
   @override
   AuthState build() {
     _listenToAuthChanges();
-    return const AuthState.initial();
+    return const AuthInitial();
   }
 
   void _listenToAuthChanges() {
@@ -19,16 +19,16 @@ class AuthNotifier extends _$AuthNotifier {
     final subscription = authService.authChanges.listen(
       (user) {
         if (user != null) {
-          state = AuthState.authenticated(user);
+          state = AuthAuthenticated(user);
         } else {
-          state = const AuthState.unauthenticated();
+          state = const AuthUnauthenticated();
         }
       },
       onError: (error) {
         if (error is AuthFailure) {
-          state = AuthState.error(error);
+          state = AuthError(error);
         } else {
-          state = const AuthState.error(AuthFailure.serverError());
+          state = const AuthError(AuthFailure.serverError());
         }
       },
     );
@@ -37,56 +37,56 @@ class AuthNotifier extends _$AuthNotifier {
   }
 
   Future<void> signInWithGoogle() async {
-    state = const AuthState.loading(provider: LoginProvider.google);
+    state = const AuthLoading(provider: LoginProvider.google);
 
     try {
       final authService = ref.read(authServiceProvider);
       final user = await authService.signInWithGoogle();
 
       if (user != null) {
-        state = AuthState.authenticated(user);
+        state = AuthAuthenticated(user);
       } else {
-        state = const AuthState.unauthenticated();
+        state = const AuthUnauthenticated();
       }
     } on AuthFailure catch (failure) {
-      state = AuthState.error(failure);
+      state = AuthError(failure);
     } catch (e) {
-      state = const AuthState.error(AuthFailure.serverError());
+      state = const AuthError(AuthFailure.serverError());
     }
   }
 
   Future<void> signInWithApple() async {
-    state = const AuthState.loading(provider: LoginProvider.apple);
+    state = const AuthLoading(provider: LoginProvider.apple);
 
     try {
       final authService = ref.read(authServiceProvider);
       final user = await authService.signInWithApple();
 
-      state = AuthState.authenticated(user);
+      state = AuthAuthenticated(user);
     } on AuthFailure catch (failure) {
-      state = AuthState.error(failure);
+      state = AuthError(failure);
     } catch (e) {
-      state = const AuthState.error(AuthFailure.serverError());
+      state = const AuthError(AuthFailure.serverError());
     }
   }
 
   Future<void> signOut() async {
-    state = const AuthState.loading();
+    state = const AuthLoading();
 
     try {
       final authService = ref.read(authServiceProvider);
       await authService.signOut();
-      state = const AuthState.unauthenticated();
+      state = const AuthUnauthenticated();
     } on AuthFailure catch (failure) {
-      state = AuthState.error(failure);
+      state = AuthError(failure);
     } catch (e) {
-      state = const AuthState.error(AuthFailure.serverError());
+      state = const AuthError(AuthFailure.serverError());
     }
   }
 
   void clearError() {
-    state.whenOrNull(
-      error: (_) => state = const AuthState.unauthenticated(),
-    );
+    if (state is AuthError) {
+      state = const AuthUnauthenticated();
+    }
   }
 }

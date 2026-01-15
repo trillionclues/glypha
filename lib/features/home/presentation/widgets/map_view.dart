@@ -58,7 +58,6 @@ class MapView extends StatelessWidget {
               size: Size(screenWidth, totalHeight),
               painter: DashedRoadPathPainter(levels, screenWidth),
             ),
-
             ...levels.asMap().entries.map((entry) {
               final index = entry.key;
               final level = entry.value;

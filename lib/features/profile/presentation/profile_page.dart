@@ -3,6 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glypha/app/routes/route_paths.dart';
 import 'package:glypha/core/widgets/layout/fu_appbar.dart';
 import 'package:glypha/features/auth/presentation/provider/auth_notifier.dart';
+import 'package:glypha/core/providers/theme_provider.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
 import 'package:go_router/go_router.dart';
 
 class ProfilePage extends ConsumerWidget {
@@ -12,11 +14,17 @@ class ProfilePage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final userProfile = ref.watch(authNotifierProvider);
-    final user = userProfile.maybeWhen(
-        authenticated: (user) => user, orElse: () => null);
+    final user = userProfile is AuthAuthenticated ? userProfile.user : null;
+
+    final themeMode = ref.watch(themeNotifierProvider);
+    final themeModeText = themeMode == ThemeMode.light
+        ? 'Light'
+        : themeMode == ThemeMode.dark
+            ? 'Dark'
+            : 'System';
 
     return Scaffold(
-      backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: CustomScrollView(
         slivers: [
           SliverToBoxAdapter(
@@ -25,213 +33,199 @@ class ProfilePage extends ConsumerWidget {
               child: FuAppbar(
                 title: 'Profile',
                 showBackButton: true,
-                onBackPressed: () => context.pop(),
+                onBackPressed: () {},
               ),
             ),
           ),
           SliverToBoxAdapter(
             child: Padding(
-              padding: const EdgeInsets.all(20),
-              child: Container(
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(
-                    color:
-                        Theme.of(context).colorScheme.outline.withOpacity(0.1),
-                  ),
-                ),
-                child: Column(
-                  children: [
-                    Stack(
-                      children: [
-                        Container(
-                          width: 90,
-                          height: 90,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .primary
-                                .withOpacity(0.1),
-                          ),
-                          child: user?.photoUrl != null
-                              ? ClipOval(
-                                  child: Image.network(
-                                    user?.photoUrl ?? '',
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : Icon(
-                                  Icons.person_rounded,
-                                  size: 45,
-                                  color: Theme.of(context).colorScheme.primary,
-                                ),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          right: 0,
-                          child: Container(
-                            padding: const EdgeInsets.all(6),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).colorScheme.primary,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Theme.of(context).colorScheme.surface,
-                                width: 2,
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.edit_rounded,
-                              size: 14,
-                              color: Colors.white,
-                            ),
-                          ),
+              padding: const EdgeInsets.fromLTRB(24, 16, 24, 32),
+              child: Column(
+                children: [
+                  Container(
+                    width: 100,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).colorScheme.primaryContainer,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          blurRadius: 20,
+                          offset: const Offset(0, 10),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    Text(
-                      user?.displayName ?? 'User Name',
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      user?.email ?? 'john.doe@example.com',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).textTheme.bodySmall?.color,
+                    child: user?.photoUrl != null
+                        ? ClipOval(
+                            child: Image.network(
+                              user?.photoUrl ?? '',
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : Center(
+                            child: Text(
+                              (user?.displayName ?? 'U')
+                                  .substring(0, 1)
+                                  .toUpperCase(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineLarge
+                                  ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onPrimaryContainer,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                            ),
                           ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 12),
-              child: Text(
-                'Settings',
-                style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      color: Theme.of(context).textTheme.bodySmall?.color,
-                    ),
-              ),
-            ),
-          ),
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color:
-                        Theme.of(context).colorScheme.outline.withOpacity(0.1),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    _SettingsItem(
-                      icon: Icons.description_outlined,
-                      title: 'Terms of Use',
-                      onTap: () {},
-                    ),
-                    _Divider(),
-                    _SettingsItem(
-                      icon: Icons.star_outline_rounded,
-                      title: 'Upgrade Plan',
-                      badge: 'Pro',
-                      onTap: () {},
-                    ),
-                    _Divider(),
-                    _SettingsItem(
-                      icon: Icons.palette_outlined,
-                      title: 'Theme Mode',
-                      trailing: _ThemeChip(),
-                      showChevron: false,
-                      onTap: () {
-                        _showThemeDialog(context);
-                      },
-                    ),
-                  ],
-                ),
+                  const SizedBox(height: 16),
+                  Text(
+                    user?.displayName ?? 'Guest User',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                          fontWeight: FontWeight.w700,
+                        ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    user?.email ?? 'Sign in to sync your progress',
+                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(context).colorScheme.onSurfaceVariant,
+                        ),
+                  ),
+                ],
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 16)),
           SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.red.withOpacity(0.1),
-                  ),
-                ),
-                child: _SettingsItem(
-                  icon: Icons.logout_rounded,
-                  title: 'Logout',
-                  iconColor: Colors.red,
-                  textColor: Colors.red,
-                  showChevron: false,
+            child: _SettingsSection(
+              title: 'Account',
+              children: [
+                _SettingsTile(
+                  icon: Icons.person_outline_rounded,
+                  title: 'Personal Information',
                   onTap: () {
-                    _showLogoutDialog(context, ref);
+                    // TODO: Navigate to personal info edit page
                   },
                 ),
+                _SettingsTile(
+                  icon: Icons.star_outline_rounded,
+                  title: 'Upgrade Plan',
+                  badge: 'PRO',
+                  badgeColor: Theme.of(context).colorScheme.tertiaryContainer,
+                  badgeTextColor:
+                      Theme.of(context).colorScheme.onTertiaryContainer,
+                  onTap: () {
+                    // TODO: Navigate to upgrade page
+                  },
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: _SettingsSection(
+              title: 'Preferences',
+              children: [
+                _SettingsTile(
+                  icon: Icons.palette_outlined,
+                  title: 'Theme',
+                  trailingText: themeModeText,
+                  onTap: () => _showThemeDialog(context, ref),
+                ),
+                _SettingsTile(
+                  icon: Icons.description_outlined,
+                  title: 'Terms of Service',
+                  onTap: () {
+                    // TODO: Open terms
+                  },
+                ),
+              ],
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: _SettingsSectionContainer(
+                child: _SettingsTile(
+                  icon: Icons.logout_rounded,
+                  title: 'Log Out',
+                  titleColor: Theme.of(context).colorScheme.error,
+                  iconColor: Theme.of(context).colorScheme.error,
+                  showChevron: false,
+                  onTap: () => _showLogoutDialog(context, ref),
+                ),
               ),
             ),
           ),
-          const SliverToBoxAdapter(child: SizedBox(height: 120)),
+          const SliverToBoxAdapter(child: SizedBox(height: 40)),
         ],
       ),
     );
   }
 
-  void _showThemeDialog(BuildContext context) {
+  void _showThemeDialog(BuildContext context, WidgetRef ref) {
+    final currentTheme = ref.read(themeNotifierProvider);
+
     showModalBottomSheet(
       context: context,
-      backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Theme Mode',
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
-            const SizedBox(height: 24),
-            _ThemeOption(
-              icon: Icons.light_mode_rounded,
-              title: 'Light',
-              isSelected: true,
-              onTap: () {},
-            ),
-            const SizedBox(height: 12),
-            _ThemeOption(
-              icon: Icons.dark_mode_rounded,
-              title: 'Dark',
-              isSelected: false,
-              onTap: () {},
-            ),
-            const SizedBox(height: 12),
-            _ThemeOption(
-              icon: Icons.brightness_auto_rounded,
-              title: 'System',
-              isSelected: false,
-              onTap: () {},
-            ),
-            const SizedBox(height: 24),
-          ],
+      useRootNavigator: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      showDragHandle: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 32),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Appearance',
+                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w600,
+                    ),
+              ),
+              const SizedBox(height: 24),
+              _ThemeOption(
+                icon: Icons.light_mode_outlined,
+                title: 'Light',
+                isSelected: currentTheme == ThemeMode.light,
+                onTap: () {
+                  ref
+                      .read(themeNotifierProvider.notifier)
+                      .setThemeMode(ThemeMode.light);
+                  Navigator.pop(context);
+                },
+              ),
+              const SizedBox(height: 16),
+              _ThemeOption(
+                icon: Icons.dark_mode_outlined,
+                title: 'Dark',
+                isSelected: currentTheme == ThemeMode.dark,
+                onTap: () {
+                  ref
+                      .read(themeNotifierProvider.notifier)
+                      .setThemeMode(ThemeMode.dark);
+                  Navigator.pop(context);
+                },
+              ),
+              const SizedBox(height: 16),
+              _ThemeOption(
+                icon: Icons.brightness_auto_outlined,
+                title: 'System',
+                isSelected: currentTheme == ThemeMode.system,
+                onTap: () {
+                  ref
+                      .read(themeNotifierProvider.notifier)
+                      .setThemeMode(ThemeMode.system);
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -241,29 +235,24 @@ class ProfilePage extends ConsumerWidget {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        title: const Text('Logout'),
-        content: const Text('Are you sure you want to logout?'),
+        title: const Text('Log Out'),
+        content:
+            const Text('Are you sure you want to log out of your account?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
-          ElevatedButton(
+          FilledButton(
             onPressed: () {
               ref.read(authNotifierProvider.notifier).signOut();
               context.goNamed(AppRoute.login.name);
             },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              foregroundColor: Colors.white,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
+            style: FilledButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.error,
+              foregroundColor: Theme.of(context).colorScheme.onError,
             ),
-            child: const Text('Logout'),
+            child: const Text('Log Out'),
           ),
         ],
       ),
@@ -271,131 +260,186 @@ class ProfilePage extends ConsumerWidget {
   }
 }
 
-class _SettingsItem extends StatelessWidget {
+class _SettingsSection extends StatelessWidget {
+  final String title;
+  final List<Widget> children;
+
+  const _SettingsSection({
+    required this.title,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.only(left: 16, bottom: 8),
+            child: Text(
+              title,
+              style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).colorScheme.primary,
+                  ),
+            ),
+          ),
+          _SettingsSectionContainer(
+            child: Column(
+              children: [
+                for (int i = 0; i < children.length; i++) ...[
+                  children[i],
+                  // if (i != children.length - 1)
+                  //   Divider(
+                  //     height: 1,
+                  //     thickness: 1,
+                  //     indent: 56,
+                  //     color: Theme.of(context)
+                  //         .colorScheme
+                  //         .outlineVariant
+                  //         .withOpacity(0.5),
+                  //   ),
+                ],
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SettingsSectionContainer extends StatelessWidget {
+  final Widget child;
+
+  const _SettingsSectionContainer({required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Theme.of(context).colorScheme.outlineVariant.withOpacity(0.5),
+        ),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(16),
+        child: child,
+      ),
+    );
+  }
+}
+
+class _SettingsTile extends StatelessWidget {
   final IconData icon;
   final String title;
+  final String? subtitle;
   final String? badge;
-  final Widget? trailing;
+  final String? trailingText;
   final Color? iconColor;
-  final Color? textColor;
+  final Color? titleColor;
+  final Color? badgeColor;
+  final Color? badgeTextColor;
   final bool showChevron;
   final VoidCallback onTap;
 
-  const _SettingsItem({
+  const _SettingsTile({
     required this.icon,
     required this.title,
+    this.subtitle,
     this.badge,
-    this.trailing,
+    this.trailingText,
     this.iconColor,
-    this.textColor,
+    this.titleColor,
+    this.badgeColor,
+    this.badgeTextColor,
     this.showChevron = true,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: (iconColor ?? Theme.of(context).colorScheme.primary)
-                    .withOpacity(0.1),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(
+    final theme = Theme.of(context);
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          child: Row(
+            children: [
+              Icon(
                 icon,
-                size: 20,
-                color: iconColor ?? Theme.of(context).colorScheme.primary,
+                color: iconColor ?? theme.colorScheme.onSurfaceVariant,
+                size: 24,
               ),
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: textColor,
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: theme.textTheme.bodyLarge?.copyWith(
+                        color: titleColor ?? theme.colorScheme.onSurface,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
-              ),
-            ),
-            if (badge != null) ...[
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primary,
-                  borderRadius: BorderRadius.circular(6),
+                    if (subtitle != null) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        subtitle!,
+                        style: theme.textTheme.bodySmall?.copyWith(
+                          color: theme.colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                    ],
+                  ],
                 ),
-                child: Text(
-                  badge!,
-                  style: const TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+              ),
+              if (trailingText != null) ...[
+                Text(
+                  trailingText!,
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
-              ),
-              const SizedBox(width: 8),
+                const SizedBox(width: 8),
+              ],
+              if (badge != null) ...[
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: badgeColor ?? theme.colorScheme.primaryContainer,
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                  child: Text(
+                    badge!,
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: badgeTextColor ??
+                          theme.colorScheme.onPrimaryContainer,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+              ],
+              if (showChevron)
+                Icon(
+                  Icons.chevron_right_rounded,
+                  size: 20,
+                  color: theme.colorScheme.outline,
+                ),
             ],
-            if (trailing != null)
-              trailing!
-            else if (showChevron)
-              Icon(
-                Icons.chevron_right_rounded,
-                color: Theme.of(context).textTheme.bodySmall?.color,
-              ),
-          ],
+          ),
         ),
-      ),
-    );
-  }
-}
-
-class _Divider extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 56),
-      child: Divider(
-        height: 1,
-        color: Theme.of(context).colorScheme.outline.withOpacity(0.1),
-      ),
-    );
-  }
-}
-
-class _ThemeChip extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            Icons.light_mode_rounded,
-            size: 16,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(width: 6),
-          Text(
-            'Light',
-            style: TextStyle(
-              fontSize: 13,
-              fontWeight: FontWeight.w600,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -416,48 +460,57 @@ class _ThemeOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Theme.of(context).colorScheme.primary.withOpacity(0.1)
-              : Colors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
             color: isSelected
-                ? Theme.of(context).colorScheme.primary
-                : Theme.of(context).colorScheme.outline.withOpacity(0.2),
+                ? Theme.of(context).colorScheme.secondaryContainer
+                : null,
+            border: isSelected
+                ? Border.all(
+                    color:
+                        Theme.of(context).colorScheme.primary.withOpacity(0.1))
+                : Border.all(
+                    color: Theme.of(context)
+                        .colorScheme
+                        .outlineVariant
+                        .withOpacity(0.5)),
           ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              icon,
-              color: isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(context).textTheme.bodyMedium?.color,
-            ),
-            const SizedBox(width: 12),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    color: isSelected
-                        ? Theme.of(context).colorScheme.primary
-                        : null,
-                  ),
-            ),
-            const Spacer(),
-            if (isSelected)
+          child: Row(
+            children: [
               Icon(
-                Icons.check_circle_rounded,
-                color: Theme.of(context).colorScheme.primary,
-                size: 20,
+                icon,
+                color: isSelected
+                    ? Theme.of(context).colorScheme.onSecondaryContainer
+                    : Theme.of(context).colorScheme.onSurfaceVariant,
               ),
-          ],
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  title,
+                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                        fontWeight:
+                            isSelected ? FontWeight.w600 : FontWeight.normal,
+                        color: isSelected
+                            ? Theme.of(context).colorScheme.onSecondaryContainer
+                            : null,
+                      ),
+                ),
+              ),
+              if (isSelected)
+                Icon(
+                  Icons.check_circle_rounded,
+                  color: Theme.of(context).colorScheme.primary,
+                  size: 20,
+                ),
+            ],
+          ),
         ),
       ),
     );
