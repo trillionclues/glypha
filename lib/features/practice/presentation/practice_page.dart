@@ -8,21 +8,12 @@ class PracticePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Practice'),
-        automaticallyImplyLeading: false,
+        title: const Text('Lessons'),
+        elevation: 0,
+        backgroundColor: Colors.transparent,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.shield, size: 100, color: Colors.grey),
-            const SizedBox(height: 20),
-            Text(
-              'Practice Mode',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
+      body: const Center(
+        child: Text('Lessons/Practice Page - Coming Soon'),
       ),
     );
   }

@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 
-class LeaderboardPage extends StatelessWidget {
-  static const String route = '/leaderboard';
-  const LeaderboardPage({super.key});
+class SettingsPage extends StatelessWidget {
+  static const String route = '/settings';
+
+  const SettingsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Leaderboard'),
+        title: const Text('Settings'),
         elevation: 0,
         backgroundColor: Colors.transparent,
       ),
       body: const Center(
-        child: Text('Leaderboard Page - Coming Soon'),
+        child: Text('Settings Page - Coming Soon'),
       ),
     );
   }

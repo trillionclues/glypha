@@ -22,7 +22,7 @@ class GlyphaApp extends ConsumerWidget {
           theme: AppTheme.lightTheme,
           darkTheme: AppTheme.darkTheme,
           themeMode: themeMode,
-          routerConfig: AppRouter.router,
+          routerConfig: ref.watch(appRouterProvider),
           debugShowCheckedModeBanner: false,
           builder: (context, widget) {
             return MediaQuery(

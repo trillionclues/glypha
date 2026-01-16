@@ -1,113 +1,134 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:glypha/app/routes/route_paths.dart';
 import 'package:glypha/features/auth/presentation/pages/onboarding_page.dart';
 import 'package:glypha/features/auth/presentation/pages/login_page.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_notifier.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
 import 'package:glypha/features/home/presentation/pages/home_page.dart';
 import 'package:glypha/features/home/presentation/pages/shell_scaffold.dart';
-import 'package:glypha/features/leaderboard/presentation/leaderboard_page.dart';
+import 'package:glypha/features/leaderboard/presentation/leaderboard_page.dart'; // Still keep for old reference if needed, but remove from tabs
 import 'package:glypha/features/practice/presentation/practice_page.dart';
 import 'package:glypha/features/profile/presentation/profile_page.dart';
+import 'package:glypha/features/profile/presentation/settings_page.dart';
 import 'package:glypha/features/splash/presentation/pages/splash_page.dart';
 import 'package:glypha/features/game/presentation/game_page.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final RouteObserver<ModalRoute> routeObserver = RouteObserver<ModalRoute>();
+part 'app_router.g.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
-class AppRouter {
-  static final GoRouter router = GoRouter(
-      navigatorKey: _rootNavigatorKey,
-      initialLocation: '/splash',
-      routes: [
-        GoRoute(
-          path: SplashPage.route,
-          name: AppRoute.splash.name,
-          builder: (context, state) => const SplashPage(),
-        ),
-        GoRoute(
-          path: LoginPage.route,
-          name: AppRoute.login.name,
-          builder: (context, state) => const LoginPage(),
-        ),
-        GoRoute(
-          path: OnboardingPage.route,
-          name: AppRoute.onboarding.name,
-          builder: (context, state) => const OnboardingPage(),
-        ),
-        GoRoute(
-          path: GamePage.route,
-          name: AppRoute.game.name,
-          parentNavigatorKey: _rootNavigatorKey,
-          builder: (context, state) => const GamePage(),
-        ),
-        StatefulShellRoute.indexedStack(
-            builder: (context, state, navigationShell) {
-              return ShellScaffold(
-                  currentIndex: navigationShell.currentIndex,
-                  onNavTap: (index) {
-                    navigationShell.goBranch(
-                      index,
-                      initialLocation: index == navigationShell.currentIndex,
-                    );
-                  },
-                  child: navigationShell);
+final routeObserver = RouteObserver<ModalRoute>();
+
+@riverpod
+GoRouter appRouter(AppRouterRef ref) {
+  final authState = ref.watch(authNotifierProvider);
+
+  return GoRouter(
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/splash',
+    debugLogDiagnostics: true,
+    observers: [routeObserver],
+    redirect: (context, state) {
+      final isLoggingIn = state.matchedLocation == LoginPage.route;
+      final isSplashing = state.matchedLocation == SplashPage.route;
+      final isOnboarding = state.matchedLocation == OnboardingPage.route;
+
+      if (authState is AuthAuthenticated) {
+        if (isLoggingIn || isSplashing) return HomePage.route;
+      } else if (authState is AuthUnauthenticated) {
+        if (!isLoggingIn && !isSplashing && !isOnboarding)
+          return LoginPage.route;
+      }
+      return null;
+    },
+    routes: [
+      GoRoute(
+        path: SplashPage.route,
+        name: AppRoute.splash.name,
+        builder: (context, state) => const SplashPage(),
+      ),
+      GoRoute(
+        path: LoginPage.route,
+        name: AppRoute.login.name,
+        builder: (context, state) => const LoginPage(),
+      ),
+      GoRoute(
+        path: OnboardingPage.route,
+        name: AppRoute.onboarding.name,
+        builder: (context, state) => const OnboardingPage(),
+      ),
+      GoRoute(
+        path: GamePage.route,
+        name: AppRoute.game.name,
+        parentNavigatorKey: _rootNavigatorKey,
+        builder: (context, state) => const GamePage(),
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return ShellScaffold(
+            currentIndex: navigationShell.currentIndex,
+            onNavTap: (index) {
+              navigationShell.goBranch(
+                index,
+                initialLocation: index == navigationShell.currentIndex,
+              );
             },
-            branches: [
-              StatefulShellBranch(
-                navigatorKey: _shellNavigatorKey,
-                routes: [
-                  GoRoute(
-                    path: HomePage.route,
-                    name: AppRoute.home.name,
-                    builder: (context, state) => const HomePage(),
-                    // Then navigate with:
-                    //   context.goNamed(AppRoute.game.name, pathParameters: {'levelId': '1'});
-                    // routes: [
-                    //   GoRoute(
-                    //     path: 'game/:levelId',
-                    //     name: AppRoute.game.name,
-                    //     parentNavigatorKey: _rootNavigatorKey, // Uses root navigator
-                    //     builder: (context, state) {
-                    //       final levelId = state.pathParameters['levelId']!;
-                    //       return GamePage(levelId: levelId);
-                    //     },
-                    //   ),
-                    // ]
-                  ),
-                ],
+            child: navigationShell,
+          );
+        },
+        branches: [
+          StatefulShellBranch(
+            navigatorKey: _shellNavigatorKey,
+            routes: [
+              GoRoute(
+                path: HomePage.route,
+                name: AppRoute.home.name,
+                builder: (context, state) => const HomePage(),
               ),
-              StatefulShellBranch(
-                routes: [
-                  GoRoute(
-                    path: PracticePage.route,
-                    name: AppRoute.practice.name,
-                    builder: (context, state) => const PracticePage(),
-                  ),
-                ],
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: PracticePage.route,
+                name: AppRoute.practice.name,
+                builder: (context, state) => const PracticePage(),
               ),
-              StatefulShellBranch(
-                routes: [
-                  GoRoute(
-                    path: LeaderboardPage.route,
-                    name: AppRoute.leaderboard.name,
-                    builder: (context, state) => const LeaderboardPage(),
-                  ),
-                ],
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: LeaderboardPage.route,
+                name: AppRoute.leaderboard.name,
+                builder: (context, state) => const LeaderboardPage(),
               ),
-              StatefulShellBranch(
-                routes: [
-                  GoRoute(
-                    path: ProfilePage.route,
-                    name: AppRoute.profile.name,
-                    builder: (context, state) => const ProfilePage(),
-                  ),
-                ],
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: ProfilePage.route,
+                name: AppRoute.profile.name,
+                builder: (context, state) => const ProfilePage(),
               ),
-            ])
-      ],
-      observers: [
-        routeObserver
-      ]);
+            ],
+          ),
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(
+          //       path: SettingsPage.route,
+          //       name: AppRoute.settings.name,
+          //       builder: (context, state) => const SettingsPage(),
+          //     ),
+          //   ],
+          // ),
+        ],
+      ),
+    ],
+  );
 }

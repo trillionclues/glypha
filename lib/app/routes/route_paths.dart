@@ -9,6 +9,7 @@ enum AppRoute {
   leaderboard,
   practice,
   profile,
+  settings,
 
   game
 }
