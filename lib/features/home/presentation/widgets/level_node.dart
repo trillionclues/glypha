@@ -43,25 +43,50 @@ class LevelNode extends StatelessWidget {
               : LevelCircle(level: level),
           const SizedBox(height: 8),
           Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: Colors.black.withOpacity(0.08),
                   blurRadius: 6,
                   offset: const Offset(0, 2),
                 ),
               ],
             ),
-            child: Text(
-              'Level ${level.number}',
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: 10,
-                color: Color(0xFF4A5568),
-              ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  level.title.isNotEmpty
+                      ? level.title
+                      : 'Level ${level.number}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11,
+                    color: level.isLocked
+                        ? const Color(0xFF9CA3AF)
+                        : const Color(0xFF4A5568),
+                  ),
+                ),
+                if (level.isCompleted && level.stars > 0) ...[
+                  const SizedBox(height: 2),
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: List.generate(
+                      3,
+                      (index) => Icon(
+                        Icons.star_rounded,
+                        size: 12,
+                        color: index < level.stars
+                            ? const Color(0xFFFFD700)
+                            : const Color(0xFFE5E7EB),
+                      ),
+                    ),
+                  ),
+                ],
+              ],
             ),
           ),
         ],

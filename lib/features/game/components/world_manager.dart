@@ -49,6 +49,9 @@ class WorldManager extends Component with HasGameRef<RunnerGame> {
   void update(double dt) {
     super.update(dt);
 
+    // Stop all movement if game is over
+    if (gameRef.isGameOver) return;
+
     // Move all Pseudo3DComponents towards the camera
     for (final child in children) {
       if (child is Pseudo3DComponent) {

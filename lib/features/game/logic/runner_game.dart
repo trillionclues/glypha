@@ -112,9 +112,12 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
       // Correct!
       ref.read(gameStateProvider.notifier).incrementScore();
       ref.read(gameStateProvider.notifier).increaseSpeed();
+      player.triggerBoost(); // Visual boost reaction
     } else {
       // Wrong!
       ref.read(gameStateProvider.notifier).loseLife();
+      ref.read(gameStateProvider.notifier).decreaseSpeed();
+      player.triggerStumble(); // Visual stumble reaction
     }
   }
 
