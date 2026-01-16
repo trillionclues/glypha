@@ -4,7 +4,7 @@ part 'question_entity.g.dart';
 
 /// Represents the type of question for game mode selection
 enum QuestionType {
-  /// Multiple choice with 2-4 options
+  /// Multiple choice (2-4 options)
   mcq,
 
   /// True/False or Yes/No

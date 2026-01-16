@@ -7,7 +7,7 @@ import 'package:glypha/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
 import 'package:glypha/features/home/presentation/pages/home_page.dart';
 import 'package:glypha/features/home/presentation/pages/shell_scaffold.dart';
-import 'package:glypha/features/leaderboard/presentation/leaderboard_page.dart'; // Still keep for old reference if needed, but remove from tabs
+import 'package:glypha/features/leaderboard/presentation/leaderboard_page.dart';
 import 'package:glypha/features/practice/presentation/practice_page.dart';
 import 'package:glypha/features/profile/presentation/profile_page.dart';
 import 'package:glypha/features/profile/presentation/settings_page.dart';

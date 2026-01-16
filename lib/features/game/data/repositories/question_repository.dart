@@ -29,7 +29,6 @@ class QuestionRepository {
         .toList();
   }
 
-  /// Get questions by tags
   Future<List<Question>> getQuestionsByTags(List<String> tags) async {
     final snapshot = await _firestore
         .collectionGroup('questions')
@@ -44,7 +43,6 @@ class QuestionRepository {
 
   // ============ USER-GENERATED QUESTIONS ============
 
-  /// Get user's generated questions
   Future<List<Question>> getUserGeneratedQuestions(String userId) async {
     final snapshot = await _firestore
         .collection('users')
@@ -58,7 +56,6 @@ class QuestionRepository {
         .toList();
   }
 
-  /// Save a user-generated question
   Future<void> saveUserQuestion(String userId, Question question) async {
     await _firestore
         .collection('users')
@@ -68,7 +65,6 @@ class QuestionRepository {
         .set(question.toJson());
   }
 
-  /// Save multiple user-generated questions (batch)
   Future<void> saveUserQuestionsBatch(
       String userId, List<Question> questions) async {
     final batch = _firestore.batch();
@@ -85,7 +81,6 @@ class QuestionRepository {
     await batch.commit();
   }
 
-  /// Delete a user-generated question
   Future<void> deleteUserQuestion(String userId, String questionId) async {
     await _firestore
         .collection('users')

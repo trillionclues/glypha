@@ -29,23 +29,19 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
   Future<void> onLoad() async {
     await super.onLoad();
 
-    // Center the camera
     camera.viewfinder.anchor = Anchor.center;
 
     worldManager = WorldManager();
     player = PlayerController();
     questionBanner = QuestionBanner();
 
-    // Add horizon first (background)
     add(HorizonComponent());
 
-    // Add question banner (UI overlay)
     add(questionBanner);
 
     world.add(worldManager);
     world.add(player);
 
-    // Wait a frame for worldManager to spawn first gate, then show its question
     Future.delayed(const Duration(milliseconds: 100), () {
       _updateQuestionForNextGate();
     });
@@ -61,17 +57,14 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
   void update(double dt) {
     super.update(dt);
 
-    // Stop processing collisions if game is over
     if (isGameOver) return;
 
-    // Check collisions
     for (final child in worldManager.children) {
       if (child is GateComponent) {
         // Check if gate is passing player
         if ((child.worldZ - player.worldZ).abs() < 0.5) {
           // Collision!
           _handleGateCollision(child);
-          // Remove gate immediately to avoid double collision
           child.removeFromParent();
 
           // Find the next gate and update question banner
@@ -105,16 +98,13 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
     final playerAnswerIndex = player.currentLane + 1;
     final isCorrect = playerAnswerIndex == gate.correctAnswerIndex;
 
-    // Show visual feedback on the gate
     gate.showFeedback(player.currentLane, isCorrect);
 
     if (isCorrect) {
-      // Correct!
       ref.read(gameStateProvider.notifier).incrementScore();
       ref.read(gameStateProvider.notifier).increaseSpeed();
-      player.triggerBoost(); // Visual boost reaction
+      player.triggerBoost();
     } else {
-      // Wrong!
       ref.read(gameStateProvider.notifier).loseLife();
       ref.read(gameStateProvider.notifier).decreaseSpeed();
       player.triggerStumble(); // Visual stumble reaction

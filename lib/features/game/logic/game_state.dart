@@ -28,12 +28,12 @@ class GameState extends Notifier<GameStateModel> {
   }
 
   void increaseSpeed() {
-    // +15% speed boost (matches implementation plan)
+    // +15% speed boost
     state = state.copyWith(currentSpeed: state.currentSpeed * 1.15);
   }
 
   void decreaseSpeed() {
-    // -30% speed penalty (matches implementation plan)
+    // -30% speed penalty
     state = state.copyWith(currentSpeed: state.currentSpeed * 0.70);
   }
 
