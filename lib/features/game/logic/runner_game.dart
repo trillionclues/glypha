@@ -11,6 +11,8 @@ import '../components/horizon_component.dart';
 import '../components/question_banner.dart';
 import 'game_state.dart';
 import 'package:flame/components.dart';
+import 'package:glypha/features/game/data/repositories/question_repository.dart';
+import 'package:glypha/features/game/domain/entities/question_entity.dart';
 
 class RunnerGame extends FlameGame with HorizontalDragDetector {
   final WidgetRef ref;
@@ -36,15 +38,29 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
     questionBanner = QuestionBanner();
 
     add(HorizonComponent());
-
     add(questionBanner);
 
     world.add(worldManager);
     world.add(player);
 
-    Future.delayed(const Duration(milliseconds: 100), () {
-      _updateQuestionForNextGate();
-    });
+    // Fetch live questions from Firestore
+    try {
+      final repository = ref.read(questionRepositoryProvider);
+      final questions = await repository.getQuestionsByType(QuestionType.mcq);
+
+      if (questions.isNotEmpty) {
+        worldManager.setQuestions(questions);
+        _updateQuestionForNextGate();
+      } else {
+        // Fallback or end game with message
+        print('No MCQ questions available currently!');
+        throw Exception('No MCQ questions available currently!');
+        endGame();
+      }
+    } catch (e) {
+      print('Error fetching questions: $e');
+      endGame();
+    }
   }
 
   void updateQuestion(String question) {
@@ -95,7 +111,16 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
 
   void _handleGateCollision(GateComponent gate) {
     // Map player lane (-1, 0, 1) to answer index (0, 1, 2)
+    // If we have only 2 gates, we need to map differently or ensure player can't hit empty lanes
     final playerAnswerIndex = player.currentLane + 1;
+
+    // Check if there is even a gate in this lane
+    if (playerAnswerIndex < 0 || playerAnswerIndex >= gate.answers.length) {
+      // Player hit a lane where no gate exists (empty space)
+      // For now, let's treat it as a miss or just ignore
+      return;
+    }
+
     final isCorrect = playerAnswerIndex == gate.correctAnswerIndex;
 
     gate.showFeedback(player.currentLane, isCorrect);
@@ -112,8 +137,10 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
   }
 
   void endGame() {
-    // Mark game as over
-    ref.read(gameStateProvider.notifier).setGameOver();
+    // Mark game as over safely outside the build phase
+    Future.microtask(() {
+      ref.read(gameStateProvider.notifier).setGameOver();
+    });
   }
 
   @override

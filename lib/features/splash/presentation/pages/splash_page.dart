@@ -62,6 +62,33 @@ class _SplashPageState extends ConsumerState<SplashPage>
     );
 
     _controller.forward();
+    _handleInitialNavigation();
+  }
+
+  Future<void> _handleInitialNavigation() async {
+    // Wait for splash animation to be meaningful
+    await Future.delayed(const Duration(seconds: 2));
+    if (!mounted) return;
+
+    final authState = ref.read(authNotifierProvider);
+
+    if (authState is AuthAuthenticated) {
+      final user = authState.user;
+
+      // Separate check to ensure we don't access ref if disposed during the await
+      final future = ref.read(needsAdditionalDetailsProvider(user.id).future);
+      final needsDetails = await future;
+
+      if (!mounted) return;
+
+      if (needsDetails) {
+        context.goNamed(AppRoute.onboarding.name);
+      } else {
+        context.goNamed(AppRoute.home.name);
+      }
+    } else {
+      context.goNamed(AppRoute.login.name);
+    }
   }
 
   @override
@@ -74,28 +101,7 @@ class _SplashPageState extends ConsumerState<SplashPage>
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    ref.listen(authNotifierProvider, (previous, next) async {
-      // Ensure splash is visible for at least 2 seconds
-      await Future.delayed(const Duration(seconds: 2));
-
-      if (next is AuthAuthenticated) {
-        final user = next.user;
-        final needsDetails = await ref.read(
-          needsAdditionalDetailsProvider(user.id).future,
-        );
-
-        if (mounted) {
-          if (needsDetails) {
-            context.goNamed(AppRoute.onboarding.name);
-          } else {
-            context.goNamed(AppRoute.home.name);
-          }
-        }
-      } else if (next is AuthUnauthenticated || next is AuthError) {
-        if (mounted) context.goNamed(AppRoute.login.name);
-      }
-    });
-
+    // No listeners in build - everything is handled in initState
     return Scaffold(
       // backgroundColor: const Color(0xFF0A0A0A), // Dark charcoal
       // backgroundColor: const Color(0xFF111827), // Dark blue-gray

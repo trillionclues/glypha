@@ -26,20 +26,29 @@ class GateComponent extends Pseudo3DComponent {
   Future<void> onLoad() async {
     super.onLoad();
 
-    // Create 3 answer gates (doors)
-    for (int i = 0; i < 3; i++) {
-      final laneX = (i - 1) * 2.5; // Increased spacing
+    // Create answer gates based on available answers
+    final gateCount = answers.length;
+    for (int i = 0; i < gateCount; i++) {
+      // Offset calculation:
+      // 1 gate: center (0)
+      // 2 gates: -1.25, 1.25
+      // 3 gates: -2.5, 0, 2.5
+      double laneX;
+      if (gateCount == 1) {
+        laneX = 0;
+      } else if (gateCount == 2) {
+        laneX = (i == 0) ? -1.5 : 1.5;
+      } else {
+        laneX = (i - 1) * 2.5;
+      }
 
-      // All gates same color initially
       final gateColor = const Color(0xFF2196F3).withOpacity(0.9);
 
-      // Much larger gates
       final gateRect = RectangleComponent(
         position: Vector2(laneX - 1.2, -2.0),
         size: Vector2(2.4, 4.0),
         paint: Paint()..color = gateColor,
         children: [
-          // Answer text - larger font
           TextComponent(
             text: answers[i],
             textRenderer: TextPaint(
@@ -58,7 +67,6 @@ class GateComponent extends Pseudo3DComponent {
       add(gateRect);
       _gateRects.add(gateRect);
 
-      // Add decorative border
       add(RectangleComponent(
         position: Vector2(laneX - 1.25, -2.05),
         size: Vector2(2.5, 4.1),

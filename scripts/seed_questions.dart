@@ -7,6 +7,9 @@ const projectId = 'edusync-hub-62d3c';
 Future<void> main() async {
   print('🚀 Starting Glypha Firestore Seeder...');
 
+  // If you run the Firebase Emulator suite, this tells Firedart to use it
+  // Platform.environment['FIRESTORE_EMULATOR_HOST'] = '127.0.0.1:8080';
+
   Firestore.initialize(projectId);
 
   // Read sample questions from assets/data/sample_questions.json

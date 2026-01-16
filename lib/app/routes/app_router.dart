@@ -23,26 +23,43 @@ final _shellNavigatorKey = GlobalKey<NavigatorState>();
 
 final routeObserver = RouteObserver<ModalRoute>();
 
-@riverpod
+class RouterNotifier extends ChangeNotifier {
+  void refresh() => notifyListeners();
+}
+
+@Riverpod(keepAlive: true)
 GoRouter appRouter(AppRouterRef ref) {
-  final authState = ref.watch(authNotifierProvider);
+  final notifier = RouterNotifier();
+
+  // Link auth changes to router refresh
+  ref.listen(authNotifierProvider, (_, __) {
+    notifier.refresh();
+  });
 
   return GoRouter(
     navigatorKey: _rootNavigatorKey,
-    initialLocation: '/splash',
-    debugLogDiagnostics: true,
+    initialLocation: SplashPage.route,
+    debugLogDiagnostics: false,
     observers: [routeObserver],
+    refreshListenable: notifier,
     redirect: (context, state) {
-      final isLoggingIn = state.matchedLocation == LoginPage.route;
-      final isSplashing = state.matchedLocation == SplashPage.route;
-      final isOnboarding = state.matchedLocation == OnboardingPage.route;
+      final authState = ref.read(authNotifierProvider);
+
+      final path = state.uri.path;
+      final isLoggingIn = path == LoginPage.route;
+      final isSplashing = path == SplashPage.route || path == '/';
+      final isOnboarding = path == OnboardingPage.route;
+
+      if (authState is AuthInitial) return null;
+
+      if (isSplashing || isOnboarding) return null;
 
       if (authState is AuthAuthenticated) {
-        if (isLoggingIn || isSplashing) return HomePage.route;
+        if (isLoggingIn) return HomePage.route;
       } else if (authState is AuthUnauthenticated) {
-        if (!isLoggingIn && !isSplashing && !isOnboarding)
-          return LoginPage.route;
+        if (!isLoggingIn) return LoginPage.route;
       }
+
       return null;
     },
     routes: [

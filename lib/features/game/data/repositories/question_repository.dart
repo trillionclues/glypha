@@ -16,7 +16,25 @@ class QuestionRepository {
 
   // ============ SYSTEM QUESTIONS ============
 
-  /// Get questions from a specific question bank (e.g., 'physics_101')
+  Future<List<Question>> getAllSystemQuestions() async {
+    final snapshot = await _firestore.collection('questionBanks').get();
+    return snapshot.docs
+        .map((doc) => Question.fromJson({...doc.data(), 'id': doc.id}))
+        .toList();
+  }
+
+  Future<List<Question>> getQuestionsByType(QuestionType type) async {
+    final snapshot = await _firestore
+        .collection('questionBanks')
+        .where('type', isEqualTo: type.name)
+        .get();
+
+    return snapshot.docs
+        .map((doc) => Question.fromJson({...doc.data(), 'id': doc.id}))
+        .toList();
+  }
+
+  /// from a specific question bank (subcollection support)
   Future<List<Question>> getQuestionsByBank(String bankId) async {
     final snapshot = await _firestore
         .collection('questionBanks')
@@ -30,13 +48,27 @@ class QuestionRepository {
   }
 
   Future<List<Question>> getQuestionsByTags(List<String> tags) async {
+    // Try root collection first
     final snapshot = await _firestore
+        .collection('questionBanks')
+        .where('tags', arrayContainsAny: tags)
+        .limit(50)
+        .get();
+
+    if (snapshot.docs.isNotEmpty) {
+      return snapshot.docs
+          .map((doc) => Question.fromJson({...doc.data(), 'id': doc.id}))
+          .toList();
+    }
+
+    // Fallback to collectionGroup if using subcollections
+    final fallbackSnapshot = await _firestore
         .collectionGroup('questions')
         .where('tags', arrayContainsAny: tags)
         .limit(50)
         .get();
 
-    return snapshot.docs
+    return fallbackSnapshot.docs
         .map((doc) => Question.fromJson({...doc.data(), 'id': doc.id}))
         .toList();
   }
