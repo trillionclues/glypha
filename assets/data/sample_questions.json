@@ -1,0 +1,340 @@
+[
+    {
+        "id": "speed_lane_1",
+        "prompt": "Which planet is known as the Red Planet?",
+        "type": "mcq",
+        "options": [
+            "Venus",
+            "Mars",
+            "Jupiter"
+        ],
+        "correctIndex": 1,
+        "explanation": "Mars appears red due to iron oxide on its surface.",
+        "difficulty": 1,
+        "tags": [
+            "science",
+            "astronomy"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "speed_lane_2",
+        "prompt": "What is 15 x 3?",
+        "type": "mcq",
+        "options": [
+            "35",
+            "45",
+            "55"
+        ],
+        "correctIndex": 1,
+        "explanation": "15 times 3 equals 45.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "speed_lane_3",
+        "prompt": "What is the capital of France?",
+        "type": "mcq",
+        "options": [
+            "Berlin",
+            "London",
+            "Paris"
+        ],
+        "correctIndex": 2,
+        "explanation": "Paris is the capital and largest city of France.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "speed_lane_4",
+        "prompt": "Which gas do plants absorb from the atmosphere for photosynthesis?",
+        "type": "mcq",
+        "options": [
+            "Carbon Dioxide",
+            "Oxygen",
+            "Nitrogen"
+        ],
+        "correctIndex": 0,
+        "explanation": "Plants take in CO2 and release Oxygen.",
+        "difficulty": 2,
+        "tags": [
+            "science",
+            "biology"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "speed_lane_5",
+        "prompt": "What is the largest ocean on Earth?",
+        "type": "mcq",
+        "options": [
+            "Atlantic Ocean",
+            "Indian Ocean",
+            "Pacific Ocean"
+        ],
+        "correctIndex": 2,
+        "explanation": "The Pacific Ocean is the largest and deepest of Earth's oceanic divisions.",
+        "difficulty": 1,
+        "tags": [
+            "geography",
+            "science"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "swipe_master_1",
+        "prompt": "The Great Wall of China is visible from the Moon with the naked eye.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "This is a myth; it's generally not visible without aid from low Earth orbit.",
+        "difficulty": 2,
+        "tags": [
+            "general_knowledge",
+            "geography"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "swipe_master_2",
+        "prompt": "An octopus has three hearts.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Octopuses have two branchial hearts and one systemic heart.",
+        "difficulty": 2,
+        "tags": [
+            "science",
+            "biology"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "swipe_master_3",
+        "prompt": "Bananas grow on trees.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Bananas grow on giant herbs, not trees, as they lack a woody trunk.",
+        "difficulty": 2,
+        "tags": [
+            "nature",
+            "science"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "swipe_master_4",
+        "prompt": "Light travels faster than sound.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Light travels at ~300,000 km/s, while sound travels at only ~0.34 km/s.",
+        "difficulty": 1,
+        "tags": [
+            "physics",
+            "science"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "swipe_master_5",
+        "prompt": "Humans have four lungs.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Humans have two lungs located in the chest cavity.",
+        "difficulty": 1,
+        "tags": [
+            "biology",
+            "science"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "stack_attack_1",
+        "prompt": "Category: Apple",
+        "type": "mcq",
+        "options": [
+            "Fruit",
+            "Vegetable"
+        ],
+        "correctIndex": 0,
+        "explanation": "Apples are the fruit of apple trees.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "stack_attack_2",
+        "prompt": "Category: Carrot",
+        "type": "mcq",
+        "options": [
+            "Fruit",
+            "Vegetable"
+        ],
+        "correctIndex": 1,
+        "explanation": "Carrots are root vegetables.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "stack_attack_3",
+        "prompt": "Category: Broccoli",
+        "type": "mcq",
+        "options": [
+            "Fruit",
+            "Vegetable"
+        ],
+        "correctIndex": 1,
+        "explanation": "Broccoli is an edible green plant in the cabbage family.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "stack_attack_4",
+        "prompt": "Category: Mango",
+        "type": "mcq",
+        "options": [
+            "Fruit",
+            "Vegetable"
+        ],
+        "correctIndex": 0,
+        "explanation": "Mangoes are stone fruits produced from numerous species of tropical trees.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "stack_attack_5",
+        "prompt": "Category: Spinach",
+        "type": "mcq",
+        "options": [
+            "Fruit",
+            "Vegetable"
+        ],
+        "correctIndex": 1,
+        "explanation": "Spinach is a leafy green flowering plant native to central and western Asia.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "mind_match_1",
+        "prompt": "Photosynthesis",
+        "type": "matchPair",
+        "options": [
+            "Process by which plants make food",
+            "Process of water evaporation"
+        ],
+        "correctIndex": 0,
+        "explanation": "Plants use sunlight, water, and CO2 to create oxygen and energy in the form of sugar.",
+        "difficulty": 3,
+        "tags": [
+            "science",
+            "biology"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "mind_match_2",
+        "prompt": "H2O",
+        "type": "matchPair",
+        "options": [
+            "Chemical formula for Water",
+            "Chemical formula for Oxygen"
+        ],
+        "correctIndex": 0,
+        "explanation": "Water consists of two hydrogen atoms and one oxygen atom.",
+        "difficulty": 1,
+        "tags": [
+            "chemistry",
+            "science"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "mind_match_3",
+        "prompt": "Albert Einstein",
+        "type": "matchPair",
+        "options": [
+            "Theory of Relativity",
+            "Laws of Motion"
+        ],
+        "correctIndex": 0,
+        "explanation": "Einstein is Best known for his mass–energy equivalence formula E = mc2.",
+        "difficulty": 2,
+        "tags": [
+            "science",
+            "history"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "mind_match_4",
+        "prompt": "Isaac Newton",
+        "type": "matchPair",
+        "options": [
+            "Laws of Motion",
+            "Theory of Evolution"
+        ],
+        "correctIndex": 0,
+        "explanation": "Newton formulated the laws of motion and universal gravitation.",
+        "difficulty": 2,
+        "tags": [
+            "science",
+            "history"
+        ],
+        "createdBy": "system"
+    },
+    {
+        "id": "mind_match_5",
+        "prompt": "DNA",
+        "type": "matchPair",
+        "options": [
+            "Genetic blueprint of life",
+            "Powerhouse of the cell"
+        ],
+        "correctIndex": 0,
+        "explanation": "Deoxyribonucleic acid is a molecule that carries genetic instructions.",
+        "difficulty": 3,
+        "tags": [
+            "biology",
+            "science"
+        ],
+        "createdBy": "system"
+    }
+]
