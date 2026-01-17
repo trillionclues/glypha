@@ -1,16 +1,48 @@
 import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:glypha/features/game/logic/swipe_master_game.dart';
 import '../logic/runner_game.dart';
 import '../logic/game_state.dart';
 
-class GamePage extends ConsumerWidget {
-  static const route = '/game';
+enum GameType {
+  runner,
+  swipe,
+  stack,
+  match,
+}
 
-  const GamePage({super.key});
+class GamePage extends ConsumerStatefulWidget {
+  static const route = '/game';
+  final GameType gameType;
+
+  const GamePage({
+    super.key,
+    this.gameType = GameType.runner,
+  });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<GamePage> createState() => _GamePageState();
+}
+
+class _GamePageState extends ConsumerState<GamePage> {
+  bool _showInstructions = true;
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-hide instructions after 3 seconds
+    Future.delayed(const Duration(seconds: 3), () {
+      if (mounted) {
+        setState(() {
+          _showInstructions = false;
+        });
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final gameState = ref.watch(gameStateProvider);
 
     return PopScope(
@@ -43,45 +75,7 @@ class GamePage extends ConsumerWidget {
       child: Scaffold(
         body: Stack(
           children: [
-            GameWidget<RunnerGame>.controlled(
-              gameFactory: () => RunnerGame(ref),
-              overlayBuilderMap: {
-                'GameOver': (context, game) => Center(
-                      child: Container(
-                        padding: const EdgeInsets.all(20),
-                        color: Colors.black87,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Text(
-                              'GAME OVER',
-                              style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                            const SizedBox(height: 20),
-                            ElevatedButton(
-                              onPressed: () {
-                                // Reset game
-                                ref.read(gameStateProvider.notifier).reset();
-                                // We might need to reload the game widget or reset the game instance
-                                // For now, simpler to just pop and push or have a reset method in game
-                                // But since we are using Riverpod for state, we can just reset state.
-                                // However, the game entities need to be reset too.
-                                // Let's just pop for now.
-                                Navigator.of(context).pop();
-                              },
-                              child: const Text('Exit'),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-              },
-            ),
-
-            // Score Overlay
+            _buildGame(ref),
             Positioned(
               top: 60,
               left: 20,
@@ -111,7 +105,32 @@ class GamePage extends ConsumerWidget {
                 ),
               ),
             ),
-
+            if (_showInstructions)
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      _showInstructions = false;
+                    });
+                  },
+                  child: Container(
+                    color: Colors.black54,
+                    child: Center(
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 40),
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        child: widget.gameType == GameType.runner
+                            ? _buildRunnerInstructions()
+                            : _buildSwipeInstructions(),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             if (gameState.isGameOver)
               Container(
                 color: Colors.black54,
@@ -130,8 +149,6 @@ class GamePage extends ConsumerWidget {
                       ElevatedButton(
                         onPressed: () {
                           ref.read(gameStateProvider.notifier).reset();
-                          // Ideally we should tell the game to reset
-                          // For now, let's just go back
                           Navigator.of(context).pop();
                         },
                         child: const Text('Back to Home'),
@@ -144,5 +161,197 @@ class GamePage extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Widget _buildRunnerInstructions() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const Icon(
+          Icons.swipe,
+          size: 64,
+          color: Color(0xFF4CAF50),
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          'How to Play',
+          style: TextStyle(
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildSwipeInstruction(
+              Icons.arrow_back,
+              'Swipe Left',
+              Colors.blue,
+            ),
+            _buildSwipeInstruction(
+              Icons.arrow_forward,
+              'Swipe Right',
+              Colors.blue,
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+        const Text(
+          'Swipe anywhere on the screen to move between answer gates',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.black54,
+          ),
+        ),
+        const SizedBox(height: 16),
+        TextButton(
+          onPressed: () {
+            setState(() {
+              _showInstructions = false;
+            });
+          },
+          child: const Text(
+            'Got it!',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSwipeInstructions() {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Color(0xFF667EEA), Color(0xFF764BA2)],
+            ),
+            shape: BoxShape.circle,
+          ),
+          child: const Icon(
+            Icons.touch_app,
+            size: 48,
+            color: Colors.white,
+          ),
+        ),
+        const SizedBox(height: 20),
+        const Text(
+          'Swipe Cards',
+          style: TextStyle(
+            fontSize: 26,
+            fontWeight: FontWeight.bold,
+            color: Colors.black87,
+          ),
+        ),
+        const SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildSwipeInstruction(
+              Icons.arrow_back,
+              'FALSE',
+              Colors.red,
+            ),
+            _buildSwipeInstruction(
+              Icons.arrow_forward,
+              'TRUE',
+              Colors.green,
+            ),
+          ],
+        ),
+        const SizedBox(height: 20),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF3F4F6),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Text(
+            'Read the question and swipe the card\nleft for FALSE or right for TRUE',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 14,
+              color: Color(0xFF374151),
+              height: 1.5,
+            ),
+          ),
+        ),
+        const SizedBox(height: 20),
+        ElevatedButton(
+          onPressed: () {
+            setState(() {
+              _showInstructions = false;
+            });
+          },
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF667EEA),
+            foregroundColor: Colors.white,
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+          child: const Text(
+            'Start Playing!',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSwipeInstruction(IconData icon, String text, Color color) {
+    return Column(
+      children: [
+        Container(
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: color.withOpacity(0.1),
+            shape: BoxShape.circle,
+          ),
+          child: Icon(
+            icon,
+            size: 32,
+            color: color,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          text,
+          style: TextStyle(
+            fontSize: 12,
+            fontWeight: FontWeight.w600,
+            color: color,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildGame(WidgetRef ref) {
+    switch (widget.gameType) {
+      case GameType.runner:
+        return GameWidget<RunnerGame>.controlled(
+          gameFactory: () => RunnerGame(ref),
+        );
+      case GameType.swipe:
+        return GameWidget<SwipeMasterGame>.controlled(
+          gameFactory: () => SwipeMasterGame(ref),
+        );
+      default:
+        return const Center(child: Text('Game mode not implemented'));
+    }
   }
 }

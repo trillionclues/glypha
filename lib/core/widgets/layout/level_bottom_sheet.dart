@@ -29,7 +29,6 @@ class LevelBottomSheet extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Drag handle
               Container(
                 width: 40,
                 height: 4,
@@ -39,7 +38,6 @@ class LevelBottomSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
               Text(
                 'Level ${level.number}',
                 style: theme.textTheme.headlineSmall?.copyWith(
@@ -54,7 +52,6 @@ class LevelBottomSheet extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-
               if (level.isCompleted) ...[
                 const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -116,7 +113,6 @@ class LevelBottomSheet extends StatelessWidget {
                       child: OutlinedButton(
                         onPressed: () {
                           Navigator.pop(context);
-                          // View results
                         },
                         style: OutlinedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(vertical: 16),
@@ -140,7 +136,7 @@ class LevelBottomSheet extends StatelessWidget {
                       onPressed: () {
                         HapticFeedback.mediumImpact();
                         Navigator.pop(context);
-                        context.pushNamed('game');
+                        context.pushNamed('game', extra: level.gameType);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.primary,

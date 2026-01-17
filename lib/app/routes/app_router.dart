@@ -82,7 +82,10 @@ GoRouter appRouter(AppRouterRef ref) {
         path: GamePage.route,
         name: AppRoute.game.name,
         parentNavigatorKey: _rootNavigatorKey,
-        builder: (context, state) => const GamePage(),
+        builder: (context, state) {
+          final gameType = state.extra as GameType? ?? GameType.runner;
+          return GamePage(gameType: gameType);
+        },
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {

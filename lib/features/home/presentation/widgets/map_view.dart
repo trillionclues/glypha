@@ -3,6 +3,7 @@ import 'package:glypha/features/home/data/model/level_data.dart';
 import 'package:glypha/features/home/presentation/widgets/landscape_layers.dart';
 import 'package:glypha/features/home/presentation/widgets/level_node.dart';
 import 'package:glypha/features/home/presentation/widgets/path_finder.dart';
+import 'package:glypha/features/game/presentation/game_page.dart';
 
 class MapView extends StatelessWidget {
   final ScrollController scrollController;
@@ -19,14 +20,22 @@ class MapView extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
 
     final levels = [
-      LevelData(1, 0.5, true, false, false, '📐', title: 'Intro', stars: 3),
-      LevelData(2, 0.3, true, false, false, '⚛️', title: 'Basics', stars: 3),
-      LevelData(3, 0.7, false, false, true, '🧪', title: 'Chemistry'),
-      LevelData(4, 0.4, false, true, false, '🧬', title: 'Biology'),
-      LevelData(5, 0.6, false, true, false, '📐', title: 'Geometry'),
-      LevelData(6, 0.35, false, true, false, '⚛️', title: 'Physics'),
-      LevelData(7, 0.65, false, true, false, '🧪', title: 'Lab Work'),
-      LevelData(8, 0.5, false, true, false, '🧬', title: 'Genetics'),
+      LevelData(1, 0.5, true, false, false, '📐',
+          title: 'Intro', stars: 3, gameType: GameType.runner),
+      LevelData(2, 0.3, true, false, false, '⚛️',
+          title: 'Swipe Challenge', stars: 3, gameType: GameType.swipe),
+      LevelData(3, 0.7, false, false, true, '🧪',
+          title: 'Chemistry', gameType: GameType.runner),
+      LevelData(4, 0.4, false, true, false, '🧬',
+          title: 'Biology', gameType: GameType.swipe),
+      LevelData(5, 0.6, false, true, false, '📐',
+          title: 'Geometry', gameType: GameType.runner),
+      LevelData(6, 0.35, false, true, false, '⚛️',
+          title: 'Physics', gameType: GameType.swipe),
+      LevelData(7, 0.65, false, true, false, '🧪',
+          title: 'Lab Work', gameType: GameType.runner),
+      LevelData(8, 0.5, false, true, false, '🧬',
+          title: 'Genetics', gameType: GameType.swipe),
     ];
 
     final totalHeight = 180.0 * levels.length + 400.0;
@@ -39,7 +48,6 @@ class MapView extends StatelessWidget {
         height: totalHeight,
         child: Stack(
           children: [
-            // Light minimalist background matching mockup
             Container(
               height: totalHeight,
               decoration: const BoxDecoration(
@@ -47,9 +55,9 @@ class MapView extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFFF5F0E8), // Light cream
-                    Color(0xFFF8F4EE), // Warm off-white
-                    Color(0xFFFAF8F5), // Very light beige
+                    Color(0xFFF5F0E8),
+                    Color(0xFFF8F4EE),
+                    Color(0xFFFAF8F5),
                   ],
                 ),
               ),

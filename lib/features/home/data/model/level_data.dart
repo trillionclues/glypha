@@ -1,3 +1,5 @@
+import 'package:glypha/features/game/presentation/game_page.dart';
+
 class LevelData {
   final int number;
   final double xPosition;
@@ -7,6 +9,7 @@ class LevelData {
   final String emoji;
   final String title; // Topic name like 'Vocabulary', 'Grammar'
   final int stars; // 0-3 for completed levels
+  final GameType gameType;
 
   LevelData(
     this.number,
@@ -17,5 +20,6 @@ class LevelData {
     this.emoji, {
     this.title = '',
     this.stars = 0,
+    this.gameType = GameType.runner,
   });
 }

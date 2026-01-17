@@ -1,7 +1,5 @@
 import 'package:flame/game.dart';
 import 'package:flame/events.dart';
-import 'package:flame/input.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../components/player_controller.dart';
@@ -14,11 +12,15 @@ import 'package:flame/components.dart';
 import 'package:glypha/features/game/data/repositories/question_repository.dart';
 import 'package:glypha/features/game/domain/entities/question_entity.dart';
 
-class RunnerGame extends FlameGame with HorizontalDragDetector {
+class RunnerGame extends FlameGame with PanDetector {
   final WidgetRef ref;
   late PlayerController player;
   late WorldManager worldManager;
   late QuestionBanner questionBanner;
+
+  // Swipe detection
+  Vector2? _panStart;
+  bool _hasSwiped = false;
 
   RunnerGame(this.ref);
 
@@ -50,12 +52,12 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
 
       if (questions.isNotEmpty) {
         worldManager.setQuestions(questions);
+        // Wait a frame before updating first question
+        await Future.delayed(const Duration(milliseconds: 100));
         _updateQuestionForNextGate();
       } else {
-        // Fallback or end game with message
         print('No MCQ questions available currently!');
         throw Exception('No MCQ questions available currently!');
-        endGame();
       }
     } catch (e) {
       print('Error fetching questions: $e');
@@ -63,8 +65,9 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
     }
   }
 
-  void updateQuestion(String question) {
+  void updateQuestion(String question, int answerCount) {
     questionBanner.setQuestion(question);
+    player.setLaneConstraints(answerCount);
   }
 
   bool get isGameOver => ref.read(gameStateProvider).isGameOver;
@@ -75,54 +78,49 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
 
     if (isGameOver) return;
 
-    for (final child in worldManager.children) {
-      if (child is GateComponent) {
-        // Check if gate is passing player
-        if ((child.worldZ - player.worldZ).abs() < 0.5) {
-          // Collision!
-          _handleGateCollision(child);
-          child.removeFromParent();
+    final gatesToRemove = <GateComponent>[];
 
-          // Find the next gate and update question banner
-          _updateQuestionForNextGate();
+    for (final child in worldManager.children) {
+      if (child is GateComponent && !child.hasCollided) {
+        // More generous collision detection - check if gate is at or behind player
+        if (child.worldZ <= player.worldZ + 0.5 &&
+            child.worldZ >= player.worldZ - 2.0) {
+          _handleGateCollision(child);
+          gatesToRemove.add(child);
         }
       }
+    }
+
+    // Remove collided gates and update question
+    for (final gate in gatesToRemove) {
+      gate.removeFromParent();
+    }
+
+    if (gatesToRemove.isNotEmpty) {
+      _updateQuestionForNextGate();
     }
   }
 
   void _updateQuestionForNextGate() {
-    // Find the closest gate ahead
-    GateComponent? nextGate;
-    double closestZ = double.infinity;
-
-    for (final child in worldManager.children) {
-      if (child is GateComponent && child.worldZ > player.worldZ) {
-        if (child.worldZ < closestZ) {
-          closestZ = child.worldZ;
-          nextGate = child;
-        }
-      }
-    }
+    // Use WorldManager's method to get next gate
+    final nextGate = worldManager.getNextGate();
 
     if (nextGate != null) {
-      updateQuestion(nextGate.question);
+      print('Updating banner for next gate: ${nextGate.question}');
+      updateQuestion(nextGate.question, nextGate.answers.length);
+    } else {
+      print('No next gate found');
     }
   }
 
   void _handleGateCollision(GateComponent gate) {
-    // Map player lane (-1, 0, 1) to answer index (0, 1, 2)
-    // If we have only 2 gates, we need to map differently or ensure player can't hit empty lanes
-    final playerAnswerIndex = player.currentLane + 1;
+    final playerAnswerIndex = player.getAnswerIndex();
 
-    // Check if there is even a gate in this lane
     if (playerAnswerIndex < 0 || playerAnswerIndex >= gate.answers.length) {
-      // Player hit a lane where no gate exists (empty space)
-      // For now, let's treat it as a miss or just ignore
       return;
     }
 
     final isCorrect = playerAnswerIndex == gate.correctAnswerIndex;
-
     gate.showFeedback(player.currentLane, isCorrect);
 
     if (isCorrect) {
@@ -132,33 +130,44 @@ class RunnerGame extends FlameGame with HorizontalDragDetector {
     } else {
       ref.read(gameStateProvider.notifier).loseLife();
       ref.read(gameStateProvider.notifier).decreaseSpeed();
-      player.triggerStumble(); // Visual stumble reaction
+      player.triggerStumble();
     }
   }
 
   void endGame() {
-    // Mark game as over safely outside the build phase
     Future.microtask(() {
       ref.read(gameStateProvider.notifier).setGameOver();
     });
   }
 
   @override
-  void onHorizontalDragEnd(DragEndInfo info) {
-    final velocity = info.velocity.x;
-    // Lower threshold for easier swiping
-    if (velocity < -20) {
-      onSwipeLeft();
-    } else if (velocity > 20) {
-      onSwipeRight();
+  void onPanStart(DragStartInfo info) {
+    _panStart = info.eventPosition.global;
+    _hasSwiped = false;
+  }
+
+  @override
+  void onPanUpdate(DragUpdateInfo info) {
+    if (_panStart == null || _hasSwiped) return;
+
+    final delta = info.eventPosition.global - _panStart!;
+    const threshold = 40.0; // Minimum swipe distance in pixels
+
+    // Detect horizontal swipe
+    if (delta.x.abs() > threshold && delta.x.abs() > delta.y.abs() * 1.5) {
+      _hasSwiped = true;
+
+      if (delta.x > 0) {
+        player.moveRight();
+      } else {
+        player.moveLeft();
+      }
     }
   }
 
-  void onSwipeLeft() {
-    player.moveLeft();
-  }
-
-  void onSwipeRight() {
-    player.moveRight();
+  @override
+  void onPanEnd(DragEndInfo info) {
+    _panStart = null;
+    _hasSwiped = false;
   }
 }
