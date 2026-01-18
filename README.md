@@ -1,88 +1,91 @@
-# glypha MVP
+# Glypha 🏛️
+Glypha is a context-aware learning app that enhances how kids and adult alike engage with educational content. By combining robust state management, cloud-based data synchronization, and gamified learning elements, the app provides a personalized and immersive educational journey. 
 
-A Flutter package for tracking daily micro habits with offline-first architecture using BLoC, Drift (SQLite), and Hive.
+Designed with a focus on scalability and clean architecture, Glypha leverages the power of Flutter and Firebase to deliver a seamless experience across multiple platforms, ensuring that learning is both accessible and engaging.
 
 ## Features
+- **Context-Aware Learning:** Intelligent content delivery based on user progression and interaction.
+- **Gamified Experience:** Integrated Flame engine components to enhance engagement through interactive learning modules.
+- **Robust Authentication:** Secure user access via Firebase Authentication, including Google and Apple Sign-in integration.
+- **Real-time Synchronization:** Cloud Firestore integration for instant data persistence and cross-device syncing.
+- **Offline Capabilities:** Local storage implementation using Hive for a reliable experience even without an active internet connection.
+- **Dynamic Theming & UI:** Fully responsive design using Flutter ScreenUtil and smooth transitions with Flutter Animate.
+- **Scalable Architecture:** Built with Riverpod for state management and Go Router for declarative navigation.
 
-- ✅ Fully offline habit tracking
-- ✅ Auto-generated random habits
-- ✅ Clean architecture with BLoC state management
-- ✅ Firebase Authentication (Google Sign-In + Guest mode)
-- ✅ Drift (SQLite) as single source of truth
-- ✅ Hive for user preferences
-- ✅ Today's habits view with checkbox completion
+## Installation
 
-## How to Run
+### Prerequisites
+- Flutter SDK (>= 3.1.0)
+- Dart SDK
+- Firebase CLI (for backend configuration)
 
-1. **Get dependencies:**
+### Setup Steps
+1. **Clone the Repository**
+   ```bash
+   git clone https://github.com/trillionclues/micro_habits.git
+   cd glypha
+   ```
+
+2. **Install Dependencies**
    ```bash
    flutter pub get
    ```
 
-2. **Generate Drift database files:**
+3. **Configure Firebase**
+   Ensure you have your `google-services.json` (Android) and `GoogleService-Info.plist` (iOS) placed in the respective directories. You can also use the FlutterFire CLI:
    ```bash
-   dart run build_runner build
+   flutterfire configure
    ```
 
-3. **Run the app:**
+4. **Run Code Generation**
+   The project uses `build_runner` for dependency injection and serialization.
+   ```bash
+   dart run build_runner build --delete-conflicting-outputs
+   ```
+
+5. **Launch the Application**
    ```bash
    flutter run
    ```
 
-4. **Sign in:**
-    - Tap **"Continue as Guest"** for full offline functionality
-    - Or configure Firebase for Google Sign-In (see FIREBASE_SETUP.md)
+## Usage
 
-The app will work completely offline - no internet connection required!
+### Database Seeding
+To populate your Firestore instance with sample educational content, use the provided seeding script. This is essential for testing the context-aware features.
 
-## Opening Drift Database in DevTools
+1. Navigate to the project root.
+2. Run the following command:
+   ```bash
+   dart scripts/seed_questions.dart
+   ```
+*Note: Ensure your Firestore rules allow writes during this process or use an authorized environment.*
 
-1. **Enable Flutter Inspector:**
-    - Run `flutter run` with `--debug` flag
-    - Open Flutter DevTools in browser
+### Development Workflow
+- **State Management:** Riverpod providers are located in the logic layers.
+- **Routing:** All routes are managed via Go Router for deep-linking support.
+- **Game Elements:** The `Flame` engine is utilized for specific interactive modules within the learning path.
 
-2. **Access Database:**
-    - The SQLite database file is located at: `[Documents]/glypha.sqlite`
-    - On Android: `/data/data/com.trillionclues.micro_habits/app_flutter/micro_habits.sqlite`
-    - On iOS: `~/Documents/glyphas.sqlite`
+## Technologies Used
 
-3. **View with SQLite Browser:**
-    - Use DB Browser for SQLite or similar tools
-    - Connect to the database file path shown above
+| Technology | Purpose |
+| --- | --- |
+| [Flutter](https://flutter.dev) | Cross-platform UI Framework |
+| [Firebase](https://firebase.google.com) | Backend, Auth, and Database |
+| [Riverpod](https://riverpod.dev) | Reactive State Management |
+| [Flame](https://flame-engine.org) | 2D Game Engine for Gamification |
+| [Hive](https://pub.dev/packages/hive) | Lightweight NoSQL Local Database |
+| [Dio](https://pub.dev/packages/dio) | HTTP Client |
+| [Go Router](https://pub.dev/packages/go_router) | Declarative Routing |
 
-### Next Slice Checklist - Cloud Sync (Proto + gRPC + Cloud Functions)
+## Author Info
+- Twitter: [@trillionclues](https://twitter.com/trillionclues)
+- LinkedIn: [Excel Nwachukwu](https://linkedin.com/in/excel-nwachukwu)
+- Portfolio: [trillionclues.dev](https://trillionclues.dev)
 
-- [ ] **Protobuf Schema:**
-    - [ ] Define `habit.proto` with Habit message
-    - [ ] Define `habit_service.proto` with CRUD operations
-    - [ ] Generate Dart code from proto files
+---
 
-- [ ] **gRPC Integration:**
-    - [ ] Add `grpc` and `protobuf` dependencies
-    - [ ] Implement gRPC client for habit service
-    - [ ] Add network connectivity checks
+![Flutter](https://img.shields.io/badge/Flutter-%2302569B.svg?style=for-the-badge&logo=Flutter&logoColor=white)
+![Firebase](https://img.shields.io/badge/firebase-%23039BE5.svg?style=for-the-badge&logo=firebase)
+![Dart](https://img.shields.io/badge/dart-%230175C2.svg?style=for-the-badge&logo=dart&logoColor=white)
 
-- [ ] **Firebase Cloud Functions:**
-    - [ ] Set up Firebase project
-    - [ ] Deploy Cloud Function with gRPC server
-    - [ ] Implement habit CRUD operations on server
-    - [ ] Add Firebase Auth for user identification
-
-- [ ] **Sync Logic:**
-    - [ ] Implement offline-first sync strategy
-    - [ ] Add conflict resolution for concurrent edits
-    - [ ] Handle network failures gracefully
-    - [ ] Add sync status indicators in UI
-
-- [ ] **Testing:**
-    - [ ] Unit tests for gRPC client
-    - [ ] Integration tests for sync flow
-    - [ ] End-to-end tests with mock server
-
-## Notes
-
-- Uses Drift as single source of truth for habits
-- Hive stores user preferences (wake-up hour)
-- All data operations are fully offline
-- Clean architecture with clear separation of concerns
-- Passes `very_good_analysis` with zero warnings
+[![Readme was generated by Dokugen](https://img.shields.io/badge/Readme%20was%20generated%20by-Dokugen-brightgreen)](https://www.npmjs.com/package/dokugen)
