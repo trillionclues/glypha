@@ -1,16 +1,16 @@
-# Glypha 🏛️
+# Glypha
 Glypha is a context-aware learning app that enhances how kids and adult alike engage with educational content. By combining robust state management, cloud-based data synchronization, and gamified learning elements, the app provides a personalized and immersive educational journey. 
 
 Designed with a focus on scalability and clean architecture, Glypha leverages the power of Flutter and Firebase to deliver a seamless experience across multiple platforms, ensuring that learning is both accessible and engaging.
 
 ## Features
-- **Context-Aware Learning:** Intelligent content delivery based on user progression and interaction.
-- **Gamified Experience:** Integrated Flame engine components to enhance engagement through interactive learning modules.
-- **Robust Authentication:** Secure user access via Firebase Authentication, including Google and Apple Sign-in integration.
-- **Real-time Synchronization:** Cloud Firestore integration for instant data persistence and cross-device syncing.
-- **Offline Capabilities:** Local storage implementation using Hive for a reliable experience even without an active internet connection.
-- **Dynamic Theming & UI:** Fully responsive design using Flutter ScreenUtil and smooth transitions with Flutter Animate.
-- **Scalable Architecture:** Built with Riverpod for state management and Go Router for declarative navigation.
+- Intelligent content delivery based on user progression and interaction.
+- Integrated Flame engine components for engagement & interactive learning modules.
+- Secure user access w/firebase auth, including Google and Apple Sign-in integration.
+- Cloud firestore integration for data persistence & cross-device syncing.
+- Local storage using Hive for a flexible experience without active internet connection.
+- Responsive design using Flutter ScreenUtil & smooth transitions with Flutter Animate.
+- Built with Riverpod for state management & Go Router for declarative navigation.
 
 ## Installation
 
