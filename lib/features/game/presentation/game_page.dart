@@ -2,6 +2,7 @@ import 'package:flame/game.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glypha/features/game/logic/swipe_master_game.dart';
+import 'package:glypha/features/game/logic/stack_attack_game.dart';
 import '../logic/runner_game.dart';
 import '../logic/game_state.dart';
 
@@ -349,6 +350,10 @@ class _GamePageState extends ConsumerState<GamePage> {
       case GameType.swipe:
         return GameWidget<SwipeMasterGame>.controlled(
           gameFactory: () => SwipeMasterGame(ref),
+        );
+      case GameType.stack:
+        return GameWidget<StackAttackGame>.controlled(
+          gameFactory: () => StackAttackGame(ref),
         );
       default:
         return const Center(child: Text('Game mode not implemented'));

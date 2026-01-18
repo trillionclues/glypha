@@ -44,3 +44,6 @@ Future<void> main() async {
   print(
       '💡 Note: If you get permission errors, ensure your Firestore rules allow writes to "questionBanks" or use a Service Account.');
 }
+
+
+// PS: dart scripts/seed_questions.dart to run command

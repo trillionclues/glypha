@@ -1,0 +1,137 @@
+import 'dart:ui';
+import 'dart:math' as math;
+import 'package:flame/game.dart';
+import 'package:flame/components.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart' show Colors;
+import '../components/falling_block_component.dart';
+import '../components/sorting_bucket_component.dart';
+import '../data/repositories/question_repository.dart';
+import '../domain/entities/question_entity.dart';
+import 'game_state.dart';
+
+class StackAttackGame extends FlameGame {
+  final WidgetRef ref;
+
+  StackAttackGame(this.ref);
+
+  List<Question> _questions = [];
+  int _currentIndex = 0;
+  double _baseFallSpeed = 150.0;
+  double _spawnTimer = 0;
+  double _spawnInterval = 3.0; // Seconds between blocks
+
+  final List<SortingBucketComponent> _buckets = [];
+
+  @override
+  Color backgroundColor() => const Color(0xFFF0F4F8);
+
+  @override
+  Future<void> onLoad() async {
+    await super.onLoad();
+
+    // Fetch questions (stored as MCQ in sample)
+    try {
+      final repository = ref.read(questionRepositoryProvider);
+      // For Stack Attack, we'll fetch questions tagged or specifically for this mode
+      // For now, let's use the ones that were intended for it in sample data
+      _questions = await repository.getQuestionsByType(QuestionType.mcq);
+      _questions = _questions.where((q) => q.id.contains('stack')).toList();
+
+      if (_questions.isNotEmpty) {
+        _setupBuckets();
+      } else {
+        throw Exception('No questions found');
+      }
+    } catch (e) {
+      print('Error loading Stack Attack: $e');
+      _endGame();
+    }
+  }
+
+  void _setupBuckets() {
+    // Collect all unique categories from the first few questions consistent per level
+    final categories = _questions[0].options;
+    final bucketWidth = size.x / categories.length;
+    final colors = [Colors.blue, Colors.green, Colors.orange, Colors.purple];
+
+    for (int i = 0; i < categories.length; i++) {
+      final bucket = SortingBucketComponent(
+        category: categories[i],
+        color: colors[i % colors.length],
+        size: Vector2(bucketWidth - 10, 60),
+        position: Vector2((i * bucketWidth) + bucketWidth / 2, size.y - 30),
+      );
+      _buckets.add(bucket);
+      add(bucket);
+    }
+  }
+
+  @override
+  void update(double dt) {
+    super.update(dt);
+    if (ref.read(gameStateProvider).isGameOver) return;
+
+    _spawnTimer += dt;
+    if (_spawnTimer >= _spawnInterval) {
+      _spawnTimer = 0;
+      _spawnBlock();
+      // Gradually speed up
+      _spawnInterval = math.max(1.2, _spawnInterval * 0.98);
+    }
+  }
+
+  void _spawnBlock() {
+    if (_currentIndex >= _questions.length) {
+      // Loop or finish
+      _currentIndex = 0;
+      _questions.shuffle();
+    }
+
+    final question = _questions[_currentIndex];
+    final randomX = 50 + math.Random().nextDouble() * (size.x - 100);
+
+    final block = FallingBlockComponent(
+      question: question,
+      fallSpeed: _baseFallSpeed + (_currentIndex * 5),
+      size: Vector2(100, 60),
+      position: Vector2(randomX, -50),
+      onLanded: (block, pos) {
+        _checkSort(block, pos);
+      },
+    );
+
+    add(block);
+    _currentIndex++;
+  }
+
+  void _checkSort(FallingBlockComponent block, Vector2 pos) {
+    bool sortedCorrectly = false;
+
+    for (final bucket in _buckets) {
+      if (bucket.containsPosition(pos)) {
+        // Check if bucket category matches the correct answer
+        final correctCategory =
+            block.question.options[block.question.correctIndex];
+        if (bucket.category == correctCategory) {
+          sortedCorrectly = true;
+        }
+        break;
+      }
+    }
+
+    if (sortedCorrectly) {
+      ref.read(gameStateProvider.notifier).incrementScore();
+    } else {
+      ref.read(gameStateProvider.notifier).loseLife();
+    }
+
+    block.removeFromParent();
+  }
+
+  void _endGame() {
+    Future.microtask(() {
+      ref.read(gameStateProvider.notifier).setGameOver();
+    });
+  }
+}
