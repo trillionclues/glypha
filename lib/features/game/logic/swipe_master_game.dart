@@ -7,11 +7,13 @@ import '../components/swipe_card_component.dart';
 import '../data/repositories/question_repository.dart';
 import '../domain/entities/question_entity.dart';
 import 'game_state.dart';
+import 'package:glypha/features/home/presentation/provider/level_provider.dart';
 
 class SwipeMasterGame extends FlameGame {
   final WidgetRef ref;
+  final String? levelId;
 
-  SwipeMasterGame(this.ref);
+  SwipeMasterGame(this.ref, {this.levelId});
 
   List<Question> _questions = [];
   int _currentIndex = 0;
@@ -82,11 +84,21 @@ class SwipeMasterGame extends FlameGame {
 
     // Fetch questions
     try {
-      final repository = ref.read(questionRepositoryProvider);
-      _questions = await repository.getQuestionsByType(QuestionType.binary);
+      if (levelId != null) {
+        final levelData = await ref.read(virtualLevelProvider(levelId!).future);
+        if (levelData != null) {
+          _questions = levelData.questions;
+        }
+      }
 
       if (_questions.isEmpty) {
-        throw Exception('No binary questions found');
+        final repository = ref.read(questionRepositoryProvider);
+        _questions = await repository.getQuestionsByType(QuestionType.binary);
+      }
+
+      if (_questions.isEmpty) {
+        debugPrint('No binary questions found');
+        return;
       }
 
       // Limit to desired number of questions
@@ -99,138 +111,54 @@ class SwipeMasterGame extends FlameGame {
       _updateProgress();
       _spawnNextCard();
     } catch (e) {
-      print('Error loading Swipe Master: $e');
-      _showError();
+      debugPrint('Error loading SwipeMaster: $e');
     }
   }
 
   void _spawnNextCard() {
     if (_currentIndex >= _questions.length) {
-      _endGame();
+      _finishGame(true);
       return;
     }
 
     final question = _questions[_currentIndex];
-
-    // Card size and position
-    final cardWidth = size.x * 0.85;
-    final cardHeight = size.y * 0.55;
-    final cardPosition = Vector2(size.x / 2, size.y / 2 + 50);
-
     final card = SwipeCardComponent(
       question: question,
-      size: Vector2(cardWidth, cardHeight),
-      position: cardPosition,
-      onResult: (isCorrect) {
-        _handleResult(isCorrect);
-        _currentIndex++;
-
-        // Small delay before next card
-        Future.delayed(const Duration(milliseconds: 300), () {
-          if (_currentIndex < _questions.length) {
-            _updateProgress();
-            _spawnNextCard();
-          } else {
-            _endGame();
-          }
-        });
-      },
+      onResult: _handleResult,
+      size: Vector2(size.x * 0.85, size.y * 0.55),
+      position: Vector2(size.x / 2, size.y / 2 + 50),
     );
-
     add(card);
   }
 
-  void _updateProgress() {
-    final progress = (_currentIndex + 1) / _totalQuestions;
-    final fillWidth = (size.x - 80) * progress;
-
-    _progressFill.size = Vector2(fillWidth, 8);
-    _progressText.text = '${_currentIndex + 1} / $_totalQuestions';
-  }
-
   void _handleResult(bool isCorrect) {
+    final gameState = ref.read(gameStateProvider.notifier);
     if (isCorrect) {
-      ref.read(gameStateProvider.notifier).incrementScore();
-      _showFeedback(true);
+      gameState.incrementScore();
     } else {
-      ref.read(gameStateProvider.notifier).loseLife();
-      _showFeedback(false);
+      gameState.loseLife();
+      // Check if game over
+      if (ref.read(gameStateProvider).isGameOver) {
+        return; // GamePage will handle redirection
+      }
     }
+
+    _currentIndex++;
+    _updateProgress();
+    _spawnNextCard();
   }
 
-  void _showFeedback(bool isCorrect) {
-    final feedbackBg = RectangleComponent(
-      position: Vector2(size.x / 2 - 150, size.y - 200),
-      size: Vector2(300, 80),
-      paint: Paint()
-        ..color =
-            (isCorrect ? const Color(0xFF10B981) : const Color(0xFFEF4444))
-                .withOpacity(0.95),
-    );
-    add(feedbackBg);
-
-    final feedbackText = TextComponent(
-      text: isCorrect ? '✓  Correct!' : '✗  Wrong',
-      textRenderer: TextPaint(
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 28,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 1.5,
-        ),
-      ),
-      position: Vector2(size.x / 2, size.y - 160),
-      anchor: Anchor.center,
-    );
-    add(feedbackText);
-
-    // Animate feedback
-    // feedbackBg.add(
-    //   OpacityEffect.fadeOut(
-    //     EffectController(
-    //       duration: 0.8,
-    //       startDelay: 0.3,
-    //     ),
-    //   ),
-    // );
-
-    Future.delayed(const Duration(milliseconds: 1100), () {
-      feedbackBg.removeFromParent();
-      feedbackText.removeFromParent();
-    });
+  void _updateProgress() {
+    _progressText.text = '${_currentIndex + 1} / $_totalQuestions';
+    final progress = _currentIndex / _totalQuestions;
+    _progressFill.size.x = (size.x - 80) * progress;
   }
 
-  void _showError() {
-    final errorBg = RectangleComponent(
-      position: Vector2(size.x / 2 - 150, size.y / 2 - 60),
-      size: Vector2(300, 120),
-      paint: Paint()..color = const Color(0xFF1E293B),
-    );
-    add(errorBg);
-
-    final errorText = TextComponent(
-      text: 'Failed to load\nquestions',
-      textRenderer: TextPaint(
-        style: const TextStyle(
-          color: Color(0xFFEF4444),
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-          height: 1.5,
-        ),
-      ),
-      position: size / 2,
-      anchor: Anchor.center,
-    );
-    add(errorText);
-
-    Future.delayed(const Duration(seconds: 2), () {
-      _endGame();
-    });
-  }
-
-  void _endGame() {
-    Future.microtask(() {
+  void _finishGame(bool isVictory) {
+    if (isVictory) {
+      ref.read(gameStateProvider.notifier).winGame();
+    } else {
       ref.read(gameStateProvider.notifier).setGameOver();
-    });
+    }
   }
 }

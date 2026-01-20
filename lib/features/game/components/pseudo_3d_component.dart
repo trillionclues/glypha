@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flame/components.dart';
 
 abstract class Pseudo3DComponent extends PositionComponent {

@@ -7,7 +7,7 @@ enum PlayerReaction { normal, boosted, stumbling }
 
 class PlayerController extends Pseudo3DComponent {
   int currentLane = 0; // -1, 0, 1
-  static const double laneWidth = 2.5;
+  static const double laneWidth = 1.6;
   static const double moveSpeed = 15.0;
 
   double targetX = 0;
@@ -108,7 +108,7 @@ class PlayerController extends Pseudo3DComponent {
       case 1:
         return 0;
       case 2:
-        return lane == -1 ? -1.5 : 1.5;
+        return lane == -1 ? -0.8 : 0.8; // 1.6 / 2
       case 3:
       default:
         return lane * laneWidth;
@@ -155,8 +155,8 @@ class PlayerController extends Pseudo3DComponent {
     }
 
     // Smoothly interpolate worldX to targetX (clamped to keep robot visible)
-    // Limit to ±3.5 instead of ±5.0 to keep robot more visible
-    final clampedTargetX = targetX.clamp(-3.5, 3.5);
+    // Limit to ±2.0 to keep robot more visible with new lane width
+    final clampedTargetX = targetX.clamp(-2.5, 2.5);
 
     if ((worldX - clampedTargetX).abs() > 0.01) {
       final direction = (clampedTargetX - worldX).sign;

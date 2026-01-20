@@ -1,5 +1,6 @@
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'dart:ui' as ui;
 
 class SortingBucketComponent extends PositionComponent {
   final String category;
@@ -16,41 +17,110 @@ class SortingBucketComponent extends PositionComponent {
   Future<void> onLoad() async {
     super.onLoad();
 
-    // Bucket Shape (slightly tapered top)
-    final bucketPaint = Paint()
-      ..color = color.withOpacity(0.2)
+    // 1. Bin Glass Body (Trapezoid)
+    final glassPaint = Paint()
+      ..color = color.withOpacity(0.15)
       ..style = PaintingStyle.fill;
 
-    add(RectangleComponent(
+    // 2. Bin Border (Neon)
+    final borderPaint = Paint()
+      ..color = color.withOpacity(0.8)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0
+      ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 2);
+
+    final binBody = _BinShapeComponent(
       size: size,
-      paint: bucketPaint,
-    ));
+      fillPaint: glassPaint,
+      borderPaint: borderPaint,
+    );
+    add(binBody);
 
-    // Top Border
-    add(RectangleComponent(
-      size: Vector2(size.x, 4),
-      position: Vector2(0, 0),
-      paint: Paint()..color = color,
-    ));
-
-    // Category Label
+    // 3. Icon (Material Icon)
+    final iconCode = _getIconForCategory(category);
     add(TextComponent(
-      text: category,
+      text: String.fromCharCode(iconCode.codePoint),
       textRenderer: TextPaint(
         style: TextStyle(
-          color: color.withOpacity(0.8),
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+          fontFamily: iconCode.fontFamily,
+          fontSize: 32,
+          color: color.withOpacity(0.9),
+          package: iconCode.fontPackage,
         ),
       ),
-      position: Vector2(size.x / 2, size.y / 2),
+      position: Vector2(size.x / 2, size.y / 2 - 10),
+      anchor: Anchor.center,
+    ));
+
+    // 4. Label (Text)
+    add(TextComponent(
+      text: category.toUpperCase(),
+      textRenderer: TextPaint(
+        style: TextStyle(
+          color: Colors.white.withOpacity(0.9),
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+          letterSpacing: 1.2,
+        ),
+      ),
+      position: Vector2(size.x / 2, size.y - 15),
       anchor: Anchor.center,
     ));
   }
 
-  bool containsPosition(Vector2 pos) {
-    return pos.x >= position.x - size.x / 2 &&
-        pos.x <= position.x + size.x / 2 &&
-        pos.y >= position.y - size.y / 2;
+  IconData _getIconForCategory(String category) {
+    switch (category.toLowerCase()) {
+      case 'fruit':
+        return Icons.local_florist; // Close enough? Apple icon not standard
+      case 'vegetable':
+        return Icons.grass;
+      case 'mammal':
+        return Icons.pets;
+      case 'reptile':
+        return Icons.bug_report; // Close enough
+      case 'bird':
+        return Icons.flight; // Bird-ish
+      case 'tech':
+        return Icons.computer;
+      case 'hardware':
+        return Icons.memory;
+      case 'software':
+        return Icons.code;
+      default:
+        return Icons.category;
+    }
+  }
+}
+
+class _BinShapeComponent extends PositionComponent {
+  final Paint fillPaint;
+  final Paint borderPaint;
+
+  _BinShapeComponent({
+    required Vector2 size,
+    required this.fillPaint,
+    required this.borderPaint,
+  }) : super(size: size);
+
+  @override
+  void render(ui.Canvas canvas) {
+    final w = size.x;
+    final h = size.y;
+
+    // Trapezoid path
+    final path = Path()
+      ..moveTo(0, 0) // Top Left
+      ..lineTo(w, 0) // Top Right
+      ..lineTo(w * 0.85, h) // Bottom Right (tapered)
+      ..lineTo(w * 0.15, h) // Bottom Left (tapered)
+      ..close();
+
+    canvas.drawPath(path, fillPaint);
+    canvas.drawPath(path, borderPaint);
+
+    // Glow at the bottom
+    final glowRect = Rect.fromLTWH(w * 0.2, h - 5, w * 0.6, 2);
+    canvas.drawOval(glowRect,
+        fillPaint..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5));
   }
 }

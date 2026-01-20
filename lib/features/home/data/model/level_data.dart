@@ -1,6 +1,7 @@
 import 'package:glypha/features/game/presentation/game_page.dart';
 
 class LevelData {
+  final String id;
   final int number;
   final double xPosition;
   final bool isCompleted;
@@ -12,6 +13,7 @@ class LevelData {
   final GameType gameType;
 
   LevelData(
+    this.id,
     this.number,
     this.xPosition,
     this.isCompleted,

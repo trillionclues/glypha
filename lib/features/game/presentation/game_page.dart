@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glypha/features/game/logic/swipe_master_game.dart';
 import 'package:glypha/features/game/logic/stack_attack_game.dart';
+import 'package:glypha/features/game/presentation/widgets/game_header_bar.dart';
+import 'package:glypha/features/home/presentation/provider/progression_provider.dart';
+import 'package:glypha/features/profile/presentation/provider/user_stats_provider.dart';
 import '../logic/runner_game.dart';
 import '../logic/game_state.dart';
 
@@ -16,10 +19,12 @@ enum GameType {
 class GamePage extends ConsumerStatefulWidget {
   static const route = '/game';
   final GameType gameType;
+  final String? levelId;
 
   const GamePage({
     super.key,
     this.gameType = GameType.runner,
+    this.levelId,
   });
 
   @override
@@ -78,32 +83,11 @@ class _GamePageState extends ConsumerState<GamePage> {
           children: [
             _buildGame(ref),
             Positioned(
-              top: 60,
-              left: 20,
+              top: 0,
+              left: 0,
+              right: 0,
               child: SafeArea(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Score: ${gameState.score}',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                        shadows: [Shadow(blurRadius: 2, color: Colors.black)],
-                      ),
-                    ),
-                    Text(
-                      'Lives: ${gameState.lives}',
-                      style: const TextStyle(
-                        color: Colors.redAccent,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        shadows: [Shadow(blurRadius: 2, color: Colors.black)],
-                      ),
-                    ),
-                  ],
-                ),
+                child: GameHeaderBar(),
               ),
             ),
             if (_showInstructions)
@@ -139,20 +123,63 @@ class _GamePageState extends ConsumerState<GamePage> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text(
-                        'GAME OVER',
-                        style: TextStyle(
+                      Text(
+                        gameState.isVictory ? 'VICTORY!' : 'GAME OVER',
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 40,
                             fontWeight: FontWeight.bold),
                       ),
-                      const SizedBox(height: 20),
+                      const SizedBox(height: 10),
+                      Text(
+                        'Score: ${gameState.score}',
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 24),
+                      ),
+                      if (gameState.isVictory) ...[
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: List.generate(
+                            3,
+                            (index) => Icon(
+                              Icons.star_rounded,
+                              size: 40,
+                              color: index < _calculateStars(gameState.score)
+                                  ? Colors.amber
+                                  : Colors.white24,
+                            ),
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 30),
                       ElevatedButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          if (gameState.isVictory && widget.levelId != null) {
+                            await ref
+                                .read(progressionNotifierProvider.notifier)
+                                .completeLevel(
+                                  levelId: widget.levelId!,
+                                  score: gameState.score,
+                                  stars: _calculateStars(gameState.score),
+                                );
+                            // Award XP: 50 base + 10 per star
+                            final xpGain =
+                                50 + (_calculateStars(gameState.score) * 10);
+                            await ref
+                                .read(userStatsNotifierProvider.notifier)
+                                .addXp(xpGain);
+                          }
                           ref.read(gameStateProvider.notifier).reset();
-                          Navigator.of(context).pop();
+                          if (context.mounted) Navigator.of(context).pop();
                         },
-                        child: const Text('Back to Home'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 40, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(15)),
+                        ),
+                        child: const Text('Continue'),
                       ),
                     ],
                   ),
@@ -345,18 +372,25 @@ class _GamePageState extends ConsumerState<GamePage> {
     switch (widget.gameType) {
       case GameType.runner:
         return GameWidget<RunnerGame>.controlled(
-          gameFactory: () => RunnerGame(ref),
+          gameFactory: () => RunnerGame(ref, levelId: widget.levelId),
         );
       case GameType.swipe:
         return GameWidget<SwipeMasterGame>.controlled(
-          gameFactory: () => SwipeMasterGame(ref),
+          gameFactory: () => SwipeMasterGame(ref, levelId: widget.levelId),
         );
       case GameType.stack:
         return GameWidget<StackAttackGame>.controlled(
-          gameFactory: () => StackAttackGame(ref),
+          gameFactory: () => StackAttackGame(ref, levelId: widget.levelId),
         );
       default:
         return const Center(child: Text('Game mode not implemented'));
     }
+  }
+
+  int _calculateStars(int score) {
+    if (score >= 15) return 3;
+    if (score >= 10) return 2;
+    if (score >= 5) return 1;
+    return 0;
   }
 }

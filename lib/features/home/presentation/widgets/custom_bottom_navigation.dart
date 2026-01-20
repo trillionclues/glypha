@@ -56,9 +56,9 @@ class CustomBottomNavigation extends StatelessWidget {
                       onTap: () => onTap(0),
                     ),
                     NavItem(
-                      icon: Icons.school_outlined,
-                      activeIcon: Icons.school_rounded,
-                      label: 'Lessons',
+                      icon: Icons.question_answer_outlined,
+                      activeIcon: Icons.question_answer_rounded,
+                      label: 'Questions',
                       isActive: currentIndex == 1,
                       onTap: () => onTap(1),
                     ),

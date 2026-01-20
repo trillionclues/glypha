@@ -7,7 +7,7 @@ enum AppRoute {
 
   home,
   leaderboard,
-  practice,
+  questions,
   profile,
   settings,
 

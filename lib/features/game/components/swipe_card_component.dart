@@ -17,14 +17,11 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     required Vector2 position,
   }) : super(size: size, position: position, anchor: Anchor.center);
 
-  late RectangleComponent _background;
-  late TextComponent _questionText;
-  late TextComponent _trueLabelLarge;
-  late TextComponent _falseLabelLarge;
-  late RectangleComponent _overlay;
-  late CircleComponent _trueIcon;
-  late CircleComponent _falseIcon;
+  late _RoundedCardBackground _background;
+  late _GradientRectComponent _choiceOverlay;
+  late TextComponent _choiceLabel;
 
+  // Visual state
   bool _isDragging = false;
   final double _swipeThreshold = 100.0;
   Vector2 _initialPosition = Vector2.zero();
@@ -32,168 +29,119 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-
     _initialPosition = position.clone();
 
-    final shadow = RectangleComponent(
+    // 1. Drop Shadow (Soft & Deep)
+    add(RectangleComponent(
       size: size,
-      position: Vector2(0, 8),
+      position: Vector2(0, 15),
       paint: Paint()
-        ..color = Colors.black.withOpacity(0.25)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 15),
-    );
-    add(shadow);
+        ..color = Colors.black.withOpacity(0.2)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20),
+    ));
 
-    _background = RectangleComponent(
+    // 2. Card Background (Clean White with Rounded Corners)
+    // Note: Flame RectangleComponent doesn't natively support border radius easily without custom render,
+    // so we use a custom rendered component for the base card to ensure smoothness.
+    _background = _RoundedCardBackground(
       size: size,
-      paint: Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.fill,
+      color: Colors.white,
+      radius: 25.0,
     );
     add(_background);
 
-    final gradientOverlay = _GradientRectComponent(
-      size: size,
-      gradient: const LinearGradient(
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-        colors: [
-          Color(0x10667EEA),
-          Color(0x10764BA2),
-        ],
-      ),
-    );
-    add(gradientOverlay);
-
-    final border = RectangleComponent(
-      size: size,
-      paint: Paint()
-        ..color = const Color(0xFFE8E8E8)
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2,
-    );
-    add(border);
-
-    final questionIcon = CircleComponent(
-      radius: 30,
-      position: Vector2(size.x / 2, 60),
-      anchor: Anchor.center,
-      paint: Paint()..color = const Color(0xFF667EEA).withOpacity(0.1),
-    );
-    add(questionIcon);
-
-    final questionMark = TextComponent(
-      text: '?',
+    // 3. Question Label
+    add(TextComponent(
+      text: 'QUESTION',
       textRenderer: TextPaint(
-        style: const TextStyle(
-          color: Color(0xFF667EEA),
-          fontSize: 40,
+        style: TextStyle(
+          color: Colors.grey[400],
+          fontSize: 14,
           fontWeight: FontWeight.bold,
+          letterSpacing: 2.0,
         ),
       ),
-      position: Vector2(size.x / 2, 60),
+      position: Vector2(size.x / 2, 40),
       anchor: Anchor.center,
-    );
-    add(questionMark);
+    ));
 
-    _questionText = TextComponent(
-      text: _wrapText(question.prompt, 35),
+    // 4. Question Text (Using TextBoxComponent for automatic wrapping)
+    final boxConfig = TextBoxConfig(
+      maxWidth: size.x - 60,
+      timePerChar: 0.05, // Typewriter effect optional, set to 0 for instant
+      growingBox: true,
+      margins: const EdgeInsets.all(0),
+    );
+
+    final questionBox = TextBoxComponent(
+      text: question.prompt,
       textRenderer: TextPaint(
         style: const TextStyle(
-          color: Color(0xFF2D3748),
-          fontSize: 24,
-          fontWeight: FontWeight.w600,
-          height: 1.5,
+          color: Color(0xFF1F2937),
+          fontSize: 26,
+          fontWeight: FontWeight.w700,
+          height: 1.3,
+          fontFamily: 'Roboto', // Or user preferred font
+        ),
+      ),
+      boxConfig: boxConfig,
+      align: Anchor.center,
+      position: Vector2(size.x / 2, size.y / 2 - 20),
+      anchor: Anchor.center,
+      size: Vector2(size.x - 60, size.y / 2),
+    );
+    add(questionBox);
+
+    // 5. Choice Overlay (Green/Red tint on swipe)
+    _choiceOverlay = _GradientRectComponent(
+      size: size,
+      color: Colors.transparent,
+      radius: 25.0,
+    );
+    add(_choiceOverlay);
+
+    // 6. Large Choice Label (TRUE / FALSE)
+    _choiceLabel = TextComponent(
+      text: '',
+      textRenderer: TextPaint(
+        style: const TextStyle(
+          fontSize: 48,
+          fontWeight: FontWeight.w900,
+          color: Colors.white,
         ),
       ),
       position: Vector2(size.x / 2, size.y / 2),
       anchor: Anchor.center,
+      priority: 10,
     );
-    add(_questionText);
+    add(_choiceLabel);
 
-    // TRUE indicator (right side)
-    _trueIcon = CircleComponent(
-      radius: 50,
-      position: Vector2(size.x - 60, size.y / 2),
-      anchor: Anchor.center,
-      paint: Paint()..color = Colors.green.withOpacity(0.0),
-    );
-    add(_trueIcon);
-
-    _trueLabelLarge = TextComponent(
-      text: '✓',
+    // 7. Static Instructions (Small Hint)
+    add(TextComponent(
+      text: 'FALSE',
       textRenderer: TextPaint(
         style: TextStyle(
-          color: Colors.white.withOpacity(0.0),
-          fontSize: 48,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      position: Vector2(size.x - 60, size.y / 2),
-      anchor: Anchor.center,
-    );
-    add(_trueLabelLarge);
-
-    // FALSE indicator (left side)
-    _falseIcon = CircleComponent(
-      radius: 50,
-      position: Vector2(60, size.y / 2),
-      anchor: Anchor.center,
-      paint: Paint()..color = Colors.red.withOpacity(0.0),
-    );
-    add(_falseIcon);
-
-    _falseLabelLarge = TextComponent(
-      text: '✗',
-      textRenderer: TextPaint(
-        style: TextStyle(
-          color: Colors.white.withOpacity(0.0),
-          fontSize: 48,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      position: Vector2(60, size.y / 2),
-      anchor: Anchor.center,
-    );
-    add(_falseLabelLarge);
-
-    _overlay = RectangleComponent(
-      size: size,
-      paint: Paint()..color = Colors.transparent,
-    );
-    add(_overlay);
-
-    final hintText = TextComponent(
-      text: '← Swipe to answer →',
-      textRenderer: TextPaint(
-        style: const TextStyle(
-          color: Color(0xFF9CA3AF),
+          color: Colors.red.withOpacity(0.3),
           fontSize: 16,
-          fontWeight: FontWeight.w500,
+          fontWeight: FontWeight.bold,
         ),
       ),
-      position: Vector2(size.x / 2, size.y - 40),
-      anchor: Anchor.center,
-    );
-    add(hintText);
-  }
+      position: Vector2(30, size.y / 2),
+      anchor: Anchor.centerLeft,
+    ));
 
-  String _wrapText(String text, int maxLineLength) {
-    final words = text.split(' ');
-    final lines = <String>[];
-    var currentLine = '';
-
-    for (var word in words) {
-      if ((currentLine + word).length <= maxLineLength) {
-        currentLine += '$word ';
-      } else {
-        if (currentLine.isNotEmpty) lines.add(currentLine.trim());
-        currentLine = '$word ';
-      }
-    }
-    if (currentLine.isNotEmpty) lines.add(currentLine.trim());
-
-    return lines.join('\n');
+    add(TextComponent(
+      text: 'TRUE',
+      textRenderer: TextPaint(
+        style: TextStyle(
+          color: Colors.green.withOpacity(0.3),
+          fontSize: 16,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+      position: Vector2(size.x - 30, size.y / 2),
+      anchor: Anchor.centerRight,
+    ));
   }
 
   @override
@@ -202,12 +150,11 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     _isDragging = true;
     priority = 100;
 
-    add(
-      ScaleEffect.to(
-        Vector2.all(1.03),
-        EffectController(duration: 0.15),
-      ),
-    );
+    // Slight lift effect
+    add(ScaleEffect.to(
+      Vector2.all(1.05),
+      EffectController(duration: 0.1),
+    ));
   }
 
   @override
@@ -217,73 +164,38 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
 
     position.add(event.localDelta);
 
-    final distanceFromCenter = position.x - _initialPosition.x;
-    angle = (distanceFromCenter / 400) * 0.4;
+    final dx = position.x - _initialPosition.x;
 
-    final normalizedDistance =
-        (distanceFromCenter / _swipeThreshold).clamp(-1.0, 1.0);
-    final absDistance = normalizedDistance.abs();
+    // Rotate slightly based on drag distance
+    angle = (dx / 500) * 0.5;
 
-    if (normalizedDistance > 0.2) {
-      // Swiping right (TRUE)
-      final opacity = math.min(absDistance, 0.9);
+    // Visual Feedback
+    final normalized = (dx / _swipeThreshold).clamp(-1.0, 1.0);
+    final absVal = normalized.abs();
 
-      _overlay.paint.color = Colors.green.withOpacity(opacity * 0.15);
-      _trueIcon.paint.color = Colors.green.withOpacity(opacity);
-      _trueLabelLarge.textRenderer = TextPaint(
+    if (normalized > 0.1) {
+      // Right -> TRUE (Green)
+      _choiceOverlay.color = Colors.green.withOpacity(absVal * 0.6);
+      _choiceLabel.text = 'TRUE';
+      _choiceLabel.textRenderer = TextPaint(
         style: TextStyle(
-          color: Colors.white.withOpacity(opacity),
-          fontSize: 48,
-          fontWeight: FontWeight.bold,
-        ),
+            color: Colors.white.withOpacity(absVal),
+            fontSize: 52,
+            fontWeight: FontWeight.w900),
       );
-
-      _falseIcon.paint.color = Colors.red.withOpacity(0.0);
-      _falseLabelLarge.textRenderer = TextPaint(
+    } else if (normalized < -0.1) {
+      // Left -> FALSE (Red)
+      _choiceOverlay.color = Colors.red.withOpacity(absVal * 0.6);
+      _choiceLabel.text = 'FALSE';
+      _choiceLabel.textRenderer = TextPaint(
         style: TextStyle(
-          color: Colors.white.withOpacity(0.0),
-          fontSize: 48,
-        ),
-      );
-    } else if (normalizedDistance < -0.2) {
-      // Swiping left (FALSE)
-      final opacity = math.min(absDistance, 0.9);
-
-      _overlay.paint.color = Colors.red.withOpacity(opacity * 0.15);
-      _falseIcon.paint.color = Colors.red.withOpacity(opacity);
-      _falseLabelLarge.textRenderer = TextPaint(
-        style: TextStyle(
-          color: Colors.white.withOpacity(opacity),
-          fontSize: 48,
-          fontWeight: FontWeight.bold,
-        ),
-      );
-
-      _trueIcon.paint.color = Colors.green.withOpacity(0.0);
-      _trueLabelLarge.textRenderer = TextPaint(
-        style: TextStyle(
-          color: Colors.white.withOpacity(0.0),
-          fontSize: 48,
-        ),
+            color: Colors.white.withOpacity(absVal),
+            fontSize: 52,
+            fontWeight: FontWeight.w900),
       );
     } else {
-      // Neutral state
-      _overlay.paint.color = Colors.transparent;
-      _trueIcon.paint.color = Colors.green.withOpacity(0.15);
-      _falseIcon.paint.color = Colors.red.withOpacity(0.15);
-
-      _trueLabelLarge.textRenderer = TextPaint(
-        style: TextStyle(
-          color: Colors.white.withOpacity(0.6),
-          fontSize: 48,
-        ),
-      );
-      _falseLabelLarge.textRenderer = TextPaint(
-        style: TextStyle(
-          color: Colors.white.withOpacity(0.6),
-          fontSize: 48,
-        ),
-      );
+      _choiceOverlay.color = Colors.transparent;
+      _choiceLabel.text = '';
     }
   }
 
@@ -292,102 +204,125 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     super.onDragEnd(event);
     _isDragging = false;
 
-    final distanceFromCenter = position.x - _initialPosition.x;
+    final dx = position.x - _initialPosition.x;
 
-    if (distanceFromCenter.abs() > _swipeThreshold) {
-      bool swipedRight = distanceFromCenter > 0;
-      _animateOffScreen(swipedRight);
+    if (dx.abs() > _swipeThreshold) {
+      final isRight = dx > 0;
+      _animateOut(isRight);
     } else {
-      _resetPosition();
+      _animateBack();
     }
   }
 
-  void _animateOffScreen(bool swipedRight) {
-    final direction = swipedRight ? 1 : -1;
-    final targetX = _initialPosition.x + (direction * 1200);
-    final targetY = position.y + 100;
+  void _animateBack() {
+    add(MoveEffect.to(
+      _initialPosition,
+      EffectController(duration: 0.3, curve: Curves.easeOutBack),
+    ));
+    add(RotateEffect.to(
+      0,
+      EffectController(duration: 0.3, curve: Curves.easeOut),
+    ));
+    add(ScaleEffect.to(
+      Vector2.all(1.0),
+      EffectController(duration: 0.2),
+    ));
 
-    add(
-      MoveEffect.to(
-        Vector2(targetX, targetY),
-        EffectController(duration: 0.35, curve: Curves.easeInCubic),
-        onComplete: () {
-          _handleResult(swipedRight);
-        },
-      ),
-    );
-
-    add(
-      RotateEffect.by(
-        direction * 0.5,
-        EffectController(duration: 0.35),
-      ),
-    );
+    // Reset overlay
+    _choiceOverlay.color = Colors.transparent;
+    _choiceLabel.text = '';
   }
 
-  void _handleResult(bool swipedRight) {
-    bool isCorrect = (swipedRight && question.correctIndex == 1) ||
-        (!swipedRight && question.correctIndex == 0);
+  void _animateOut(bool isRight) {
+    final targetX = isRight ? 1000.0 : -1000.0;
+    add(MoveEffect.to(
+      Vector2(targetX, position.y + 100),
+      EffectController(duration: 0.4, curve: Curves.easeInCubic),
+      onComplete: () {
+        // Correct Logic:
+        // index 0 = True (usually), index 1 = False?
+        // Wait, standard implies: Option A vs Option B.
+        // User request check: "Swipe Right for True". "Swipe Left for False".
+        // If question.options = ["True", "False"] (standard binary)
+        // correctIndex 0 -> True, correctIndex 1 -> False.
 
-    onResult(isCorrect);
-    removeFromParent();
-  }
+        bool userChoseTrue = isRight; // Right is True
 
-  void _resetPosition() {
-    add(
-      ScaleEffect.to(
-        Vector2.all(1.0),
-        EffectController(duration: 0.2),
-      ),
-    );
+        // Map choice to index
+        // If options are ["True", "False"], True is 0.
+        // If user swiped right (True), they picked index 0.
+        int userIndex = userChoseTrue ? 0 : 1;
 
-    add(
-      MoveEffect.to(
-        _initialPosition,
-        EffectController(duration: 0.25, curve: Curves.easeOutBack),
-      ),
-    );
+        bool isCorrect = (userIndex == question.correctIndex);
 
-    add(
-      RotateEffect.to(
-        0,
-        EffectController(duration: 0.25),
-      ),
-    );
+        // HACK: Some questions might have ["False", "True"]?
+        // Better to check string content if possible, but binary standard is True=0 usually.
+        // Let's rely on standard ["True", "False"] for binary type.
+        // If types are mixed, we compare option string.
+        if (question.type == QuestionType.binary &&
+            question.options.contains("True")) {
+          final trueIndex = question.options.indexOf("True");
+          isCorrect = (userIndex == trueIndex) == userChoseTrue;
+          // Wait:
+          // If True is index 0. userIndex (0) == trueIndex (0) -> True.
+          // If False is index 1. userIndex (1) == trueIndex (0) -> False.
+          // Logic: Did user pick the correct index?
+          // We need to know which index corresponds to "Right Swipe".
+          // Convention: Right = First Option? Or Right = "True"?
+          // UI says "Right = True".
+          // So if correct Answer is "True", and User Swiped Right -> Correct.
+        } else {
+          // Fallback for generic binary (Left/Right options)
+          // Assume Option 0 = Left, Option 1 = Right
+          isCorrect = (isRight && question.correctIndex == 1) ||
+              (!isRight && question.correctIndex == 0);
+        }
 
-    _overlay.paint.color = Colors.transparent;
-    _trueIcon.paint.color = Colors.green.withOpacity(0.15);
-    _falseIcon.paint.color = Colors.red.withOpacity(0.15);
-
-    _trueLabelLarge.textRenderer = TextPaint(
-      style: TextStyle(
-        color: Colors.white.withOpacity(0.6),
-        fontSize: 48,
-      ),
-    );
-    _falseLabelLarge.textRenderer = TextPaint(
-      style: TextStyle(
-        color: Colors.white.withOpacity(0.6),
-        fontSize: 48,
-      ),
-    );
-
-    priority = 0;
+        onResult(isCorrect);
+        removeFromParent();
+      },
+    ));
   }
 }
 
-class _GradientRectComponent extends PositionComponent {
-  final Gradient gradient;
+class _RoundedCardBackground extends PositionComponent {
+  final Color color;
+  final double radius;
 
-  _GradientRectComponent({
+  _RoundedCardBackground({
     required Vector2 size,
-    required this.gradient,
+    required this.color,
+    required this.radius,
   }) : super(size: size);
 
   @override
   void render(ui.Canvas canvas) {
-    final rect = size.toRect();
-    final paint = Paint()..shader = gradient.createShader(rect);
-    canvas.drawRect(rect, paint);
+    final rrect = RRect.fromRectAndRadius(
+      size.toRect(),
+      Radius.circular(radius),
+    );
+    canvas.drawRRect(rrect, Paint()..color = color);
+  }
+}
+
+class _GradientRectComponent extends PositionComponent {
+  Color color;
+  final double radius;
+
+  _GradientRectComponent({
+    required Vector2 size,
+    required this.color,
+    required this.radius,
+  }) : super(size: size);
+
+  @override
+  void render(ui.Canvas canvas) {
+    if (color == Colors.transparent) return;
+
+    final rrect = RRect.fromRectAndRadius(
+      size.toRect(),
+      Radius.circular(radius),
+    );
+    canvas.drawRRect(rrect, Paint()..color = color);
   }
 }

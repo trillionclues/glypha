@@ -25,9 +25,10 @@ class QuestionBanner extends PositionComponent with HasGameRef<RunnerGame> {
 
     final size = gameRef.size;
 
-    // Draw semi-transparent background
+    // Draw semi-transparent background (Shifted down for header clearance)
+    const topMargin = 90.0;
     canvas.drawRect(
-      Rect.fromLTWH(0, 0, size.x, 120),
+      Rect.fromLTWH(0, topMargin, size.x, 100),
       Paint()..color = Colors.black.withOpacity(0.7),
     );
 
@@ -37,7 +38,7 @@ class QuestionBanner extends PositionComponent with HasGameRef<RunnerGame> {
         text: currentQuestion,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 20,
+          fontSize: 18, // Slightly smaller for better fit
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -48,7 +49,7 @@ class QuestionBanner extends PositionComponent with HasGameRef<RunnerGame> {
     textPainter.layout(maxWidth: size.x - 40);
     textPainter.paint(
       canvas,
-      Offset((size.x - textPainter.width) / 2, 60),
+      Offset((size.x - textPainter.width) / 2, topMargin + 35),
     );
   }
 }

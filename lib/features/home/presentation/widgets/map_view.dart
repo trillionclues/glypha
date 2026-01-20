@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glypha/features/home/data/model/level_data.dart';
 import 'package:glypha/features/home/presentation/widgets/landscape_layers.dart';
 import 'package:glypha/features/home/presentation/widgets/level_node.dart';
 import 'package:glypha/features/home/presentation/widgets/path_finder.dart';
 import 'package:glypha/features/game/presentation/game_page.dart';
+import 'package:glypha/features/home/presentation/provider/progression_provider.dart';
+import 'package:glypha/features/home/presentation/provider/level_provider.dart';
 
-class MapView extends StatelessWidget {
+class MapView extends ConsumerWidget {
   final ScrollController scrollController;
   final AnimationController pulseController;
 
@@ -16,75 +19,121 @@ class MapView extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final screenWidth = MediaQuery.of(context).size.width;
+    final levelListAsync = ref.watch(levelListProvider);
+    final progressionMap = ref.watch(progressionMapProvider);
 
-    final levels = [
-      LevelData(1, 0.5, true, false, false, '📐',
-          title: 'Intro', stars: 3, gameType: GameType.runner),
-      LevelData(2, 0.3, true, false, false, '⚛️',
-          title: 'Swipe Challenge', stars: 3, gameType: GameType.swipe),
-      LevelData(3, 0.7, false, false, true, '🧪',
-          title: 'Chemical Sort', gameType: GameType.stack),
-      LevelData(4, 0.4, false, true, false, '🧬',
-          title: 'Biology Swipe', gameType: GameType.swipe),
-      LevelData(5, 0.6, false, true, false, '📐',
-          title: 'Geometry Stack', gameType: GameType.stack),
-      LevelData(6, 0.35, false, true, false, '⚛️',
-          title: 'Physics', gameType: GameType.swipe),
-      LevelData(7, 0.65, false, true, false, '🧪',
-          title: 'Lab Work', gameType: GameType.runner),
-      LevelData(8, 0.5, false, true, false, '🧬',
-          title: 'Genetics', gameType: GameType.swipe),
-    ];
+    return levelListAsync.when(
+      loading: () => const Center(child: CircularProgressIndicator()),
+      error: (err, stack) => Center(child: Text('Error: $err')),
+      data: (dynamicLevels) {
+        if (dynamicLevels.isEmpty) {
+          return const Center(
+            child: Text('No questions found. Add some in the Questions tab!'),
+          );
+        }
 
-    final totalHeight = 180.0 * levels.length + 400.0;
+        final levels = <LevelData>[];
+        bool foundCurrent = false;
 
-    return SingleChildScrollView(
-      controller: scrollController,
-      physics: const BouncingScrollPhysics(),
-      child: SizedBox(
-        width: screenWidth,
-        height: totalHeight,
-        child: Stack(
-          children: [
-            Container(
-              height: totalHeight,
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0xFFF5F0E8),
-                    Color(0xFFF8F4EE),
-                    Color(0xFFFAF8F5),
-                  ],
+        for (int i = 0; i < dynamicLevels.length; i++) {
+          final virtualLevel = dynamicLevels[i];
+          final id = virtualLevel.id;
+          final prog = progressionMap[id];
+
+          final isCompleted = prog?.isCompleted ?? false;
+          final previousCompleted = i == 0 ||
+              (progressionMap[dynamicLevels[i - 1].id]?.isCompleted ?? false);
+
+          bool isLocked = !previousCompleted;
+          bool isCurrent = false;
+
+          if (!isCompleted && previousCompleted && !foundCurrent) {
+            isCurrent = true;
+            foundCurrent = true;
+          }
+
+          // Zig-zag pattern for x position
+          double xPos = 0.5;
+          if (i % 2 == 0) {
+            xPos = 0.3 + (i % 4 == 0 ? 0.0 : 0.4);
+          } else {
+            xPos = 0.7 - (i % 3 == 0 ? 0.2 : 0.0);
+          }
+
+          // Assign game type based on index
+          final types = [GameType.runner, GameType.swipe, GameType.stack];
+          final gameType = types[i % types.length];
+
+          // Choose emoji based on difficulty or index
+          final emojis = ['📐', '⚛️', '🧪', '🧬', '🔭', '🔬', '🧠'];
+          final emoji = emojis[i % emojis.length];
+
+          levels.add(LevelData(
+            id,
+            i + 1,
+            xPos,
+            isCompleted,
+            isLocked,
+            isCurrent,
+            emoji,
+            title: virtualLevel.name,
+            stars: prog?.stars ?? 0,
+            gameType: gameType,
+          ));
+        }
+
+        final totalHeight = 180.0 * levels.length + 400.0;
+
+        return SingleChildScrollView(
+          controller: scrollController,
+          physics: const BouncingScrollPhysics(),
+          child: SizedBox(
+            width: screenWidth,
+            height: totalHeight,
+            child: Stack(
+              children: [
+                Container(
+                  height: totalHeight,
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        Color(0xFFF5F0E8),
+                        Color(0xFFF8F4EE),
+                        Color(0xFFFAF8F5),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ),
-            LandscapeLayers(height: totalHeight),
-            CustomPaint(
-              size: Size(screenWidth, totalHeight),
-              painter: DashedRoadPathPainter(levels, screenWidth),
-            ),
-            ...levels.asMap().entries.map((entry) {
-              final index = entry.key;
-              final level = entry.value;
-              final yPosition = (levels.length - index) * 180.0 + 50;
-
-              return Positioned(
-                left: screenWidth * level.xPosition - 35,
-                top: yPosition,
-                child: LevelNode(
-                  level: level,
-                  pulseController: pulseController,
+                LandscapeLayers(height: totalHeight),
+                CustomPaint(
+                  size: Size(screenWidth, totalHeight),
+                  painter: DashedRoadPathPainter(levels, screenWidth),
                 ),
-              );
-            }).toList(),
-            const SizedBox(height: 100),
-          ],
-        ),
-      ),
+                ...levels.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final level = entry.value;
+                  // Levels are rendered bottom to top
+                  final yPosition = (levels.length - index) * 180.0 + 50;
+
+                  return Positioned(
+                    left: screenWidth * level.xPosition - 35,
+                    top: yPosition,
+                    child: LevelNode(
+                      level: level,
+                      pulseController: pulseController,
+                    ),
+                  );
+                }).toList(),
+                const SizedBox(height: 100),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

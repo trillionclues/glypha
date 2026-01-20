@@ -6,6 +6,8 @@ enum LoginProvider { none, google, apple }
 sealed class AuthState {
   const AuthState();
 
+  UserEntity? get user => null;
+
   bool get isLoading => this is AuthLoading;
 
   bool isLoadingProvider(LoginProvider provider) {

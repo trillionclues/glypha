@@ -24,15 +24,18 @@ Future<void> main() async {
 
   print('📦 Found ${questions.length} questions to seed.');
 
-  final collection = Firestore.instance.collection('questionBanks');
+  final collection = Firestore.instance.collection('allQuestions');
 
   for (final q in questions) {
     try {
       final id = q['id'];
-      // Remove id from map before saving as document data
+      // Standardize for new schema
       final data = Map<String, dynamic>.from(q)..remove('id');
+      data['ownerId'] = 'SYSTEM';
+      data['isPublic'] = true;
+      data['createdAt'] = DateTime.now().toIso8601String();
+      data.remove('createdBy');
 
-      // additive: check if exists or just overwrite
       await collection.document(id).set(data);
       print('✅ Seeded: ${id}');
     } catch (e) {
@@ -42,7 +45,7 @@ Future<void> main() async {
 
   print('\n✨ Seeding completed!');
   print(
-      '💡 Note: If you get permission errors, ensure your Firestore rules allow writes to "questionBanks" or use a Service Account.');
+      '💡 Note: If you get permission errors, ensure your Firestore rules allow writes to "allQuestions" or use a Service Account.');
 }
 
 

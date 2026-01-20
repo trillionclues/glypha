@@ -1,17 +1,22 @@
 import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
+import 'dart:math' as math;
 
-/// A simple 2D robot character sprite
+/// A sleek Cyber-Noir Hoverboard Character
 class CharacterSprite extends PositionComponent {
   double animationTime = 0.0;
 
-  CharacterSprite() : super(size: Vector2(0.8, 1.2));
+  // Hover animation
+  double _hoverOffset = 0.0;
+
+  CharacterSprite() : super(size: Vector2(1.0, 1.5));
 
   @override
   void update(double dt) {
     super.update(dt);
-    animationTime += dt * 3.0;
+    animationTime += dt * 5.0;
+    _hoverOffset = math.sin(animationTime) * 0.05;
   }
 
   @override
@@ -20,96 +25,92 @@ class CharacterSprite extends PositionComponent {
 
     final paint = Paint()..style = PaintingStyle.fill;
 
-    // Robot body (main rectangle)
-    paint.color = const Color(0xFF4A90E2);
-    final bodyRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0.15, 0.4, 0.5, 0.6),
+    // Board Glow Support (Neon Shadow)
+    canvas.drawOval(
+      Rect.fromLTWH(0.1, 1.3, 0.8, 0.2),
+      Paint()
+        ..color = const Color(0xFF00E5FF).withOpacity(0.4)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 10),
+    );
+
+    canvas.save();
+    canvas.translate(0, _hoverOffset);
+
+    // === HOVERBOARD ===
+    // Main deck
+    final boardPath = Path()
+      ..moveTo(0.2, 1.2)
+      ..lineTo(0.8, 1.2) // Back width
+      ..lineTo(0.9, 0.8) // Front right tip
+      ..lineTo(0.5, 0.7) // Front point
+      ..lineTo(0.1, 0.8) // Front left tip
+      ..close();
+
+    // Board Body (Dark Metallic)
+    paint.color = const Color(0xFF2D3748);
+    canvas.drawPath(boardPath, paint);
+
+    // Neon Rim
+    final rimPaint = Paint()
+      ..color = const Color(0xFF00E5FF)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 0.05
+      ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 2);
+    canvas.drawPath(boardPath, rimPaint);
+
+    // Engine Thrusters (Rear)
+    final thrustPaint = Paint()..color = const Color(0xFF00E5FF);
+    canvas.drawCircle(const Offset(0.3, 1.2), 0.08, thrustPaint);
+    canvas.drawCircle(const Offset(0.7, 1.2), 0.08, thrustPaint);
+
+    // === RIDER (Cyber Silhouette) ===
+
+    // Legs (Crouched)
+    paint.color = const Color(0xFF1A202C); // Dark suit
+    final leftLeg = Path()
+      ..moveTo(0.35, 1.0)
+      ..lineTo(0.3, 0.8) // Knee
+      ..lineTo(0.45, 0.6) // Hip
+      ..lineTo(0.5, 1.0)
+      ..close();
+    canvas.drawPath(leftLeg, paint);
+
+    final rightLeg = Path()
+      ..moveTo(0.65, 1.0)
+      ..lineTo(0.7, 0.8) // Knee
+      ..lineTo(0.55, 0.6) // Hip
+      ..lineTo(0.5, 1.0)
+      ..close();
+    canvas.drawPath(rightLeg, paint);
+
+    // Torso (Leaning forward)
+    final torso = RRect.fromRectAndRadius(
+      Rect.fromLTWH(0.4, 0.35, 0.2, 0.35),
       const Radius.circular(0.05),
     );
-    canvas.drawRRect(bodyRect, paint);
+    paint.color = const Color(0xFF2D3748);
+    canvas.drawRRect(torso, paint);
 
-    // Robot head
-    paint.color = const Color(0xFF5BA3F5);
-    final headRect = RRect.fromRectAndRadius(
-      Rect.fromLTWH(0.2, 0.15, 0.4, 0.35),
-      const Radius.circular(0.08),
-    );
-    canvas.drawRRect(headRect, paint);
+    // Tron-like stripe on back
+    paint.color = const Color(0xFFFF0080); // Neon Pink stripe
+    canvas.drawRect(Rect.fromLTWH(0.48, 0.38, 0.04, 0.3), paint);
 
-    // Eyes (animated blink)
-    final eyeOpen = (animationTime % 3.0) > 2.8 ? 0.03 : 0.08;
-    paint.color = Colors.white;
-    canvas.drawCircle(Offset(0.3, 0.3), eyeOpen, paint);
-    canvas.drawCircle(Offset(0.5, 0.3), eyeOpen, paint);
+    // Head (Helmet)
+    paint.color = const Color(0xFFCBD5E0); // Silver/White Helmet
+    final headRect = Rect.fromLTWH(0.4, 0.15, 0.2, 0.22);
+    canvas.drawOval(headRect, paint);
 
-    // Eye pupils
-    if (eyeOpen > 0.05) {
-      paint.color = Colors.black87;
-      canvas.drawCircle(const Offset(0.3, 0.3), 0.04, paint);
-      canvas.drawCircle(const Offset(0.5, 0.3), 0.04, paint);
-    }
+    // Visor (Glowing)
+    paint.color = const Color(0xFF00E5FF);
+    canvas.drawRect(Rect.fromLTWH(0.42, 0.22, 0.16, 0.06), paint);
 
-    // Antenna
-    paint.color = const Color(0xFF357ABD);
-    canvas.drawRect(
-      Rect.fromLTWH(0.38, 0.05, 0.04, 0.15),
-      paint,
-    );
+    // Arms (Holding balance)
+    paint.color = const Color(0xFF1A202C);
+    // Left arm trailing
+    canvas.drawRect(Rect.fromLTWH(0.25, 0.4, 0.15, 0.08), paint);
+    // Right arm trailing
+    canvas.drawRect(Rect.fromLTWH(0.6, 0.4, 0.15, 0.08), paint);
 
-    // Antenna ball
-    paint.color = Colors.red;
-    canvas.drawCircle(const Offset(0.4, 0.05), 0.05, paint);
-
-    // Arms (animated wave)
-    final armWave = (animationTime % 2.0) * 0.1;
-    paint.color = const Color(0xFF4A90E2);
-
-    // Left arm
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(0.05, 0.5 + armWave, 0.12, 0.4),
-        const Radius.circular(0.03),
-      ),
-      paint,
-    );
-
-    // Right arm
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(0.63, 0.5 - armWave, 0.12, 0.4),
-        const Radius.circular(0.03),
-      ),
-      paint,
-    );
-
-    // Legs
-    paint.color = const Color(0xFF357ABD);
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(0.2, 1.0, 0.15, 0.15),
-        const Radius.circular(0.03),
-      ),
-      paint,
-    );
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(0.45, 1.0, 0.15, 0.15),
-        const Radius.circular(0.03),
-      ),
-      paint,
-    );
-
-    // Chest panel
-    paint.color = const Color(0xFF87CEEB);
-    canvas.drawRect(
-      Rect.fromLTWH(0.3, 0.6, 0.2, 0.25),
-      paint,
-    );
-
-    // Chest buttons
-    paint.color = Colors.green;
-    canvas.drawCircle(const Offset(0.35, 0.7), 0.03, paint);
-    paint.color = Colors.red;
-    canvas.drawCircle(const Offset(0.45, 0.7), 0.03, paint);
+    canvas.restore();
   }
 }

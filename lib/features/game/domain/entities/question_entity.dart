@@ -13,7 +13,7 @@ enum QuestionType {
   /// Text input answer
   input,
 
-  /// Term-definition pair for memory games
+  /// Pair for memory games
   matchPair,
 }
 
@@ -21,7 +21,7 @@ enum QuestionType {
 class Question {
   final String id;
 
-  /// The question text or image URL
+  /// Question text or image URL
   final String prompt;
 
   /// Whether prompt is text or image
@@ -50,10 +50,12 @@ class Question {
   /// For OCR-generated, link to original note image
   final String? sourceImageUrl;
 
-  /// 'system' for curated, or userId for user-generated
-  final String createdBy;
+  /// 'SYSTEM' for curated, or userId for user-generated
+  final String ownerId;
 
-  final DateTime? createdAt;
+  final bool isPublic;
+
+  final DateTime createdAt;
 
   const Question({
     required this.id,
@@ -67,8 +69,9 @@ class Question {
     this.tags = const [],
     this.sourceNodeId,
     this.sourceImageUrl,
-    required this.createdBy,
-    this.createdAt,
+    required this.ownerId,
+    this.isPublic = true,
+    required this.createdAt,
   });
 
   factory Question.fromJson(Map<String, dynamic> json) =>

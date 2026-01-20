@@ -15,7 +15,8 @@
             "science",
             "astronomy"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
         "id": "speed_lane_2",
@@ -32,7 +33,8 @@
         "tags": [
             "math"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
         "id": "speed_lane_3",
@@ -49,292 +51,1201 @@
         "tags": [
             "geography"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
         "id": "speed_lane_4",
-        "prompt": "Which gas do plants absorb from the atmosphere for photosynthesis?",
+        "prompt": "Which gas do plants absorb for photosynthesis?",
         "type": "mcq",
         "options": [
-            "Carbon Dioxide",
+            "CO2",
             "Oxygen",
             "Nitrogen"
         ],
         "correctIndex": 0,
-        "explanation": "Plants take in CO2 and release Oxygen.",
+        "explanation": "Plants take in Carbon Dioxide and release Oxygen.",
         "difficulty": 2,
         "tags": [
             "science",
             "biology"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
         "id": "speed_lane_5",
         "prompt": "What is the largest ocean on Earth?",
         "type": "mcq",
         "options": [
-            "Atlantic Ocean",
-            "Indian Ocean",
-            "Pacific Ocean"
+            "Atlantic",
+            "Indian",
+            "Pacific"
         ],
         "correctIndex": 2,
-        "explanation": "The Pacific Ocean is the largest and deepest of Earth's oceanic divisions.",
+        "explanation": "The Pacific Ocean is the largest oceanic division.",
         "difficulty": 1,
         "tags": [
             "geography",
             "science"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
-        "id": "swipe_master_1",
-        "prompt": "The Great Wall of China is visible from the Moon with the naked eye.",
-        "type": "binary",
+        "id": "sys_mcq_6",
+        "prompt": "Who wrote 'Romeo and Juliet'?",
+        "type": "mcq",
         "options": [
-            "True",
-            "False"
+            "Dickens",
+            "Hemingway",
+            "Shakespeare"
         ],
-        "correctIndex": 1,
-        "explanation": "This is a myth; it's generally not visible without aid from low Earth orbit.",
+        "correctIndex": 2,
+        "explanation": "William Shakespeare wrote the famous tragedy.",
         "difficulty": 2,
         "tags": [
-            "general_knowledge",
-            "geography"
+            "literature",
+            "history"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
-        "id": "swipe_master_2",
-        "prompt": "An octopus has three hearts.",
-        "type": "binary",
+        "id": "sys_mcq_7",
+        "prompt": "What is the square root of 64?",
+        "type": "mcq",
         "options": [
-            "True",
-            "False"
+            "6",
+            "8",
+            "10"
         ],
-        "correctIndex": 0,
-        "explanation": "Octopuses have two branchial hearts and one systemic heart.",
-        "difficulty": 2,
+        "correctIndex": 1,
+        "explanation": "8 times 8 equals 64.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_8",
+        "prompt": "Which element has the chemical symbol 'O'?",
+        "type": "mcq",
+        "options": [
+            "Gold",
+            "Oxygen",
+            "Osmium"
+        ],
+        "correctIndex": 1,
+        "explanation": "O stands for Oxygen.",
+        "difficulty": 1,
         "tags": [
             "science",
-            "biology"
+            "chemistry"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
-        "id": "swipe_master_3",
-        "prompt": "Bananas grow on trees.",
-        "type": "binary",
+        "id": "sys_mcq_9",
+        "prompt": "What is the fastest land animal?",
+        "type": "mcq",
         "options": [
-            "True",
-            "False"
+            "Lion",
+            "Cheetah",
+            "Horse"
         ],
         "correctIndex": 1,
-        "explanation": "Bananas grow on giant herbs, not trees, as they lack a woody trunk.",
-        "difficulty": 2,
+        "explanation": "The cheetah can reach speeds of up to 112 km/h.",
+        "difficulty": 1,
         "tags": [
             "nature",
-            "science"
-        ],
-        "createdBy": "system"
-    },
-    {
-        "id": "swipe_master_4",
-        "prompt": "Light travels faster than sound.",
-        "type": "binary",
-        "options": [
-            "True",
-            "False"
-        ],
-        "correctIndex": 0,
-        "explanation": "Light travels at ~300,000 km/s, while sound travels at only ~0.34 km/s.",
-        "difficulty": 1,
-        "tags": [
-            "physics",
-            "science"
-        ],
-        "createdBy": "system"
-    },
-    {
-        "id": "swipe_master_5",
-        "prompt": "Humans have four lungs.",
-        "type": "binary",
-        "options": [
-            "True",
-            "False"
-        ],
-        "correctIndex": 1,
-        "explanation": "Humans have two lungs located in the chest cavity.",
-        "difficulty": 1,
-        "tags": [
-            "biology",
-            "science"
-        ],
-        "createdBy": "system"
-    },
-    {
-        "id": "stack_attack_1",
-        "prompt": "Category: Apple",
-        "type": "mcq",
-        "options": [
-            "Fruit",
-            "Vegetable"
-        ],
-        "correctIndex": 0,
-        "explanation": "Apples are the fruit of apple trees.",
-        "difficulty": 1,
-        "tags": [
-            "nature"
-        ],
-        "createdBy": "system"
-    },
-    {
-        "id": "stack_attack_2",
-        "prompt": "Category: Carrot",
-        "type": "mcq",
-        "options": [
-            "Fruit",
-            "Vegetable"
-        ],
-        "correctIndex": 1,
-        "explanation": "Carrots are root vegetables.",
-        "difficulty": 1,
-        "tags": [
-            "nature"
-        ],
-        "createdBy": "system"
-    },
-    {
-        "id": "stack_attack_3",
-        "prompt": "Category: Broccoli",
-        "type": "mcq",
-        "options": [
-            "Fruit",
-            "Vegetable"
-        ],
-        "correctIndex": 1,
-        "explanation": "Broccoli is an edible green plant in the cabbage family.",
-        "difficulty": 1,
-        "tags": [
-            "nature"
-        ],
-        "createdBy": "system"
-    },
-    {
-        "id": "stack_attack_4",
-        "prompt": "Category: Mango",
-        "type": "mcq",
-        "options": [
-            "Fruit",
-            "Vegetable"
-        ],
-        "correctIndex": 0,
-        "explanation": "Mangoes are stone fruits produced from numerous species of tropical trees.",
-        "difficulty": 1,
-        "tags": [
-            "nature"
-        ],
-        "createdBy": "system"
-    },
-    {
-        "id": "stack_attack_5",
-        "prompt": "Category: Spinach",
-        "type": "mcq",
-        "options": [
-            "Fruit",
-            "Vegetable"
-        ],
-        "correctIndex": 1,
-        "explanation": "Spinach is a leafy green flowering plant native to central and western Asia.",
-        "difficulty": 1,
-        "tags": [
-            "nature"
-        ],
-        "createdBy": "system"
-    },
-    {
-        "id": "mind_match_1",
-        "prompt": "Photosynthesis",
-        "type": "matchPair",
-        "options": [
-            "Process by which plants make food",
-            "Process of water evaporation"
-        ],
-        "correctIndex": 0,
-        "explanation": "Plants use sunlight, water, and CO2 to create oxygen and energy in the form of sugar.",
-        "difficulty": 3,
-        "tags": [
-            "science",
             "biology"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
-        "id": "mind_match_2",
-        "prompt": "H2O",
-        "type": "matchPair",
+        "id": "sys_mcq_10",
+        "prompt": "Which continent is the Sahara Desert located in?",
+        "type": "mcq",
         "options": [
-            "Chemical formula for Water",
-            "Chemical formula for Oxygen"
+            "Asia",
+            "Africa",
+            "Australia"
+        ],
+        "correctIndex": 1,
+        "explanation": "The Sahara is the largest hot desert in the world, located in Africa.",
+        "difficulty": 2,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_11",
+        "prompt": "What does a caterpillar turn into?",
+        "type": "mcq",
+        "options": [
+            "Butterfly",
+            "Beetle",
+            "Worm"
         ],
         "correctIndex": 0,
-        "explanation": "Water consists of two hydrogen atoms and one oxygen atom.",
+        "explanation": "Caterpillars metamorphose into butterflies or moths.",
         "difficulty": 1,
         "tags": [
-            "chemistry",
-            "science"
+            "nature",
+            "biology"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
-        "id": "mind_match_3",
-        "prompt": "Albert Einstein",
-        "type": "matchPair",
+        "id": "sys_mcq_12",
+        "prompt": "Who painted the Mona Lisa?",
+        "type": "mcq",
         "options": [
-            "Theory of Relativity",
-            "Laws of Motion"
+            "Van Gogh",
+            "Da Vinci",
+            "Picasso"
         ],
-        "correctIndex": 0,
-        "explanation": "Einstein is Best known for his mass–energy equivalence formula E = mc2.",
+        "correctIndex": 1,
+        "explanation": "Leonardo da Vinci painted the Mona Lisa.",
         "difficulty": 2,
         "tags": [
-            "science",
-            "history"
+            "history",
+            "art"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
-        "id": "mind_match_4",
-        "prompt": "Isaac Newton",
-        "type": "matchPair",
+        "id": "sys_mcq_13",
+        "prompt": "What is the freezing point of water?",
+        "type": "mcq",
         "options": [
-            "Laws of Motion",
-            "Theory of Evolution"
+            "0°C",
+            "100°C",
+            "-10°C"
         ],
         "correctIndex": 0,
-        "explanation": "Newton formulated the laws of motion and universal gravitation.",
-        "difficulty": 2,
+        "explanation": "Water freezes at 0 degrees Celsius.",
+        "difficulty": 1,
         "tags": [
             "science",
-            "history"
+            "physics"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
     },
     {
-        "id": "mind_match_5",
-        "prompt": "DNA",
-        "type": "matchPair",
+        "id": "sys_mcq_14",
+        "prompt": "Which is the longest river in the world?",
+        "type": "mcq",
         "options": [
-            "Genetic blueprint of life",
-            "Powerhouse of the cell"
+            "Amazon",
+            "Nile",
+            "Yangtze"
         ],
-        "correctIndex": 0,
-        "explanation": "Deoxyribonucleic acid is a molecule that carries genetic instructions.",
+        "correctIndex": 1,
+        "explanation": "The Nile is traditionally considered the longest river.",
         "difficulty": 3,
         "tags": [
-            "biology",
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_15",
+        "prompt": "How many legs does a spider have?",
+        "type": "mcq",
+        "options": [
+            "6",
+            "8",
+            "10"
+        ],
+        "correctIndex": 1,
+        "explanation": "Spiders are arachnids and have 8 legs.",
+        "difficulty": 1,
+        "tags": [
+            "nature",
+            "biology"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_16",
+        "prompt": "What is the capital of Japan?",
+        "type": "mcq",
+        "options": [
+            "Seoul",
+            "Beijing",
+            "Tokyo"
+        ],
+        "correctIndex": 2,
+        "explanation": "Tokyo is the capital of Japan.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_17",
+        "prompt": "Which planet is closest to the Sun?",
+        "type": "mcq",
+        "options": [
+            "Venus",
+            "Mercury",
+            "Mars"
+        ],
+        "correctIndex": 1,
+        "explanation": "Mercury is the closest planet to the Sun.",
+        "difficulty": 2,
+        "tags": [
+            "science",
+            "astronomy"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_18",
+        "prompt": "What is the chemical symbol for Gold?",
+        "type": "mcq",
+        "options": [
+            "Au",
+            "Ag",
+            "Fe"
+        ],
+        "correctIndex": 0,
+        "explanation": "Au comes from the Latin word 'Aurum'.",
+        "difficulty": 3,
+        "tags": [
+            "science",
+            "chemistry"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_19",
+        "prompt": "Who discovered gravity?",
+        "type": "mcq",
+        "options": [
+            "Einstein",
+            "Darwin",
+            "Newton"
+        ],
+        "correctIndex": 2,
+        "explanation": "Isaac Newton formulated the law of universal gravitation.",
+        "difficulty": 2,
+        "tags": [
+            "science",
+            "history"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_20",
+        "prompt": "What implies a boolean value?",
+        "type": "mcq",
+        "options": [
+            "String",
+            "True/False",
+            "Integer"
+        ],
+        "correctIndex": 1,
+        "explanation": "Boolean values represent truth values: true or false.",
+        "difficulty": 2,
+        "tags": [
+            "tech",
+            "cs"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_bin_21",
+        "prompt": "The sun revolves around the Earth.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "The Earth revolves around the Sun (Heliocentrism).",
+        "difficulty": 1,
+        "tags": [
+            "science",
+            "astronomy"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_bin_22",
+        "prompt": "Sharks are mammals.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Sharks are fish.",
+        "difficulty": 1,
+        "tags": [
+            "nature",
+            "biology"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_bin_23",
+        "prompt": "Water boils at 100°C.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "At sea level, the boiling point of water is 100°C.",
+        "difficulty": 1,
+        "tags": [
+            "science",
+            "physics"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_bin_24",
+        "prompt": "Mount Everest is the highest mountain.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Mount Everest is Earth's highest mountain above sea level.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_bin_25",
+        "prompt": "Spiders have 6 legs.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Spiders have 8 legs.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_bin_26",
+        "prompt": "Deserts are always hot.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Some deserts, like Antarctica, are cold.",
+        "difficulty": 2,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_bin_27",
+        "prompt": "Lightning is hotter than the sun.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Lightning can reach 30,000K, while the Sun's surface is ~5,800K.",
+        "difficulty": 3,
+        "tags": [
             "science"
         ],
-        "createdBy": "system"
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_bin_28",
+        "prompt": "Bats are blind.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Bats can see, though they rely on echolocation in the dark.",
+        "difficulty": 2,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_bin_29",
+        "prompt": "Goldfish have a 3-second memory.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Goldfish can remember things for months.",
+        "difficulty": 2,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_bin_30",
+        "prompt": "Vatican City is the smallest country.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Vatican City is the smallest independent state.",
+        "difficulty": 2,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_stack_31",
+        "prompt": "Category: Lion",
+        "type": "mcq",
+        "options": [
+            "Mammal",
+            "Reptile"
+        ],
+        "correctIndex": 0,
+        "explanation": "Lions are mammals.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_stack_32",
+        "prompt": "Category: Snake",
+        "type": "mcq",
+        "options": [
+            "Mammal",
+            "Reptile"
+        ],
+        "correctIndex": 1,
+        "explanation": "Snakes are legless carnivorous reptiles.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_stack_33",
+        "prompt": "Category: Eagle",
+        "type": "mcq",
+        "options": [
+            "Bird",
+            "Mammal"
+        ],
+        "correctIndex": 0,
+        "explanation": "Eagles are large birds of prey.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_stack_34",
+        "prompt": "Category: Whale",
+        "type": "mcq",
+        "options": [
+            "Fish",
+            "Mammal"
+        ],
+        "correctIndex": 1,
+        "explanation": "Whales are marine mammals.",
+        "difficulty": 2,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_stack_35",
+        "prompt": "Category: Tomato",
+        "type": "mcq",
+        "options": [
+            "Fruit",
+            "Vegetable"
+        ],
+        "correctIndex": 0,
+        "explanation": "Botanically, a tomato is a fruit.",
+        "difficulty": 2,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_stack_36",
+        "prompt": "Category: Cucumber",
+        "type": "mcq",
+        "options": [
+            "Fruit",
+            "Vegetable"
+        ],
+        "correctIndex": 0,
+        "explanation": "Botanically, cucumbers are fruits.",
+        "difficulty": 3,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_stack_37",
+        "prompt": "Category: HTML",
+        "type": "mcq",
+        "options": [
+            "Language",
+            "Browser"
+        ],
+        "correctIndex": 0,
+        "explanation": "HTML is a Markup Language.",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_stack_38",
+        "prompt": "Category: Chrome",
+        "type": "mcq",
+        "options": [
+            "Language",
+            "Browser"
+        ],
+        "correctIndex": 1,
+        "explanation": "Chrome is a web browser.",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_stack_39",
+        "prompt": "Category: Python",
+        "type": "mcq",
+        "options": [
+            "Hardware",
+            "Software"
+        ],
+        "correctIndex": 1,
+        "explanation": "Python is a programming language (software).",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_stack_40",
+        "prompt": "Category: GPU",
+        "type": "mcq",
+        "options": [
+            "Hardware",
+            "Software"
+        ],
+        "correctIndex": 0,
+        "explanation": "GPU is a hardware component.",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_match_41",
+        "prompt": "Capital of USA",
+        "type": "matchPair",
+        "options": [
+            "Washington D.C.",
+            "New York"
+        ],
+        "correctIndex": 0,
+        "explanation": "D.C. is the capital.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_match_42",
+        "prompt": "Capital of UK",
+        "type": "matchPair",
+        "options": [
+            "London",
+            "Manchester"
+        ],
+        "correctIndex": 0,
+        "explanation": "London is the capital.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_match_43",
+        "prompt": "Currency of Japan",
+        "type": "matchPair",
+        "options": [
+            "Yen",
+            "Won"
+        ],
+        "correctIndex": 0,
+        "explanation": "Yen is Japanese currency.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_match_44",
+        "prompt": "Currency of USA",
+        "type": "matchPair",
+        "options": [
+            "Dollar",
+            "Euro"
+        ],
+        "correctIndex": 0,
+        "explanation": "Dollar is US currency.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_match_45",
+        "prompt": "Opposite of Hot",
+        "type": "matchPair",
+        "options": [
+            "Cold",
+            "Warm"
+        ],
+        "correctIndex": 0,
+        "explanation": "Cold is opposite of hot.",
+        "difficulty": 1,
+        "tags": [
+            "language"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_match_46",
+        "prompt": "Opposite of Up",
+        "type": "matchPair",
+        "options": [
+            "Down",
+            "Right"
+        ],
+        "correctIndex": 0,
+        "explanation": "Down is opposite of up.",
+        "difficulty": 1,
+        "tags": [
+            "language"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_match_47",
+        "prompt": "Synonym for Happy",
+        "type": "matchPair",
+        "options": [
+            "Glad",
+            "Sad"
+        ],
+        "correctIndex": 0,
+        "explanation": "Glad means happy.",
+        "difficulty": 1,
+        "tags": [
+            "language"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_match_48",
+        "prompt": "Synonym for Angry",
+        "type": "matchPair",
+        "options": [
+            "Mad",
+            "Calm"
+        ],
+        "correctIndex": 0,
+        "explanation": "Mad means angry.",
+        "difficulty": 1,
+        "tags": [
+            "language"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_49",
+        "prompt": "How many continents are there?",
+        "type": "mcq",
+        "options": [
+            "5",
+            "7",
+            "9"
+        ],
+        "correctIndex": 1,
+        "explanation": "There are 7 continents.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_50",
+        "prompt": "What is the largest mammal?",
+        "type": "mcq",
+        "options": [
+            "Elephant",
+            "Blue Whale",
+            "Giraffe"
+        ],
+        "correctIndex": 1,
+        "explanation": "Blue Whale is the largest animal known.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_51",
+        "prompt": "Which planet has rings?",
+        "type": "mcq",
+        "options": [
+            "Mars",
+            "Saturn",
+            "Earth"
+        ],
+        "correctIndex": 1,
+        "explanation": "Saturn is famous for its rings.",
+        "difficulty": 1,
+        "tags": [
+            "astronomy"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_52",
+        "prompt": "What color is chlorophyll?",
+        "type": "mcq",
+        "options": [
+            "Red",
+            "Green",
+            "Blue"
+        ],
+        "correctIndex": 1,
+        "explanation": "Chlorophyll gives plants their green color.",
+        "difficulty": 2,
+        "tags": [
+            "biology"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_53",
+        "prompt": "Water consists of Hydrogen and...?",
+        "type": "mcq",
+        "options": [
+            "Oxygen",
+            "Carbon",
+            "Nitrogen"
+        ],
+        "correctIndex": 0,
+        "explanation": "H2O.",
+        "difficulty": 1,
+        "tags": [
+            "chemistry"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_54",
+        "prompt": "Hardest natural substance?",
+        "type": "mcq",
+        "options": [
+            "Gold",
+            "Iron",
+            "Diamond"
+        ],
+        "correctIndex": 2,
+        "explanation": "Diamond is the hardest natural material.",
+        "difficulty": 2,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_55",
+        "prompt": "Which is a noble gas?",
+        "type": "mcq",
+        "options": [
+            "Oxygen",
+            "Helium",
+            "Nitrogen"
+        ],
+        "correctIndex": 1,
+        "explanation": "Helium is a noble gas.",
+        "difficulty": 3,
+        "tags": [
+            "chemistry"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_56",
+        "prompt": "Speed of light is approx?",
+        "type": "mcq",
+        "options": [
+            "300 km/s",
+            "300,000 km/s",
+            "3000 km/s"
+        ],
+        "correctIndex": 1,
+        "explanation": "~299,792 km/s.",
+        "difficulty": 3,
+        "tags": [
+            "physics"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_57",
+        "prompt": "Center of an atom is?",
+        "type": "mcq",
+        "options": [
+            "Electron",
+            "Nucleus",
+            "Proton"
+        ],
+        "correctIndex": 1,
+        "explanation": "Nucleus contains protons and neutrons.",
+        "difficulty": 2,
+        "tags": [
+            "physics"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_58",
+        "prompt": "Value of Pi approx?",
+        "type": "mcq",
+        "options": [
+            "3.14",
+            "3.41",
+            "3.12"
+        ],
+        "correctIndex": 0,
+        "explanation": "Pi is approx 3.14159...",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_59",
+        "prompt": "Triangle sides?",
+        "type": "mcq",
+        "options": [
+            "3",
+            "4",
+            "5"
+        ],
+        "correctIndex": 0,
+        "explanation": "Tri means three.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_60",
+        "prompt": "Degrees in a circle?",
+        "type": "mcq",
+        "options": [
+            "180",
+            "360",
+            "90"
+        ],
+        "correctIndex": 1,
+        "explanation": "A full circle is 360 degrees.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_61",
+        "prompt": "Newton's first law is about?",
+        "type": "mcq",
+        "options": [
+            "Gravity",
+            "Inertia",
+            "Action-Reaction"
+        ],
+        "correctIndex": 1,
+        "explanation": "Law of Inertia.",
+        "difficulty": 2,
+        "tags": [
+            "physics"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_62",
+        "prompt": "Powerhouse of the cell?",
+        "type": "mcq",
+        "options": [
+            "Nucleus",
+            "Mitochondria",
+            "Ribosome"
+        ],
+        "correctIndex": 1,
+        "explanation": "Mitochondria generate most energy.",
+        "difficulty": 2,
+        "tags": [
+            "biology"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_63",
+        "prompt": "Who invented the telephone?",
+        "type": "mcq",
+        "options": [
+            "Bell",
+            "Edison",
+            "Tesla"
+        ],
+        "correctIndex": 0,
+        "explanation": "Alexander Graham Bell.",
+        "difficulty": 2,
+        "tags": [
+            "history"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_64",
+        "prompt": "Year of first moon landing?",
+        "type": "mcq",
+        "options": [
+            "1969",
+            "1959",
+            "1979"
+        ],
+        "correctIndex": 0,
+        "explanation": "Apollo 11 landed in 1969.",
+        "difficulty": 2,
+        "tags": [
+            "history"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_65",
+        "prompt": "Currency of UK?",
+        "type": "mcq",
+        "options": [
+            "Euro",
+            "Pound",
+            "Dollar"
+        ],
+        "correctIndex": 1,
+        "explanation": "The Pound Sterling.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_66",
+        "prompt": "Tallest building in the world?",
+        "type": "mcq",
+        "options": [
+            "Empire State",
+            "Burj Khalifa",
+            "Eiffel Tower"
+        ],
+        "correctIndex": 1,
+        "explanation": "Burj Khalifa in Dubai.",
+        "difficulty": 2,
+        "tags": [
+            "general_knowledge"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_67",
+        "prompt": "Which fruit has seeds on outside?",
+        "type": "mcq",
+        "options": [
+            "Apple",
+            "Strawberry",
+            "Grape"
+        ],
+        "correctIndex": 1,
+        "explanation": "Strawberries have seeds on their skin.",
+        "difficulty": 2,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_68",
+        "prompt": "Chemical symbol for Iron?",
+        "type": "mcq",
+        "options": [
+            "Ir",
+            "Fe",
+            "In"
+        ],
+        "correctIndex": 1,
+        "explanation": "Fe stands for Ferrum.",
+        "difficulty": 2,
+        "tags": [
+            "chemistry"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_69",
+        "prompt": "Primary colors of light?",
+        "type": "mcq",
+        "options": [
+            "RGB",
+            "RYB",
+            "CMY"
+        ],
+        "correctIndex": 0,
+        "explanation": "Red, Green, Blue.",
+        "difficulty": 2,
+        "tags": [
+            "physics"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
+    },
+    {
+        "id": "sys_mcq_70",
+        "prompt": "Boiling point of water in F?",
+        "type": "mcq",
+        "options": [
+            "100",
+            "212",
+            "32"
+        ],
+        "correctIndex": 1,
+        "explanation": "212 degrees Fahrenheit.",
+        "difficulty": 2,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true
     }
 ]

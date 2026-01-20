@@ -82,8 +82,10 @@ GoRouter appRouter(AppRouterRef ref) {
         name: AppRoute.game.name,
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state) {
-          final gameType = state.extra as GameType? ?? GameType.runner;
-          return GamePage(gameType: gameType);
+          final extra = state.extra as Map<String, dynamic>?;
+          final gameType = extra?['gameType'] as GameType? ?? GameType.runner;
+          final levelId = extra?['levelId'] as String?;
+          return GamePage(gameType: gameType, levelId: levelId);
         },
       ),
       StatefulShellRoute.indexedStack(
@@ -113,9 +115,9 @@ GoRouter appRouter(AppRouterRef ref) {
           StatefulShellBranch(
             routes: [
               GoRoute(
-                path: PracticePage.route,
-                name: AppRoute.practice.name,
-                builder: (context, state) => const PracticePage(),
+                path: QuestionsPage.route,
+                name: AppRoute.questions.name,
+                builder: (context, state) => const QuestionsPage(),
               ),
             ],
           ),

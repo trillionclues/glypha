@@ -11,6 +11,7 @@ class GameState extends Notifier<GameStateModel> {
       lives: 3,
       currentSpeed: 10.0,
       isGameOver: false,
+      isVictory: false,
     );
   }
 
@@ -47,11 +48,16 @@ class GameState extends Notifier<GameStateModel> {
       lives: 3,
       currentSpeed: 5.0,
       isGameOver: false,
+      isVictory: false,
     );
   }
 
   void setGameOver() {
-    state = state.copyWith(isGameOver: true);
+    state = state.copyWith(isGameOver: true, isVictory: false);
+  }
+
+  void winGame() {
+    state = state.copyWith(isGameOver: true, isVictory: true);
   }
 }
 
@@ -60,12 +66,14 @@ class GameStateModel {
   final int lives;
   final double currentSpeed;
   final bool isGameOver;
+  final bool isVictory;
 
   const GameStateModel({
     required this.score,
     required this.lives,
     required this.currentSpeed,
     required this.isGameOver,
+    this.isVictory = false,
   });
 
   GameStateModel copyWith({
@@ -73,12 +81,14 @@ class GameStateModel {
     int? lives,
     double? currentSpeed,
     bool? isGameOver,
+    bool? isVictory,
   }) {
     return GameStateModel(
       score: score ?? this.score,
       lives: lives ?? this.lives,
       currentSpeed: currentSpeed ?? this.currentSpeed,
       isGameOver: isGameOver ?? this.isGameOver,
+      isVictory: isVictory ?? this.isVictory,
     );
   }
 }

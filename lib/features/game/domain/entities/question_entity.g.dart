@@ -21,10 +21,9 @@ Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
               const [],
       sourceNodeId: json['sourceNodeId'] as String?,
       sourceImageUrl: json['sourceImageUrl'] as String?,
-      createdBy: json['createdBy'] as String,
-      createdAt: json['createdAt'] == null
-          ? null
-          : DateTime.parse(json['createdAt'] as String),
+      ownerId: json['ownerId'] as String,
+      isPublic: json['isPublic'] as bool? ?? true,
+      createdAt: DateTime.parse(json['createdAt'] as String),
     );
 
 Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
@@ -39,8 +38,9 @@ Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
       'tags': instance.tags,
       'sourceNodeId': instance.sourceNodeId,
       'sourceImageUrl': instance.sourceImageUrl,
-      'createdBy': instance.createdBy,
-      'createdAt': instance.createdAt?.toIso8601String(),
+      'ownerId': instance.ownerId,
+      'isPublic': instance.isPublic,
+      'createdAt': instance.createdAt.toIso8601String(),
     };
 
 const _$QuestionTypeEnumMap = {

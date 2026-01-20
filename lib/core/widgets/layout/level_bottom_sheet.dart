@@ -136,7 +136,13 @@ class LevelBottomSheet extends StatelessWidget {
                       onPressed: () {
                         HapticFeedback.mediumImpact();
                         Navigator.pop(context);
-                        context.pushNamed('game', extra: level.gameType);
+                        context.pushNamed(
+                          'game',
+                          extra: {
+                            'gameType': level.gameType,
+                            'levelId': level.id,
+                          },
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: theme.colorScheme.primary,

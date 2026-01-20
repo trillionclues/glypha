@@ -10,6 +10,7 @@ class GateComponent extends Pseudo3DComponent {
   bool hasCollided = false;
   int? collidedLane;
 
+  @override
   bool get isRemoved => !isMounted;
 
   GateComponent({
@@ -38,42 +39,55 @@ class GateComponent extends Pseudo3DComponent {
         laneX = 0;
         _laneMapping.add(0);
       } else if (gateCount == 2) {
-        // Two gates: left (-1.5) and right (1.5)
-        laneX = (i == 0) ? -1.5 : 1.5;
+        // Two gates: left (-0.8) and right (0.8)
+        laneX = (i == 0) ? -0.8 : 0.8;
         _laneMapping.add(i == 0 ? -1 : 1);
       } else {
-        // Three gates: left (-2.5), center (0), right (2.5)
-        laneX = (i - 1) * 2.5;
+        // Three gates: left (-1.6), center (0), right (1.6)
+        laneX = (i - 1) * 1.6;
         _laneMapping.add(i - 1);
       }
 
       final gateColor = const Color(0xFF2196F3).withOpacity(0.9);
 
-      final gateWidth = gateCount == 1 ? 3.0 : 2.4;
+      final gateWidth = gateCount == 1 ? 3.0 : 1.5; // Narrower gates
       final gateHeight = 4.0;
 
       final gateRect = RectangleComponent(
         position: Vector2(laneX - gateWidth / 2, -2.0),
         size: Vector2(gateWidth, gateHeight),
-        paint: Paint()..color = gateColor,
+        paint: Paint()
+          ..color = const Color(0xFF00E5FF).withOpacity(0.8)
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0.15,
+        // Removed MaskFilter to prevent Impeller crash with large textures
       );
 
       add(gateRect);
       _gateRects.add(gateRect);
+
+      // Inner fill for readability
+      add(RectangleComponent(
+        position: Vector2(laneX - gateWidth / 2, -2.0),
+        size: Vector2(gateWidth, gateHeight),
+        paint: Paint()
+          ..color = const Color(0xFF001122).withOpacity(0.7)
+          ..style = PaintingStyle.fill,
+      ));
 
       final textComponent = TextComponent(
         text: _wrapText(answers[i], gateCount == 1 ? 12 : 8),
         textRenderer: TextPaint(
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 0.5,
+            fontSize: 0.35, // Slightly larger
             fontWeight: FontWeight.bold,
-            height: 1.2,
+            height: 1.1,
           ),
         ),
         position: Vector2(laneX, 0),
         anchor: Anchor.center,
-        size: Vector2(gateWidth * 0.9, gateHeight * 0.9),
+        size: Vector2(gateWidth * 0.9, gateHeight * 0.8),
       );
       add(textComponent);
 
@@ -103,14 +117,20 @@ class GateComponent extends Pseudo3DComponent {
           lines.add(currentLine);
           currentLine = word;
         } else {
-          lines.add(word.substring(0, maxCharsPerLine));
-          currentLine = word.substring(maxCharsPerLine);
+          // Word alone is longer than line
+          lines.add(word); // Just add it, don't truncate aggressively
+          currentLine = '';
         }
       }
     }
 
     if (currentLine.isNotEmpty) {
       lines.add(currentLine);
+    }
+
+    // Limit to 3 lines max
+    if (lines.length > 3) {
+      return lines.sublist(0, 3).join('\n');
     }
 
     return lines.join('\n');
