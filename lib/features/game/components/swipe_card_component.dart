@@ -21,7 +21,6 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
   late _GradientRectComponent _choiceOverlay;
   late TextComponent _choiceLabel;
 
-  // Visual state
   bool _isDragging = false;
   final double _swipeThreshold = 100.0;
   Vector2 _initialPosition = Vector2.zero();
@@ -31,7 +30,6 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     await super.onLoad();
     _initialPosition = position.clone();
 
-    // 1. Drop Shadow (Soft & Deep)
     add(RectangleComponent(
       size: size,
       position: Vector2(0, 15),
@@ -50,7 +48,6 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     );
     add(_background);
 
-    // 3. Question Label
     add(TextComponent(
       text: 'QUESTION',
       textRenderer: TextPaint(
@@ -65,10 +62,9 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
       anchor: Anchor.center,
     ));
 
-    // 4. Question Text (Using TextBoxComponent for automatic wrapping)
     final boxConfig = TextBoxConfig(
       maxWidth: size.x - 60,
-      timePerChar: 0.05, // Typewriter effect optional, set to 0 for instant
+      timePerChar: 0.05,
       growingBox: true,
       margins: const EdgeInsets.all(0),
     );
@@ -81,7 +77,7 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
           fontSize: 26,
           fontWeight: FontWeight.w700,
           height: 1.3,
-          fontFamily: 'Roboto', // Or user preferred font
+          fontFamily: 'Roboto',
         ),
       ),
       boxConfig: boxConfig,
@@ -92,7 +88,6 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     );
     add(questionBox);
 
-    // 5. Choice Overlay (Green/Red tint on swipe)
     _choiceOverlay = _GradientRectComponent(
       size: size,
       color: Colors.transparent,
@@ -100,7 +95,6 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     );
     add(_choiceOverlay);
 
-    // 6. Large Choice Label (TRUE / FALSE)
     _choiceLabel = TextComponent(
       text: '',
       textRenderer: TextPaint(
@@ -116,7 +110,6 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     );
     add(_choiceLabel);
 
-    // 7. Static Instructions (Small Hint)
     add(TextComponent(
       text: 'FALSE',
       textRenderer: TextPaint(
@@ -150,7 +143,6 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     _isDragging = true;
     priority = 100;
 
-    // Slight lift effect
     add(ScaleEffect.to(
       Vector2.all(1.05),
       EffectController(duration: 0.1),
@@ -239,38 +231,22 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
       Vector2(targetX, position.y + 100),
       EffectController(duration: 0.4, curve: Curves.easeInCubic),
       onComplete: () {
-        // Correct Logic:
-        // index 0 = True (usually), index 1 = False?
-        // Wait, standard implies: Option A vs Option B.
         // User request check: "Swipe Right for True". "Swipe Left for False".
-        // If question.options = ["True", "False"] (standard binary)
         // correctIndex 0 -> True, correctIndex 1 -> False.
 
-        bool userChoseTrue = isRight; // Right is True
+        bool userChoseTrue = isRight;
 
-        // Map choice to index
         // If options are ["True", "False"], True is 0.
         // If user swiped right (True), they picked index 0.
         int userIndex = userChoseTrue ? 0 : 1;
 
         bool isCorrect = (userIndex == question.correctIndex);
 
-        // HACK: Some questions might have ["False", "True"]?
-        // Better to check string content if possible, but binary standard is True=0 usually.
-        // Let's rely on standard ["True", "False"] for binary type.
         // If types are mixed, we compare option string.
         if (question.type == QuestionType.binary &&
             question.options.contains("True")) {
           final trueIndex = question.options.indexOf("True");
           isCorrect = (userIndex == trueIndex) == userChoseTrue;
-          // Wait:
-          // If True is index 0. userIndex (0) == trueIndex (0) -> True.
-          // If False is index 1. userIndex (1) == trueIndex (0) -> False.
-          // Logic: Did user pick the correct index?
-          // We need to know which index corresponds to "Right Swipe".
-          // Convention: Right = First Option? Or Right = "True"?
-          // UI says "Right = True".
-          // So if correct Answer is "True", and User Swiped Right -> Correct.
         } else {
           // Fallback for generic binary (Left/Right options)
           // Assume Option 0 = Left, Option 1 = Right

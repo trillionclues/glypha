@@ -7,7 +7,7 @@ class OnboardingState extends Equatable {
   final bool isLoading;
   final AuthFailure? error;
 
-  // New fields for the updated onboarding flow
+  // New fields for updated onboarding flow
   final String dailyGoal;
   final String learningStyle;
 

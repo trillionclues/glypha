@@ -2,7 +2,6 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import '../logic/runner_game.dart';
 
-/// Fixed banner at top of screen showing the current question
 class QuestionBanner extends PositionComponent with HasGameRef<RunnerGame> {
   String currentQuestion = '';
 
@@ -25,7 +24,6 @@ class QuestionBanner extends PositionComponent with HasGameRef<RunnerGame> {
 
     final size = gameRef.size;
 
-    // Draw semi-transparent background (Shifted down for header clearance)
     const topMargin = 90.0;
     canvas.drawRect(
       Rect.fromLTWH(0, topMargin, size.x, 100),
@@ -38,7 +36,7 @@ class QuestionBanner extends PositionComponent with HasGameRef<RunnerGame> {
         text: currentQuestion,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 18, // Slightly smaller for better fit
+          fontSize: 18,
           fontWeight: FontWeight.bold,
         ),
       ),

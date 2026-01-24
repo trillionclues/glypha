@@ -17,12 +17,9 @@ class SortingBucketComponent extends PositionComponent {
   Future<void> onLoad() async {
     super.onLoad();
 
-    // 1. Bin Glass Body (Trapezoid)
     final glassPaint = Paint()
       ..color = color.withOpacity(0.15)
       ..style = PaintingStyle.fill;
-
-    // 2. Bin Border (Neon)
     final borderPaint = Paint()
       ..color = color.withOpacity(0.8)
       ..style = PaintingStyle.stroke
@@ -36,7 +33,6 @@ class SortingBucketComponent extends PositionComponent {
     );
     add(binBody);
 
-    // 3. Icon (Material Icon)
     final iconCode = _getIconForCategory(category);
     add(TextComponent(
       text: String.fromCharCode(iconCode.codePoint),
@@ -52,7 +48,6 @@ class SortingBucketComponent extends PositionComponent {
       anchor: Anchor.center,
     ));
 
-    // 4. Label (Text)
     add(TextComponent(
       text: category.toUpperCase(),
       textRenderer: TextPaint(
@@ -71,15 +66,15 @@ class SortingBucketComponent extends PositionComponent {
   IconData _getIconForCategory(String category) {
     switch (category.toLowerCase()) {
       case 'fruit':
-        return Icons.local_florist; // Close enough? Apple icon not standard
+        return Icons.local_florist;
       case 'vegetable':
         return Icons.grass;
       case 'mammal':
         return Icons.pets;
       case 'reptile':
-        return Icons.bug_report; // Close enough
+        return Icons.bug_report;
       case 'bird':
-        return Icons.flight; // Bird-ish
+        return Icons.flight;
       case 'tech':
         return Icons.computer;
       case 'hardware':
@@ -107,18 +102,16 @@ class _BinShapeComponent extends PositionComponent {
     final w = size.x;
     final h = size.y;
 
-    // Trapezoid path
     final path = Path()
-      ..moveTo(0, 0) // Top Left
-      ..lineTo(w, 0) // Top Right
-      ..lineTo(w * 0.85, h) // Bottom Right (tapered)
-      ..lineTo(w * 0.15, h) // Bottom Left (tapered)
+      ..moveTo(0, 0)
+      ..lineTo(w, 0)
+      ..lineTo(w * 0.85, h)
+      ..lineTo(w * 0.15, h)
       ..close();
 
     canvas.drawPath(path, fillPaint);
     canvas.drawPath(path, borderPaint);
 
-    // Glow at the bottom
     final glowRect = Rect.fromLTWH(w * 0.2, h - 5, w * 0.6, 2);
     canvas.drawOval(glowRect,
         fillPaint..maskFilter = const MaskFilter.blur(BlurStyle.normal, 5));

@@ -27,7 +27,6 @@ class FallingBlockComponent extends PositionComponent
   Future<void> onLoad() async {
     super.onLoad();
 
-    // 1. Crate Body (Cyber Box)
     final cratePaint = Paint()
       ..color = const Color(0xFF1E293B)
       ..style = PaintingStyle.fill;
@@ -43,7 +42,6 @@ class FallingBlockComponent extends PositionComponent
       border: crateBorder,
     ));
 
-    // 2. Text (Cleaned)
     final cleanText = question.prompt
         .replaceAll('Category: ', '')
         .replaceAll('Synonym for ', '')
@@ -54,7 +52,7 @@ class FallingBlockComponent extends PositionComponent
       textRenderer: TextPaint(
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 16, // Smaller for crate
+          fontSize: 16,
           fontWeight: FontWeight.bold,
           fontFamily: 'Roboto',
         ),
@@ -86,7 +84,7 @@ class FallingBlockComponent extends PositionComponent
     if (_hasLanded) return;
     _isDragging = true;
     priority = 100;
-    scale = Vector2.all(1.1); // Graphic pop
+    scale = Vector2.all(1.1);
   }
 
   @override
@@ -119,7 +117,6 @@ class _CrateShapeComponent extends PositionComponent {
   @override
   void render(ui.Canvas canvas) {
     final rect = size.toRect();
-    // Chamfered corners
     final path = Path()
       ..moveTo(10, 0)
       ..lineTo(size.x - 10, 0)
@@ -134,7 +131,6 @@ class _CrateShapeComponent extends PositionComponent {
     canvas.drawPath(path, fill);
     canvas.drawPath(path, border);
 
-    // Tech lines (decorative)
     final detailPaint = Paint()
       ..color = Colors.white.withOpacity(0.1)
       ..strokeWidth = 1.0

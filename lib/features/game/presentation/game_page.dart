@@ -82,7 +82,7 @@ class _GamePageState extends ConsumerState<GamePage> {
         body: Stack(
           children: [
             _buildGame(ref),
-            Positioned(
+            const Positioned(
               top: 0,
               left: 0,
               right: 0,
@@ -163,6 +163,7 @@ class _GamePageState extends ConsumerState<GamePage> {
                                   score: gameState.score,
                                   stars: _calculateStars(gameState.score),
                                 );
+
                             // Award XP: 50 base + 10 per star
                             final xpGain =
                                 50 + (_calculateStars(gameState.score) * 10);

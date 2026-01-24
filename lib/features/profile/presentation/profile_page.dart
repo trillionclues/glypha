@@ -291,16 +291,6 @@ class _SettingsSection extends StatelessWidget {
               children: [
                 for (int i = 0; i < children.length; i++) ...[
                   children[i],
-                  // if (i != children.length - 1)
-                  //   Divider(
-                  //     height: 1,
-                  //     thickness: 1,
-                  //     indent: 56,
-                  //     color: Theme.of(context)
-                  //         .colorScheme
-                  //         .outlineVariant
-                  //         .withOpacity(0.5),
-                  //   ),
                 ],
               ],
             ),

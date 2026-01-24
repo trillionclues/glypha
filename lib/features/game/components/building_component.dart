@@ -2,7 +2,6 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import '../logic/runner_game.dart';
 
-/// Decorative buildings/obstacles on the sides of the road
 class BuildingComponent extends PositionComponent with HasGameRef<RunnerGame> {
   final double scrollSpeed = 2.0;
   double offset = 0.0;
@@ -28,7 +27,6 @@ class BuildingComponent extends PositionComponent with HasGameRef<RunnerGame> {
       final y = (i * 200.0 - offset) % (size.y + 200);
       final height = 80.0 + (i % 3) * 40.0;
 
-      // Calculate building color (darker shades)
       final colorValue = 30 + (i % 5) * 15;
       final buildingColor =
           Color.fromARGB(255, colorValue, colorValue, colorValue + 20);

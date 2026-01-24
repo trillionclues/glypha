@@ -21,7 +21,7 @@ class StackAttackGame extends FlameGame {
   int _currentIndex = 0;
   double _baseFallSpeed = 150.0;
   double _spawnTimer = 0;
-  double _spawnInterval = 1.5; // Seconds between blocks (faster start)
+  double _spawnInterval = 1.5;
 
   final List<SortingBucketComponent> _buckets = [];
 
@@ -43,11 +43,9 @@ class StackAttackGame extends FlameGame {
 
       if (_questions.isEmpty) {
         final repository = ref.read(questionRepositoryProvider);
-        // Get MCQ questions suitable for sorting (2 options = category sort)
         final allMcq = await repository.getQuestionsByType(QuestionType.mcq);
         _questions = allMcq.where((q) => q.options.length == 2).toList();
 
-        // Fallback: also include those with 'stack' or 'category' in prompt
         if (_questions.isEmpty) {
           _questions = allMcq
               .where((q) =>
@@ -59,7 +57,6 @@ class StackAttackGame extends FlameGame {
 
       if (_questions.isNotEmpty) {
         _setupBuckets();
-        // Spawn first block immediately so user sees something
         _spawnBlock();
       } else {
         debugPrint('No questions found for Stack Attack');
@@ -72,7 +69,6 @@ class StackAttackGame extends FlameGame {
   }
 
   void _setupBuckets() {
-    // Collect all unique categories from the first few questions consistent per level
     final categories = _questions[0].options;
     final bucketWidth = size.x / categories.length;
     final colors = [Colors.blue, Colors.green, Colors.orange, Colors.purple];

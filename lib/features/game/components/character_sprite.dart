@@ -3,11 +3,9 @@ import 'package:flame/components.dart';
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
-/// A sleek Cyber-Noir Hoverboard Character
 class CharacterSprite extends PositionComponent {
   double animationTime = 0.0;
 
-  // Hover animation
   double _hoverOffset = 0.0;
 
   CharacterSprite() : super(size: Vector2(1.0, 1.5));
@@ -25,7 +23,6 @@ class CharacterSprite extends PositionComponent {
 
     final paint = Paint()..style = PaintingStyle.fill;
 
-    // Board Glow Support (Neon Shadow)
     canvas.drawOval(
       Rect.fromLTWH(0.1, 1.3, 0.8, 0.2),
       Paint()
@@ -40,17 +37,15 @@ class CharacterSprite extends PositionComponent {
     // Main deck
     final boardPath = Path()
       ..moveTo(0.2, 1.2)
-      ..lineTo(0.8, 1.2) // Back width
-      ..lineTo(0.9, 0.8) // Front right tip
-      ..lineTo(0.5, 0.7) // Front point
-      ..lineTo(0.1, 0.8) // Front left tip
+      ..lineTo(0.8, 1.2)
+      ..lineTo(0.9, 0.8)
+      ..lineTo(0.5, 0.7)
+      ..lineTo(0.1, 0.8)
       ..close();
 
-    // Board Body (Dark Metallic)
     paint.color = const Color(0xFF2D3748);
     canvas.drawPath(boardPath, paint);
 
-    // Neon Rim
     final rimPaint = Paint()
       ..color = const Color(0xFF00E5FF)
       ..style = PaintingStyle.stroke
@@ -58,14 +53,11 @@ class CharacterSprite extends PositionComponent {
       ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 2);
     canvas.drawPath(boardPath, rimPaint);
 
-    // Engine Thrusters (Rear)
     final thrustPaint = Paint()..color = const Color(0xFF00E5FF);
     canvas.drawCircle(const Offset(0.3, 1.2), 0.08, thrustPaint);
     canvas.drawCircle(const Offset(0.7, 1.2), 0.08, thrustPaint);
 
     // === RIDER (Cyber Silhouette) ===
-
-    // Legs (Crouched)
     paint.color = const Color(0xFF1A202C); // Dark suit
     final leftLeg = Path()
       ..moveTo(0.35, 1.0)
@@ -83,7 +75,6 @@ class CharacterSprite extends PositionComponent {
       ..close();
     canvas.drawPath(rightLeg, paint);
 
-    // Torso (Leaning forward)
     final torso = RRect.fromRectAndRadius(
       Rect.fromLTWH(0.4, 0.35, 0.2, 0.35),
       const Radius.circular(0.05),
@@ -91,24 +82,18 @@ class CharacterSprite extends PositionComponent {
     paint.color = const Color(0xFF2D3748);
     canvas.drawRRect(torso, paint);
 
-    // Tron-like stripe on back
     paint.color = const Color(0xFFFF0080); // Neon Pink stripe
     canvas.drawRect(Rect.fromLTWH(0.48, 0.38, 0.04, 0.3), paint);
 
-    // Head (Helmet)
     paint.color = const Color(0xFFCBD5E0); // Silver/White Helmet
     final headRect = Rect.fromLTWH(0.4, 0.15, 0.2, 0.22);
     canvas.drawOval(headRect, paint);
 
-    // Visor (Glowing)
     paint.color = const Color(0xFF00E5FF);
     canvas.drawRect(Rect.fromLTWH(0.42, 0.22, 0.16, 0.06), paint);
 
-    // Arms (Holding balance)
     paint.color = const Color(0xFF1A202C);
-    // Left arm trailing
     canvas.drawRect(Rect.fromLTWH(0.25, 0.4, 0.15, 0.08), paint);
-    // Right arm trailing
     canvas.drawRect(Rect.fromLTWH(0.6, 0.4, 0.15, 0.08), paint);
 
     canvas.restore();

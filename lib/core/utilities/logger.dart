@@ -34,7 +34,7 @@ class LoggerInterceptor extends Interceptor {
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
     logger.e(
-        '❌ ERROR: ${err.response?.statusCode} ${err.requestOptions.method} ${err.requestOptions.path}\n'
+        'ERROR: ${err.response?.statusCode} ${err.requestOptions.method} ${err.requestOptions.path}\n'
         'Error: ${err.message}\n'
         'Response: ${err.response?.data}');
     return super.onError(err, handler);

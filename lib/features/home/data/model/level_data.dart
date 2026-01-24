@@ -8,8 +8,8 @@ class LevelData {
   final bool isLocked;
   final bool isCurrent;
   final String emoji;
-  final String title; // Topic name like 'Vocabulary', 'Grammar'
-  final int stars; // 0-3 for completed levels
+  final String title;
+  final int stars;
   final GameType gameType;
 
   LevelData(

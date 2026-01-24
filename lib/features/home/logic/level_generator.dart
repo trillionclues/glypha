@@ -13,23 +13,23 @@ class VirtualLevel {
     required this.difficulty,
   });
 
-  bool get isCompleted =>
-      false; // This will be checked against progression repo
+  bool get isCompleted => false; // This is checked against progression repo
 }
 
 class LevelGenerator {
   static const int questionsPerLevel = 10;
 
   /// Partition a pool of questions into dynamic levels sorted by difficulty.
+  /// Separate questions by type
+  /// Assuming stack questions are identifiable or use MCQ with categories
+  /// For now, let's treat remaining MCQ as adaptable for Runner/Stack
+
   static List<VirtualLevel> generateLevels(List<Question> pool) {
     if (pool.isEmpty) return [];
 
-    // Separate questions by type
     final binaryQuestions =
         pool.where((q) => q.type == QuestionType.binary).toList();
     final mcqQuestions = pool.where((q) => q.type == QuestionType.mcq).toList();
-    // Assuming stack questions are identifiable or use MCQ with categories
-    // For now, let's treat remaining MCQ as adaptable for Runner/Stack
 
     // Sort all by difficulty
     binaryQuestions.sort((a, b) => a.difficulty.compareTo(b.difficulty));
@@ -49,7 +49,6 @@ class LevelGenerator {
       List<Question> levelQuestions = [];
 
       if (gameTypeIndex == 1) {
-        // Swipe (Needs Binary if possible)
         if (binaryQuestions.isNotEmpty) {
           final count = binaryQuestions.length >= questionsPerLevel
               ? questionsPerLevel
@@ -61,6 +60,7 @@ class LevelGenerator {
           // Swipe game usually behaves badly with MCQ. Let's try to convert or skip.
           // For now, take MCQ but we should ideally implement standard Swipe = Binary.
           // We'll skip Swipe level if no Binary? No, just fill with what we have.
+
           final count = mcqQuestions.length >= questionsPerLevel
               ? questionsPerLevel
               : mcqQuestions.length;
@@ -76,7 +76,6 @@ class LevelGenerator {
           levelQuestions = mcqQuestions.sublist(0, count);
           mcqQuestions.removeRange(0, count);
         } else if (binaryQuestions.isNotEmpty) {
-          // Fallback
           final count = binaryQuestions.length >= questionsPerLevel
               ? questionsPerLevel
               : binaryQuestions.length;

@@ -24,7 +24,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
   final PageController _pageController = PageController();
   late ConfettiController _confettiController;
 
-  // Local state for the Reminder step
+  // Local state for reminder step
   TimeOfDay _selectedTime = const TimeOfDay(hour: 9, minute: 0);
   bool _notificationsEnabled = true;
   bool _showSuccess = false;
@@ -90,7 +90,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                 onDateTimeChanged: (DateTime newTime) {
                   setState(() {
                     _selectedTime = TimeOfDay.fromDateTime(newTime);
-                    // Update state in notifier if needed, usually we convert to string
+                    // Updated state in notifier if needed, usually converted to string
                     ref
                         .read(onboardingNotifierProvider.notifier)
                         .setLearningStyle('${_selectedTime.format(context)}');
@@ -110,7 +110,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
     final onboardingState = ref.watch(onboardingNotifierProvider);
 
     ref.watch(authNotifierProvider);
-    // Check if we show the normal steps or the success screen
+    // Check if to show normal steps or success screen
     if (_showSuccess) {
       return _buildSuccessScreen(theme);
     }
@@ -122,9 +122,7 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
           children: [
             Column(
               children: [
-                // (Back & Progress)
                 _buildTopBar(onboardingState.currentStep, theme),
-
                 Expanded(
                   child: PageView(
                     controller: _pageController,
@@ -142,7 +140,6 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
                     ],
                   ),
                 ),
-
                 _BottomNavigation(
                   currentStep: onboardingState.currentStep,
                   pageController: _pageController,
@@ -391,7 +388,7 @@ class _GoalStep extends ConsumerWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            "This helps us personalize your daily challenges.",
+            'This helps us personalize your daily challenges.',
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onBackground.withOpacity(0.6),
             ),
@@ -572,10 +569,7 @@ class _ReminderStep extends StatelessWidget {
               ),
             ).animate().scale(curve: Curves.easeOutBack),
           ),
-
           const SizedBox(height: 24),
-
-          // Toggle Card
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
@@ -660,7 +654,7 @@ class _BottomNavigation extends ConsumerWidget {
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: const Text("Please make a selection to continue"),
+              content: const Text('Please make a selection to continue'),
               backgroundColor: theme.colorScheme.error),
         );
       }
@@ -670,7 +664,7 @@ class _BottomNavigation extends ConsumerWidget {
       final user = authState is AuthAuthenticated ? authState.user : null;
       if (user != null) {
         // Mark onboarding as complete and navigate to Home (or Success screen if we want)
-        // The user asked for "Skip for now" to just go.
+        // if user asked for "Skip for now" to just go.
         // We can call completeOnboarding immediately and navigate.
         final success = await ref
             .read(onboardingNotifierProvider.notifier)

@@ -16,7 +16,6 @@ class PlayerController extends Pseudo3DComponent {
   int _minLane = -1;
   int _maxLane = 1;
 
-  // player reaction state
   PlayerReaction _reaction = PlayerReaction.normal;
   double _reactionTimer = 0.0;
 
@@ -56,7 +55,6 @@ class PlayerController extends Pseudo3DComponent {
     );
     add(_selectionCircle);
 
-    // Character sprite
     _characterSprite = CharacterSprite()..position = Vector2(-0.4, -1.2);
     add(_characterSprite);
 
@@ -108,7 +106,7 @@ class PlayerController extends Pseudo3DComponent {
       case 1:
         return 0;
       case 2:
-        return lane == -1 ? -0.8 : 0.8; // 1.6 / 2
+        return lane == -1 ? -0.8 : 0.8;
       case 3:
       default:
         return lane * laneWidth;
@@ -154,8 +152,6 @@ class PlayerController extends Pseudo3DComponent {
       _characterSprite.position = Vector2(-0.4, -1.2);
     }
 
-    // Smoothly interpolate worldX to targetX (clamped to keep robot visible)
-    // Limit to ±2.0 to keep robot more visible with new lane width
     final clampedTargetX = targetX.clamp(-2.5, 2.5);
 
     if ((worldX - clampedTargetX).abs() > 0.01) {
@@ -169,7 +165,6 @@ class PlayerController extends Pseudo3DComponent {
       worldX = clampedTargetX;
     }
 
-    // fade swipe indicators
     if (_indicatorOpacity > 0) {
       _indicatorOpacity -= dt * 2.0;
       if (_indicatorOpacity < 0) _indicatorOpacity = 0;

@@ -2,7 +2,6 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'question_entity.g.dart';
 
-/// Represents the type of question for game mode selection
 enum QuestionType {
   /// Multiple choice (2-4 options)
   mcq,
@@ -35,10 +34,8 @@ class Question {
   /// Index of correct answer in options
   final int correctIndex;
 
-  /// Explanation shown after answering
   final String? explanation;
 
-  /// 1-5 difficulty rating
   final int difficulty;
 
   /// Subject/topic tags
@@ -79,7 +76,6 @@ class Question {
 
   Map<String, dynamic> toJson() => _$QuestionToJson(this);
 
-  /// Helper to get the correct answer text
   String get correctAnswer => options[correctIndex];
 
   /// Check if an answer index is correct

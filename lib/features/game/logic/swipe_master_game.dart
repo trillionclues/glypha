@@ -139,7 +139,7 @@ class SwipeMasterGame extends FlameGame {
       gameState.loseLife();
       // Check if game over
       if (ref.read(gameStateProvider).isGameOver) {
-        return; // GamePage will handle redirection
+        return;
       }
     }
 

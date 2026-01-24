@@ -47,7 +47,7 @@ class RunnerGame extends FlameGame with PanDetector {
     world.add(worldManager);
     world.add(player);
 
-    // Fetch live questions from Firestore
+    // live questions from Firestore
     try {
       List<Question> questions = [];
 
@@ -65,7 +65,6 @@ class RunnerGame extends FlameGame with PanDetector {
 
       if (questions.isNotEmpty) {
         worldManager.setQuestions(questions);
-        // Wait a frame before updating first question
         await Future.delayed(const Duration(milliseconds: 100));
         _updateQuestionForNextGate();
       } else {
@@ -81,8 +80,6 @@ class RunnerGame extends FlameGame with PanDetector {
     final questions = worldManager.questions;
     if (questions.isEmpty) return;
 
-    // Use score/10 or something to determine question index if needed
-    // For now we just use a simple index
     final index = (state.score).clamp(0, questions.length - 1);
     final nextQuestion = questions[index];
     questionBanner.setQuestion(nextQuestion.prompt);

@@ -26,20 +26,20 @@ class ProgressionRepository {
         );
   }
 
-  /// Get all level progression records for a user
+  /// Get user progression records
   Future<List<LevelProgression>> getUserProgression(String userId) async {
     final snapshot = await _getProgressionRef(userId).get();
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
 
-  /// Stream of user progression for real-time updates
+  /// Stream user progression for real-time updates
   Stream<List<LevelProgression>> watchUserProgression(String userId) {
     return _getProgressionRef(userId)
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
   }
 
-  /// Update or create a progression record
+  /// Update or create progression record
   Future<void> updateProgression(
       String userId, LevelProgression progression) async {
     await _getProgressionRef(userId)
@@ -47,7 +47,7 @@ class ProgressionRepository {
         .set(progression, SetOptions(merge: true));
   }
 
-  /// Mark a level as completed with score and stars
+  /// Mark level as completed with score and stars
   Future<void> completeLevel({
     required String userId,
     required String levelId,

@@ -34,7 +34,6 @@ class _HomePageState extends ConsumerState<HomePage>
   void _scrollToCurrentLevel() {
     if (!_scrollController.hasClients) return;
 
-    // Delay to let the scroll view build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final levelsAsync = ref.read(levelListProvider);
       final progressionMap = ref.read(progressionMapProvider);
@@ -46,7 +45,7 @@ class _HomePageState extends ConsumerState<HomePage>
 
       if (dynamicLevels.isEmpty) return;
 
-      // Find the index of the current level (first incomplete, unlocked level)
+      // Find index of the current level (first incomplete, unlocked level)
       int currentIndex = 0;
       for (int i = 0; i < dynamicLevels.length; i++) {
         final id = dynamicLevels[i].id;
@@ -92,7 +91,6 @@ class _HomePageState extends ConsumerState<HomePage>
     // Listen for level data changes to trigger scroll
     ref.listen(levelListProvider, (previous, next) {
       if (next.hasValue && !next.isLoading) {
-        // Use a slight delay to ensure layout is ready
         Future.delayed(const Duration(milliseconds: 100), () {
           _scrollToCurrentLevel();
         });

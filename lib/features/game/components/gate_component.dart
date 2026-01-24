@@ -50,7 +50,7 @@ class GateComponent extends Pseudo3DComponent {
 
       final gateColor = const Color(0xFF2196F3).withOpacity(0.9);
 
-      final gateWidth = gateCount == 1 ? 3.0 : 1.5; // Narrower gates
+      final gateWidth = gateCount == 1 ? 3.0 : 1.5;
       final gateHeight = 4.0;
 
       final gateRect = RectangleComponent(
@@ -60,13 +60,11 @@ class GateComponent extends Pseudo3DComponent {
           ..color = const Color(0xFF00E5FF).withOpacity(0.8)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 0.15,
-        // Removed MaskFilter to prevent Impeller crash with large textures
       );
 
       add(gateRect);
       _gateRects.add(gateRect);
 
-      // Inner fill for readability
       add(RectangleComponent(
         position: Vector2(laneX - gateWidth / 2, -2.0),
         size: Vector2(gateWidth, gateHeight),
@@ -80,7 +78,7 @@ class GateComponent extends Pseudo3DComponent {
         textRenderer: TextPaint(
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 0.35, // Slightly larger
+            fontSize: 0.35,
             fontWeight: FontWeight.bold,
             height: 1.1,
           ),
@@ -117,8 +115,7 @@ class GateComponent extends Pseudo3DComponent {
           lines.add(currentLine);
           currentLine = word;
         } else {
-          // Word alone is longer than line
-          lines.add(word); // Just add it, don't truncate aggressively
+          lines.add(word);
           currentLine = '';
         }
       }
@@ -155,7 +152,6 @@ class GateComponent extends Pseudo3DComponent {
           break;
         }
       } else {
-        // For 1 or 3 gates, direct mapping
         if (_laneMapping[i] == playerLane) {
           hitGateIndex = i;
           break;

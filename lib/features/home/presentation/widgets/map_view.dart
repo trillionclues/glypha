@@ -116,7 +116,7 @@ class MapView extends ConsumerWidget {
                 ...levels.asMap().entries.map((entry) {
                   final index = entry.key;
                   final level = entry.value;
-                  // Levels are rendered bottom to top
+                  // Levels rendered bottom to top
                   final yPosition = (levels.length - index) * 180.0 + 50;
 
                   return Positioned(
