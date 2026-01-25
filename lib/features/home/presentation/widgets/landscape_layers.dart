@@ -3,25 +3,66 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:glypha/features/home/presentation/widgets/hills_painter.dart';
 
-class LandscapeLayers extends StatelessWidget {
+class LandscapeLayers extends StatefulWidget {
   final double height;
 
   const LandscapeLayers({super.key, required this.height});
 
   @override
+  State<LandscapeLayers> createState() => _LandscapeLayersState();
+}
+
+class _LandscapeLayersState extends State<LandscapeLayers> {
+  late List<Widget> _cachedDecorations;
+  final HillsPathCache _hillsCache = HillsPathCache();
+  double? _lastHeight;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _generateDecorationsIfNeeded();
+  }
+
+  @override
+  void didUpdateWidget(LandscapeLayers oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (oldWidget.height != widget.height) {
+      _generateDecorationsIfNeeded();
+    }
+  }
+
+  void _generateDecorationsIfNeeded() {
+    if (_lastHeight == widget.height) return;
+
+    _cachedDecorations =
+        _generateDecorations(MediaQuery.of(context).size.width, widget.height);
+    _lastHeight = widget.height;
+  }
+
+  @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
 
-    return SizedBox(
-      height: height,
-      child: Stack(
-        children: [
-          CustomPaint(
-            size: Size(screenWidth, height),
-            painter: HillsPainter(),
-          ),
-          ..._generateDecorations(screenWidth, height),
-        ],
+    // Check if width changed and regen if needed
+    // (rare case on mobile but good for correctness)
+
+    return RepaintBoundary(
+      child: SizedBox(
+        height: widget.height,
+        child: Stack(
+          children: [
+            CustomPaint(
+              size: Size(screenWidth, widget.height),
+              painter: HillsPainter(_hillsCache),
+            ),
+            ..._cachedDecorations,
+          ],
+        ),
       ),
     );
   }

@@ -1,13 +1,62 @@
 import 'package:flutter/material.dart';
 
+class HillsPathCache {
+  Size? lastSize;
+  Path? backHillPath;
+  Path? midHillPath;
+  Path? frontGrassPath;
+  Path? veryFrontPath;
+
+  void clear() {
+    lastSize = null;
+    backHillPath = null;
+    midHillPath = null;
+    frontGrassPath = null;
+    veryFrontPath = null;
+  }
+}
+
 class HillsPainter extends CustomPainter {
+  final HillsPathCache cache;
+
+  HillsPainter(this.cache);
+
   @override
   void paint(Canvas canvas, Size size) {
+    // Check if we need to rebuild paths
+    if (cache.lastSize != size || cache.backHillPath == null) {
+      _rebuildPaths(size);
+    }
+
     // Back hills (darkest green - furthest away)
     final backHillPaint = Paint()
       ..color = const Color(0xFF5A8F6A)
       ..style = PaintingStyle.fill;
+    canvas.drawPath(cache.backHillPath!, backHillPaint);
 
+    // Middle hills (medium green)
+    final midHillPaint = Paint()
+      ..color = const Color(0xFF6FA580)
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(cache.midHillPath!, midHillPaint);
+
+    // Front grass layer (lighter green - closest)
+    final frontGrassPaint = Paint()
+      ..color = const Color(0xFF84BB96)
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(cache.frontGrassPath!, frontGrassPaint);
+
+    // Very front grass patches (lightest - for depth)
+    final veryFrontPaint = Paint()
+      ..color = const Color(0xFF9CD3AD)
+      ..style = PaintingStyle.fill;
+    canvas.drawPath(cache.veryFrontPath!, veryFrontPaint);
+  }
+
+  void _rebuildPaths(Size size) {
+    cache.lastSize = size;
+
+    // Back hills
     final backHillPath = Path();
     backHillPath.moveTo(0, size.height * 0.45);
     backHillPath.quadraticBezierTo(
@@ -31,14 +80,9 @@ class HillsPainter extends CustomPainter {
     backHillPath.lineTo(size.width, size.height);
     backHillPath.lineTo(0, size.height);
     backHillPath.close();
+    cache.backHillPath = backHillPath;
 
-    canvas.drawPath(backHillPath, backHillPaint);
-
-    // Middle hills (medium green)
-    final midHillPaint = Paint()
-      ..color = const Color(0xFF6FA580)
-      ..style = PaintingStyle.fill;
-
+    // Middle hills
     final midHillPath = Path();
     midHillPath.moveTo(0, size.height * 0.52);
     midHillPath.quadraticBezierTo(
@@ -62,14 +106,9 @@ class HillsPainter extends CustomPainter {
     midHillPath.lineTo(size.width, size.height);
     midHillPath.lineTo(0, size.height);
     midHillPath.close();
+    cache.midHillPath = midHillPath;
 
-    canvas.drawPath(midHillPath, midHillPaint);
-
-    // Front grass layer (lighter green - closest)
-    final frontGrassPaint = Paint()
-      ..color = const Color(0xFF84BB96)
-      ..style = PaintingStyle.fill;
-
+    // Front grass layer
     final frontGrassPath = Path();
     frontGrassPath.moveTo(0, size.height * 0.58);
     frontGrassPath.quadraticBezierTo(
@@ -93,14 +132,9 @@ class HillsPainter extends CustomPainter {
     frontGrassPath.lineTo(size.width, size.height);
     frontGrassPath.lineTo(0, size.height);
     frontGrassPath.close();
+    cache.frontGrassPath = frontGrassPath;
 
-    canvas.drawPath(frontGrassPath, frontGrassPaint);
-
-    // Very front grass patches (lightest - for depth)
-    final veryFrontPaint = Paint()
-      ..color = const Color(0xFF9CD3AD)
-      ..style = PaintingStyle.fill;
-
+    // Very front grass patches
     final veryFrontPath = Path();
     veryFrontPath.moveTo(0, size.height * 0.65);
     veryFrontPath.quadraticBezierTo(
@@ -118,10 +152,11 @@ class HillsPainter extends CustomPainter {
     veryFrontPath.lineTo(size.width, size.height);
     veryFrontPath.lineTo(0, size.height);
     veryFrontPath.close();
-
-    canvas.drawPath(veryFrontPath, veryFrontPaint);
+    cache.veryFrontPath = veryFrontPath;
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant HillsPainter oldDelegate) {
+    return oldDelegate.cache != cache;
+  }
 }

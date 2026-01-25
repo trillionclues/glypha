@@ -1,15 +1,45 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:glypha/features/home/data/model/level_data.dart';
+
+class PathCache {
+  Path? path;
+  Path? completedPath;
+  List<PathMetric>? pathMetrics;
+  List<PathMetric>? completedPathMetrics;
+
+  void clear() {
+    path = null;
+    completedPath = null;
+    pathMetrics = null;
+    completedPathMetrics = null;
+  }
+}
 
 class DashedRoadPathPainter extends CustomPainter {
   final List<LevelData> levels;
   final double screenWidth;
+  final PathCache cache;
 
-  DashedRoadPathPainter(this.levels, this.screenWidth);
+  DashedRoadPathPainter(this.levels, this.screenWidth, this.cache);
 
   @override
   void paint(Canvas canvas, Size size) {
-    final path = _buildPath();
+    // Generate paths if not cached or cache is invalid for some reason
+    // Note: The parent widget should clear cache when levels/width changes
+    if (cache.path == null) {
+      cache.path = _buildPath();
+      cache.pathMetrics = cache.path!.computeMetrics().toList();
+    }
+
+    if (cache.completedPath == null) {
+      cache.completedPath = _buildCompletedPath();
+      cache.completedPathMetrics =
+          cache.completedPath!.computeMetrics().toList();
+    }
+
+    final path = cache.path!;
+    final completedPath = cache.completedPath!;
 
     final roadPaint = Paint()
       ..color = const Color(0xFFD1B899).withOpacity(0.4)
@@ -25,10 +55,8 @@ class DashedRoadPathPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    _drawDashedPath(canvas, path, centerLinePaint,
+    _drawDashedPath(canvas, cache.pathMetrics!, centerLinePaint,
         dashLength: 20, gapLength: 15);
-
-    final completedPath = _buildCompletedPath();
 
     final completedRoadPaint = Paint()
       ..color = const Color(0xFF8B7355)
@@ -53,7 +81,7 @@ class DashedRoadPathPainter extends CustomPainter {
       ..style = PaintingStyle.stroke
       ..strokeCap = StrokeCap.round;
 
-    _drawDashedPath(canvas, completedPath, completedCenterPaint,
+    _drawDashedPath(canvas, cache.completedPathMetrics!, completedCenterPaint,
         dashLength: 20, gapLength: 15);
   }
 
@@ -104,9 +132,8 @@ class DashedRoadPathPainter extends CustomPainter {
     return path;
   }
 
-  void _drawDashedPath(Canvas canvas, Path path, Paint paint,
+  void _drawDashedPath(Canvas canvas, List<PathMetric> metrics, Paint paint,
       {required double dashLength, required double gapLength}) {
-    final metrics = path.computeMetrics();
     for (final metric in metrics) {
       double distance = 0;
       while (distance < metric.length) {
@@ -121,5 +148,10 @@ class DashedRoadPathPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant DashedRoadPathPainter oldDelegate) {
+    // Only repaint if cache has been cleared/recreated or levels changed
+    return oldDelegate.cache != cache ||
+        oldDelegate.levels != levels ||
+        oldDelegate.screenWidth != screenWidth;
+  }
 }

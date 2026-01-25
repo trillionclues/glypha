@@ -8,7 +8,7 @@ import 'package:glypha/features/game/presentation/game_page.dart';
 import 'package:glypha/features/home/presentation/provider/progression_provider.dart';
 import 'package:glypha/features/home/presentation/provider/level_provider.dart';
 
-class MapView extends ConsumerWidget {
+class MapView extends ConsumerStatefulWidget {
   final ScrollController scrollController;
   final AnimationController pulseController;
 
@@ -19,10 +19,30 @@ class MapView extends ConsumerWidget {
   });
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<MapView> createState() => _MapViewState();
+}
+
+class _MapViewState extends ConsumerState<MapView> {
+  final PathCache _pathCache = PathCache();
+
+  @override
+  void didUpdateWidget(MapView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // currently cache clearing depends on data changes
+    // which we check in build/listen
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final levelListAsync = ref.watch(levelListProvider);
     final progressionMap = ref.watch(progressionMapProvider);
+
+    ref.listen(levelListProvider, (prev, next) {
+      if (prev?.value != next.value) {
+        _pathCache.clear();
+      }
+    });
 
     return levelListAsync.when(
       loading: () => const Center(child: CircularProgressIndicator()),
@@ -86,8 +106,10 @@ class MapView extends ConsumerWidget {
 
         final totalHeight = 180.0 * levels.length + 400.0;
 
+        // If screen width changed, clear cache
+
         return SingleChildScrollView(
-          controller: scrollController,
+          controller: widget.scrollController,
           physics: const BouncingScrollPhysics(),
           child: SizedBox(
             width: screenWidth,
@@ -111,7 +133,8 @@ class MapView extends ConsumerWidget {
                 LandscapeLayers(height: totalHeight),
                 CustomPaint(
                   size: Size(screenWidth, totalHeight),
-                  painter: DashedRoadPathPainter(levels, screenWidth),
+                  painter:
+                      DashedRoadPathPainter(levels, screenWidth, _pathCache),
                 ),
                 ...levels.asMap().entries.map((entry) {
                   final index = entry.key;
@@ -124,7 +147,7 @@ class MapView extends ConsumerWidget {
                     top: yPosition,
                     child: LevelNode(
                       level: level,
-                      pulseController: pulseController,
+                      pulseController: widget.pulseController,
                     ),
                   );
                 }).toList(),
