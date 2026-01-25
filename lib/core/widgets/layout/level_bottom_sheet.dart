@@ -94,7 +94,7 @@ class LevelBottomSheet extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Complete 20 questions to unlock the next level!',
+                          'Complete the available questions to unlock the next level and build XP!',
                           style: TextStyle(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.w600,

@@ -65,24 +65,12 @@ class RunnerGame extends FlameGame with PanDetector {
 
       if (questions.isNotEmpty) {
         worldManager.setQuestions(questions);
-        await Future.delayed(const Duration(milliseconds: 100));
-        _updateQuestionForNextGate();
       } else {
         debugPrint('No MCQ questions available currently!');
       }
     } catch (e) {
       debugPrint('Error fetching questions: $e');
     }
-  }
-
-  void _updateQuestionForNextGate() {
-    final state = ref.read(gameStateProvider);
-    final questions = worldManager.questions;
-    if (questions.isEmpty) return;
-
-    final index = (state.score).clamp(0, questions.length - 1);
-    final nextQuestion = questions[index];
-    questionBanner.setQuestion(nextQuestion.prompt);
   }
 
   @override

@@ -129,24 +129,20 @@ class WorldManager extends Component with HasGameRef<RunnerGame> {
 
     int? hitIndex;
     for (int i = 0; i < gate.answers.length; i++) {
-      // Find which index corresponds to playerLane
-      // Note: PlayerController for 2 lanes uses -1 and 0? Or -1 and 1?
-      if (gate.answers.length == 2) {
-        if (i == 0 && playerLane == -1) hitIndex = 0;
-        if (i == 1 && playerLane == 1) hitIndex = 1;
-
-        if (i == 0 && playerLane == -1) hitIndex = 0;
-        if (i == 1 && playerLane == 0) hitIndex = 1;
+      int targetLane;
+      if (gate.answers.length == 1) {
+        targetLane = 0;
+      } else if (gate.answers.length == 2) {
+        // Two gates: -1 (Left) and 1 (Right)
+        targetLane = (i == 0) ? -1 : 1;
       } else {
-        // 1 gate: lane 0. Player lane 0.
-        // 3 gates: -1, 0, 1. Match.
-        if (playerLane == (i - 1)) {
-          // for 3 gates: 0->-1, 1->0, 2->1
-          // So index 0 is at lane -1.
-          if (playerLane == (i - 1)) hitIndex = i;
-        } else if (gate.answers.length == 1 && playerLane == 0) {
-          hitIndex = 0;
-        }
+        // Three gates: -1, 0, 1
+        targetLane = i - 1;
+      }
+
+      if (playerLane == targetLane) {
+        hitIndex = i;
+        break;
       }
     }
 

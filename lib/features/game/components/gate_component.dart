@@ -34,69 +34,79 @@ class GateComponent extends Pseudo3DComponent {
 
     for (int i = 0; i < gateCount; i++) {
       double laneX;
+      int mappedLane;
 
       if (gateCount == 1) {
         laneX = 0;
-        _laneMapping.add(0);
+        mappedLane = 0;
       } else if (gateCount == 2) {
-        // Two gates: left (-0.8) and right (0.8)
-        laneX = (i == 0) ? -0.8 : 0.8;
-        _laneMapping.add(i == 0 ? -1 : 1);
+        // Two gates: Use Lane -1 (Left) and Lane 1 (Right). Leave Center empty.
+        // Spacing: 1.6 is standard lane width
+        laneX = (i == 0) ? -1.6 : 1.6;
+        mappedLane = (i == 0) ? -1 : 1;
       } else {
         // Three gates: left (-1.6), center (0), right (1.6)
         laneX = (i - 1) * 1.6;
-        _laneMapping.add(i - 1);
+        mappedLane = i - 1;
       }
 
-      final gateColor = const Color(0xFF2196F3).withOpacity(0.9);
+      _laneMapping.add(mappedLane);
 
       final gateWidth = gateCount == 1 ? 3.0 : 1.5;
       final gateHeight = 4.0;
 
-      final gateRect = RectangleComponent(
+      // 1. Gate Frame (Outer Glow/Border)
+      final gateFrame = RectangleComponent(
         position: Vector2(laneX - gateWidth / 2, -2.0),
         size: Vector2(gateWidth, gateHeight),
         paint: Paint()
-          ..color = const Color(0xFF00E5FF).withOpacity(0.8)
+          ..color = const Color(0xFF00E5FF).withOpacity(0.6)
           ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.15,
+          ..strokeWidth = 0.08,
       );
+      add(gateFrame);
+      _gateRects.add(gateFrame);
 
-      add(gateRect);
-      _gateRects.add(gateRect);
-
+      // 2. Glass Background
       add(RectangleComponent(
         position: Vector2(laneX - gateWidth / 2, -2.0),
         size: Vector2(gateWidth, gateHeight),
         paint: Paint()
-          ..color = const Color(0xFF001122).withOpacity(0.7)
+          ..color = const Color(0xFF0F172A).withOpacity(0.85)
           ..style = PaintingStyle.fill,
       ));
 
+      // 3. Top accent bar
+      add(RectangleComponent(
+        position: Vector2(laneX - gateWidth / 2, -2.0),
+        size: Vector2(gateWidth, 0.15),
+        paint: Paint()..color = const Color(0xFF00E5FF),
+      ));
+
+      // 4. Answer Text
       final textComponent = TextComponent(
-        text: _wrapText(answers[i], gateCount == 1 ? 12 : 8),
+        text: _wrapText(answers[i], gateCount == 1 ? 20 : 12),
         textRenderer: TextPaint(
           style: const TextStyle(
             color: Colors.white,
             fontSize: 0.35,
-            fontWeight: FontWeight.bold,
-            height: 1.1,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Roboto',
+            height: 1.2,
+            shadows: [
+              Shadow(
+                blurRadius: 2.0,
+                color: Colors.black,
+                offset: Offset(1.0, 1.0),
+              ),
+            ],
           ),
         ),
         position: Vector2(laneX, 0),
         anchor: Anchor.center,
-        size: Vector2(gateWidth * 0.9, gateHeight * 0.8),
+        priority: 10,
       );
       add(textComponent);
-
-      add(RectangleComponent(
-        position: Vector2(laneX - (gateWidth / 2 + 0.05), -2.05),
-        size: Vector2(gateWidth + 0.1, 4.1),
-        paint: Paint()
-          ..color = Colors.white.withOpacity(0.4)
-          ..style = PaintingStyle.stroke
-          ..strokeWidth = 0.15,
-      ));
     }
   }
 
