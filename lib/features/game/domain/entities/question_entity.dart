@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'game_type.dart';
 
 part 'question_entity.g.dart';
 
@@ -54,6 +55,10 @@ class Question {
 
   final DateTime createdAt;
 
+  /// Specific game modes this question is compatible with.
+  /// If empty, compatibility is inferred from type.
+  final List<GameType> compatibleModes;
+
   const Question({
     required this.id,
     required this.prompt,
@@ -69,6 +74,7 @@ class Question {
     required this.ownerId,
     this.isPublic = true,
     required this.createdAt,
+    this.compatibleModes = const [],
   });
 
   factory Question.fromJson(Map<String, dynamic> json) =>

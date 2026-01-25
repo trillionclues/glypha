@@ -24,6 +24,10 @@ Question _$QuestionFromJson(Map<String, dynamic> json) => Question(
       ownerId: json['ownerId'] as String,
       isPublic: json['isPublic'] as bool? ?? true,
       createdAt: DateTime.parse(json['createdAt'] as String),
+      compatibleModes: (json['compatibleModes'] as List<dynamic>?)
+              ?.map((e) => $enumDecode(_$GameTypeEnumMap, e))
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
@@ -41,6 +45,8 @@ Map<String, dynamic> _$QuestionToJson(Question instance) => <String, dynamic>{
       'ownerId': instance.ownerId,
       'isPublic': instance.isPublic,
       'createdAt': instance.createdAt.toIso8601String(),
+      'compatibleModes':
+          instance.compatibleModes.map((e) => _$GameTypeEnumMap[e]!).toList(),
     };
 
 const _$QuestionTypeEnumMap = {
@@ -48,4 +54,11 @@ const _$QuestionTypeEnumMap = {
   QuestionType.binary: 'binary',
   QuestionType.input: 'input',
   QuestionType.matchPair: 'matchPair',
+};
+
+const _$GameTypeEnumMap = {
+  GameType.runner: 'runner',
+  GameType.swipe: 'swipe',
+  GameType.stack: 'stack',
+  GameType.match: 'match',
 };

@@ -6,7 +6,7 @@ part of 'level_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$levelListHash() => r'640d9e0e9604727f6667b6e2dd1cfb7500184a77';
+String _$levelListHash() => r'5a46bc8ca43e6eba9fc6f14f1a2458eb9d66b518';
 
 /// See also [levelList].
 @ProviderFor(levelList)
@@ -23,7 +23,7 @@ final levelListProvider =
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef LevelListRef = AutoDisposeFutureProviderRef<List<VirtualLevel>>;
-String _$virtualLevelHash() => r'fe39d8e6d9e58b88483f4a074aa6d0c56fd24736';
+String _$virtualLevelHash() => r'2e8f723e8874f77c2845650f801684004492bf35';
 
 /// Copied from Dart SDK
 class _SystemHash {

@@ -16,7 +16,10 @@
             "astronomy"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "speed_lane_2",
@@ -34,7 +37,10 @@
             "math"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "speed_lane_3",
@@ -52,7 +58,10 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "speed_lane_4",
@@ -71,7 +80,10 @@
             "biology"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "speed_lane_5",
@@ -90,7 +102,10 @@
             "science"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_6",
@@ -109,7 +124,10 @@
             "history"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_7",
@@ -127,7 +145,10 @@
             "math"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_8",
@@ -146,7 +167,10 @@
             "chemistry"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_9",
@@ -165,7 +189,10 @@
             "biology"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_10",
@@ -183,7 +210,10 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_11",
@@ -202,7 +232,10 @@
             "biology"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_12",
@@ -221,7 +254,10 @@
             "art"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_13",
@@ -240,7 +276,10 @@
             "physics"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_14",
@@ -258,7 +297,10 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_15",
@@ -277,7 +319,10 @@
             "biology"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_16",
@@ -295,7 +340,10 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_17",
@@ -314,7 +362,10 @@
             "astronomy"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_18",
@@ -333,7 +384,10 @@
             "chemistry"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_19",
@@ -352,7 +406,10 @@
             "history"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_20",
@@ -371,7 +428,10 @@
             "cs"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_bin_21",
@@ -389,7 +449,11 @@
             "astronomy"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
     },
     {
         "id": "sys_bin_22",
@@ -407,7 +471,11 @@
             "biology"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
     },
     {
         "id": "sys_bin_23",
@@ -425,7 +493,11 @@
             "physics"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
     },
     {
         "id": "sys_bin_24",
@@ -442,7 +514,11 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
     },
     {
         "id": "sys_bin_25",
@@ -459,7 +535,11 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
     },
     {
         "id": "sys_bin_26",
@@ -476,7 +556,11 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
     },
     {
         "id": "sys_bin_27",
@@ -493,7 +577,11 @@
             "science"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
     },
     {
         "id": "sys_bin_28",
@@ -510,7 +598,11 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
     },
     {
         "id": "sys_bin_29",
@@ -527,7 +619,11 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
     },
     {
         "id": "sys_bin_30",
@@ -544,7 +640,11 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
     },
     {
         "id": "sys_stack_31",
@@ -561,7 +661,10 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "stack"
+        ]
     },
     {
         "id": "sys_stack_32",
@@ -578,7 +681,10 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "stack"
+        ]
     },
     {
         "id": "sys_stack_33",
@@ -595,7 +701,10 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "stack"
+        ]
     },
     {
         "id": "sys_stack_34",
@@ -612,7 +721,10 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "stack"
+        ]
     },
     {
         "id": "sys_stack_35",
@@ -629,7 +741,10 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "stack"
+        ]
     },
     {
         "id": "sys_stack_36",
@@ -646,7 +761,10 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "stack"
+        ]
     },
     {
         "id": "sys_stack_37",
@@ -663,7 +781,10 @@
             "tech"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "stack"
+        ]
     },
     {
         "id": "sys_stack_38",
@@ -680,7 +801,10 @@
             "tech"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "stack"
+        ]
     },
     {
         "id": "sys_stack_39",
@@ -697,7 +821,10 @@
             "tech"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "stack"
+        ]
     },
     {
         "id": "sys_stack_40",
@@ -714,7 +841,10 @@
             "tech"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "stack"
+        ]
     },
     {
         "id": "sys_match_41",
@@ -731,7 +861,10 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "match"
+        ]
     },
     {
         "id": "sys_match_42",
@@ -748,7 +881,10 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "match"
+        ]
     },
     {
         "id": "sys_match_43",
@@ -765,7 +901,10 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "match"
+        ]
     },
     {
         "id": "sys_match_44",
@@ -782,7 +921,10 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "match"
+        ]
     },
     {
         "id": "sys_match_45",
@@ -799,7 +941,10 @@
             "language"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "match"
+        ]
     },
     {
         "id": "sys_match_46",
@@ -816,7 +961,10 @@
             "language"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "match"
+        ]
     },
     {
         "id": "sys_match_47",
@@ -833,7 +981,10 @@
             "language"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "match"
+        ]
     },
     {
         "id": "sys_match_48",
@@ -850,7 +1001,10 @@
             "language"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "match"
+        ]
     },
     {
         "id": "sys_mcq_49",
@@ -868,7 +1022,10 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_50",
@@ -886,7 +1043,10 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_51",
@@ -904,7 +1064,10 @@
             "astronomy"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_52",
@@ -922,7 +1085,10 @@
             "biology"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_53",
@@ -940,7 +1106,10 @@
             "chemistry"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_54",
@@ -958,7 +1127,10 @@
             "science"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_55",
@@ -976,7 +1148,10 @@
             "chemistry"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_56",
@@ -994,7 +1169,10 @@
             "physics"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_57",
@@ -1012,7 +1190,10 @@
             "physics"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_58",
@@ -1030,7 +1211,10 @@
             "math"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_59",
@@ -1048,7 +1232,10 @@
             "math"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_60",
@@ -1066,7 +1253,10 @@
             "math"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_61",
@@ -1084,7 +1274,10 @@
             "physics"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_62",
@@ -1102,7 +1295,10 @@
             "biology"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_63",
@@ -1120,7 +1316,10 @@
             "history"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_64",
@@ -1138,7 +1337,10 @@
             "history"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_65",
@@ -1156,7 +1358,10 @@
             "geography"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_66",
@@ -1174,7 +1379,10 @@
             "general_knowledge"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_67",
@@ -1192,7 +1400,10 @@
             "nature"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_68",
@@ -1210,7 +1421,10 @@
             "chemistry"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_69",
@@ -1228,7 +1442,10 @@
             "physics"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     },
     {
         "id": "sys_mcq_70",
@@ -1246,6 +1463,9 @@
             "science"
         ],
         "ownerId": "SYSTEM",
-        "isPublic": true
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
     }
 ]
