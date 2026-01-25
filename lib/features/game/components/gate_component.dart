@@ -8,6 +8,7 @@ class GateComponent extends Pseudo3DComponent {
   final List<String> answers; // [Left, Center, Right] or fewer
   final int correctAnswerIndex;
   bool hasCollided = false;
+  bool hasMissed = false;
   int? collidedLane;
 
   @override
@@ -179,6 +180,16 @@ class GateComponent extends Pseudo3DComponent {
           : const Color(0xFFE53935).withOpacity(0.9);
 
       hitGate.paint = Paint()..color = feedbackColor;
+    }
+  }
+
+  void showMissFeedback() {
+    // Dim all gates to show they were missed
+    for (final rect in _gateRects) {
+      rect.paint = Paint()
+        ..color = Colors.grey.withOpacity(0.5)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 0.1;
     }
   }
 }

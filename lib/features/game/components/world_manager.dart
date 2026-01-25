@@ -56,11 +56,19 @@ class WorldManager extends Component with HasGameRef<RunnerGame> {
         final speed = gameRef.currentSpeed;
         child.worldZ -= speed * dt;
 
-        // Collision Check
-        // Gate is "thick" (Z-depth assumed small), check if it passed player
-        if (child is GateComponent && !child.hasCollided) {
-          if (child.worldZ <= playerZ + 0.5 && child.worldZ >= playerZ - 0.5) {
-            _handleCollision(child, player.currentLane);
+        // Gate passed player
+        if (child is GateComponent) {
+          if (!child.hasCollided && !child.hasMissed) {
+            // Check collision window
+            if (child.worldZ <= playerZ + 0.5 &&
+                child.worldZ >= playerZ - 0.5) {
+              _handleCollision(child, player.currentLane);
+            }
+            // Check missed window (passed player)
+            else if (child.worldZ < playerZ - 1.0) {
+              child.hasMissed = true;
+              _handleMiss(child);
+            }
           }
         }
 
@@ -164,6 +172,15 @@ class WorldManager extends Component with HasGameRef<RunnerGame> {
         gameRef.player.triggerStumble();
       }
     }
+  }
+
+  void _handleMiss(GateComponent gate) {
+    gate.showMissFeedback();
+
+    final gameStateFn = gameRef.ref.read(gameStateProvider.notifier);
+    gameStateFn.loseLife();
+    gameStateFn.decreaseSpeed();
+    gameRef.player.triggerStumble();
   }
 
   GateComponent? getNextGate() {

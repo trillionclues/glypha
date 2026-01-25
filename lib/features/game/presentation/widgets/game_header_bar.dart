@@ -44,15 +44,14 @@ class GameHeaderBar extends ConsumerWidget {
                   icon: Icons.local_fire_department_rounded,
                   value: stats.streak.toString(),
                   color: Colors.orange,
-                  label: 'STREAK',
                 ),
                 _StatItem(
                   icon: Icons.star_rounded,
                   value: stats.xp.toString(),
                   color: Colors.amber,
-                  label: 'XP',
                 ),
-                _LivesDisplay(), // Game lives
+                const _GoalDisplay(),
+                const _LivesDisplay(),
                 _EnergyBar(energy: stats.energy),
               ],
             ),
@@ -67,24 +66,20 @@ class _StatItem extends StatelessWidget {
   final IconData icon;
   final String value;
   final Color color;
-  final String label;
 
   const _StatItem({
     required this.icon,
     required this.value,
     required this.color,
-    required this.label,
   });
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, color: color, size: 24),
-        const SizedBox(width: 8),
         Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(
               value,
@@ -94,14 +89,7 @@ class _StatItem extends StatelessWidget {
                 fontSize: 14,
               ),
             ),
-            Text(
-              label,
-              style: TextStyle(
-                color: Colors.white.withOpacity(0.7),
-                fontSize: 8,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
+            Icon(icon, color: color, size: 24),
           ],
         ),
       ],
@@ -173,6 +161,53 @@ class _LivesDisplay extends ConsumerWidget {
           size: 18,
         );
       }),
+    );
+  }
+}
+
+class _GoalDisplay extends ConsumerWidget {
+  const _GoalDisplay();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final gameState = ref.watch(gameStateProvider);
+    final score = gameState.score;
+    const goal = 5;
+    final progress = (score / goal).clamp(0.0, 1.0);
+
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          '$score / $goal',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
+        const SizedBox(height: 2),
+        SizedBox(
+          width: 40,
+          height: 4,
+          child: LinearProgressIndicator(
+            value: progress,
+            backgroundColor: Colors.white.withOpacity(0.2),
+            valueColor: AlwaysStoppedAnimation<Color>(
+              score >= goal ? Colors.greenAccent : Colors.orangeAccent,
+            ),
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
+        Text(
+          'SCORE',
+          style: TextStyle(
+            color: Colors.white.withOpacity(0.7),
+            fontSize: 8,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
     );
   }
 }
