@@ -17,13 +17,18 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     required Vector2 position,
   }) : super(size: size, position: position, anchor: Anchor.center);
 
-  late _RoundedCardBackground _background;
-  late _GradientRectComponent _choiceOverlay;
+  late _EnhancedCardBackground _background;
+  late _GradientOverlay _choiceOverlay;
   late TextComponent _choiceLabel;
 
   bool _isDragging = false;
-  final double _swipeThreshold = 100.0;
+  final double _swipeThreshold = 120.0;
   Vector2 _initialPosition = Vector2.zero();
+
+  String get _leftOption =>
+      question.options.isNotEmpty ? question.options[0] : 'FALSE';
+  String get _rightOption =>
+      question.options.length > 1 ? question.options[1] : 'TRUE';
 
   @override
   Future<void> onLoad() async {
@@ -31,20 +36,16 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     _initialPosition = position.clone();
 
     add(RectangleComponent(
-      size: size,
-      position: Vector2(0, 15),
+      size: size * 1.02,
+      position: Vector2(0, 20),
       paint: Paint()
-        ..color = Colors.black.withOpacity(0.2)
-        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 20),
+        ..color = Colors.black.withOpacity(0.25)
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 25),
     ));
 
-    // 2. Card Background (Clean White with Rounded Corners)
-    // Note: Flame RectangleComponent doesn't natively support border radius easily without custom render,
-    // so we use a custom rendered component for the base card to ensure smoothness.
-    _background = _RoundedCardBackground(
+    _background = _EnhancedCardBackground(
       size: size,
-      color: Colors.white,
-      radius: 25.0,
+      radius: 28.0,
     );
     add(_background);
 
@@ -52,18 +53,18 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
       text: 'QUESTION',
       textRenderer: TextPaint(
         style: TextStyle(
-          color: Colors.grey[400],
-          fontSize: 14,
-          fontWeight: FontWeight.bold,
-          letterSpacing: 2.0,
+          color: const Color(0xFF667EEA).withOpacity(0.7),
+          fontSize: 13,
+          fontWeight: FontWeight.w800,
+          letterSpacing: 3.0,
         ),
       ),
-      position: Vector2(size.x / 2, 40),
+      position: Vector2(size.x / 2, 45),
       anchor: Anchor.center,
     ));
 
     final boxConfig = TextBoxConfig(
-      maxWidth: size.x - 60,
+      maxWidth: size.x - 80,
       timePerChar: 0.05,
       growingBox: true,
       margins: const EdgeInsets.all(0),
@@ -73,10 +74,11 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
       text: question.prompt,
       textRenderer: TextPaint(
         style: const TextStyle(
-          color: Color(0xFF1F2937),
+          color: Color(0xFF1A202C),
           fontSize: 26,
-          fontWeight: FontWeight.w700,
-          height: 1.3,
+          fontWeight: FontWeight.w600,
+          height: 1.4,
+          letterSpacing: 0.3,
           fontFamily: 'Roboto',
         ),
       ),
@@ -84,14 +86,13 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
       align: Anchor.center,
       position: Vector2(size.x / 2, size.y / 2 - 20),
       anchor: Anchor.center,
-      size: Vector2(size.x - 60, size.y / 2),
+      size: Vector2(size.x - 80, size.y * 0.5),
     );
     add(questionBox);
 
-    _choiceOverlay = _GradientRectComponent(
+    _choiceOverlay = _GradientOverlay(
       size: size,
-      color: Colors.transparent,
-      radius: 25.0,
+      radius: 28.0,
     );
     add(_choiceOverlay);
 
@@ -102,6 +103,14 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
           fontSize: 48,
           fontWeight: FontWeight.w900,
           color: Colors.white,
+          letterSpacing: 1.0,
+          shadows: [
+            Shadow(
+              color: Colors.black26,
+              offset: Offset(0, 3),
+              blurRadius: 8,
+            ),
+          ],
         ),
       ),
       position: Vector2(size.x / 2, size.y / 2),
@@ -111,29 +120,17 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     add(_choiceLabel);
 
     add(TextComponent(
-      text: 'FALSE',
+      text: '← $_leftOption  |  $_rightOption →',
       textRenderer: TextPaint(
         style: TextStyle(
-          color: Colors.red.withOpacity(0.3),
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
+          color: Colors.grey[500],
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          letterSpacing: 0.5,
         ),
       ),
-      position: Vector2(30, size.y / 2),
-      anchor: Anchor.centerLeft,
-    ));
-
-    add(TextComponent(
-      text: 'TRUE',
-      textRenderer: TextPaint(
-        style: TextStyle(
-          color: Colors.green.withOpacity(0.3),
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-        ),
-      ),
-      position: Vector2(size.x - 30, size.y / 2),
-      anchor: Anchor.centerRight,
+      position: Vector2(size.x / 2, size.y - 30),
+      anchor: Anchor.center,
     ));
   }
 
@@ -144,8 +141,13 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
     priority = 100;
 
     add(ScaleEffect.to(
-      Vector2.all(1.05),
-      EffectController(duration: 0.1),
+      Vector2.all(1.06),
+      EffectController(duration: 0.15, curve: Curves.easeOut),
+    ));
+
+    add(MoveEffect.by(
+      Vector2(0, -5),
+      EffectController(duration: 0.15, curve: Curves.easeOut),
     ));
   }
 
@@ -158,35 +160,52 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
 
     final dx = position.x - _initialPosition.x;
 
-    // Rotate slightly based on drag distance
-    angle = (dx / 500) * 0.5;
+    angle = (dx / 400) * 0.4;
 
-    // Visual Feedback
     final normalized = (dx / _swipeThreshold).clamp(-1.0, 1.0);
     final absVal = normalized.abs();
 
-    if (normalized > 0.1) {
-      // Right -> TRUE (Green)
-      _choiceOverlay.color = Colors.green.withOpacity(absVal * 0.6);
-      _choiceLabel.text = 'TRUE';
+    if (normalized > 0.15) {
+      _choiceOverlay.updateGradient(true);
+      _choiceOverlay.opacity = absVal * 0.85;
+      _choiceLabel.text = _rightOption.toUpperCase();
       _choiceLabel.textRenderer = TextPaint(
         style: TextStyle(
-            color: Colors.white.withOpacity(absVal),
-            fontSize: 52,
-            fontWeight: FontWeight.w900),
+          color: Colors.white.withOpacity(math.min(absVal * 1.2, 1.0)),
+          fontSize: 48,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1.0,
+          shadows: [
+            Shadow(
+              color: Colors.black38,
+              offset: const Offset(0, 4),
+              blurRadius: 10,
+            ),
+          ],
+        ),
       );
-    } else if (normalized < -0.1) {
-      // Left -> FALSE (Red)
-      _choiceOverlay.color = Colors.red.withOpacity(absVal * 0.6);
-      _choiceLabel.text = 'FALSE';
+    } else if (normalized < -0.15) {
+      // Left -> First option
+      _choiceOverlay.updateGradient(false);
+      _choiceOverlay.opacity = absVal * 0.85;
+      _choiceLabel.text = _leftOption.toUpperCase();
       _choiceLabel.textRenderer = TextPaint(
         style: TextStyle(
-            color: Colors.white.withOpacity(absVal),
-            fontSize: 52,
-            fontWeight: FontWeight.w900),
+          color: Colors.white.withOpacity(math.min(absVal * 1.2, 1.0)),
+          fontSize: 48,
+          fontWeight: FontWeight.w900,
+          letterSpacing: 1.0,
+          shadows: [
+            Shadow(
+              color: Colors.black38,
+              offset: const Offset(0, 4),
+              blurRadius: 10,
+            ),
+          ],
+        ),
       );
     } else {
-      _choiceOverlay.color = Colors.transparent;
+      _choiceOverlay.opacity = 0;
       _choiceLabel.text = '';
     }
   }
@@ -209,50 +228,41 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
   void _animateBack() {
     add(MoveEffect.to(
       _initialPosition,
-      EffectController(duration: 0.3, curve: Curves.easeOutBack),
+      EffectController(duration: 0.35, curve: Curves.elasticOut),
     ));
     add(RotateEffect.to(
       0,
-      EffectController(duration: 0.3, curve: Curves.easeOut),
+      EffectController(duration: 0.35, curve: Curves.easeOut),
     ));
     add(ScaleEffect.to(
       Vector2.all(1.0),
-      EffectController(duration: 0.2),
+      EffectController(duration: 0.25, curve: Curves.easeOut),
     ));
 
-    // Reset overlay
-    _choiceOverlay.color = Colors.transparent;
+    _choiceOverlay.opacity = 0;
     _choiceLabel.text = '';
   }
 
   void _animateOut(bool isRight) {
-    final targetX = isRight ? 1000.0 : -1000.0;
+    final targetX = isRight ? 1200.0 : -1200.0;
+    final targetRotation = isRight ? 0.6 : -0.6;
+
     add(MoveEffect.to(
-      Vector2(targetX, position.y + 100),
+      Vector2(targetX, position.y + 150),
       EffectController(duration: 0.4, curve: Curves.easeInCubic),
+    ));
+
+    add(RotateEffect.to(
+      targetRotation,
+      EffectController(duration: 0.4, curve: Curves.easeInCubic),
+    ));
+
+    add(ScaleEffect.to(
+      Vector2.all(0.8),
+      EffectController(duration: 0.35, curve: Curves.easeIn),
       onComplete: () {
-        // User request check: "Swipe Right for True". "Swipe Left for False".
-        // correctIndex 0 -> True, correctIndex 1 -> False.
-
-        bool userChoseTrue = isRight;
-
-        // If options are ["True", "False"], True is 0.
-        // If user swiped right (True), they picked index 0.
-        int userIndex = userChoseTrue ? 0 : 1;
-
+        int userIndex = isRight ? 1 : 0;
         bool isCorrect = (userIndex == question.correctIndex);
-
-        // If types are mixed, we compare option string.
-        if (question.type == QuestionType.binary &&
-            question.options.contains("True")) {
-          final trueIndex = question.options.indexOf("True");
-          isCorrect = (userIndex == trueIndex) == userChoseTrue;
-        } else {
-          // Fallback for generic binary (Left/Right options)
-          // Assume Option 0 = Left, Option 1 = Right
-          isCorrect = (isRight && question.correctIndex == 1) ||
-              (!isRight && question.correctIndex == 0);
-        }
 
         onResult(isCorrect);
         removeFromParent();
@@ -261,13 +271,11 @@ class SwipeCardComponent extends PositionComponent with DragCallbacks {
   }
 }
 
-class _RoundedCardBackground extends PositionComponent {
-  final Color color;
+class _EnhancedCardBackground extends PositionComponent {
   final double radius;
 
-  _RoundedCardBackground({
+  _EnhancedCardBackground({
     required Vector2 size,
-    required this.color,
     required this.radius,
   }) : super(size: size);
 
@@ -277,28 +285,71 @@ class _RoundedCardBackground extends PositionComponent {
       size.toRect(),
       Radius.circular(radius),
     );
-    canvas.drawRRect(rrect, Paint()..color = color);
+
+    final gradient = ui.Gradient.linear(
+      const Offset(0, 0),
+      Offset(0, size.y),
+      [
+        Colors.white,
+        const Color(0xFFFAFAFA),
+      ],
+    );
+
+    canvas.drawRRect(
+      rrect,
+      Paint()..shader = gradient,
+    );
+
+    canvas.drawRRect(
+      rrect,
+      Paint()
+        ..color = const Color(0xFFE5E7EB)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1.5,
+    );
   }
 }
 
-class _GradientRectComponent extends PositionComponent {
-  Color color;
+// Gradient overlay for swipe feedback
+class _GradientOverlay extends PositionComponent {
   final double radius;
+  double opacity = 0;
+  bool isTrue = true;
 
-  _GradientRectComponent({
+  _GradientOverlay({
     required Vector2 size,
-    required this.color,
     required this.radius,
   }) : super(size: size);
 
+  void updateGradient(bool isTrueDirection) {
+    isTrue = isTrueDirection;
+  }
+
   @override
   void render(ui.Canvas canvas) {
-    if (color == Colors.transparent) return;
+    if (opacity <= 0) return;
 
     final rrect = RRect.fromRectAndRadius(
       size.toRect(),
       Radius.circular(radius),
     );
-    canvas.drawRRect(rrect, Paint()..color = color);
+
+    final colors = isTrue
+        ? [
+            const Color(0xFF10B981).withOpacity(opacity * 0.6),
+            const Color(0xFF059669).withOpacity(opacity * 0.8),
+          ]
+        : [
+            const Color(0xFFEF4444).withOpacity(opacity * 0.6),
+            const Color(0xFFDC2626).withOpacity(opacity * 0.8),
+          ];
+
+    final gradient = ui.Gradient.linear(
+      const Offset(0, 0),
+      Offset(size.x, size.y),
+      colors,
+    );
+
+    canvas.drawRRect(rrect, Paint()..shader = gradient);
   }
 }
