@@ -94,7 +94,7 @@ class LevelBottomSheet extends StatelessWidget {
                       const SizedBox(width: 12),
                       Expanded(
                         child: Text(
-                          'Complete at least 5 questions correctly to unlock the next level and earn XP!',
+                          'Complete at least 8 questions correctly to unlock the next level and earn XP!',
                           style: TextStyle(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.w600,

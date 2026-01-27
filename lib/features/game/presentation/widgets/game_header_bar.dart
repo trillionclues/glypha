@@ -172,7 +172,7 @@ class _GoalDisplay extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final gameState = ref.watch(gameStateProvider);
     final score = gameState.score;
-    const goal = 5;
+    const goal = 8;
     final progress = (score / goal).clamp(0.0, 1.0);
 
     return Column(

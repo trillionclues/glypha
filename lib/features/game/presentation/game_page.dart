@@ -51,10 +51,42 @@ class _GamePageState extends ConsumerState<GamePage> {
   Widget build(BuildContext context) {
     final gameState = ref.watch(gameStateProvider);
 
+    ref.listen(gameStateProvider, (previous, next) {
+      if ((previous == null || !previous.isVictory) && next.isVictory) {
+        // Auto-save on victory
+        if (widget.levelId != null) {
+          final stars = _calculateStars(next.score);
+          ref.read(progressionNotifierProvider.notifier).completeLevel(
+                levelId: widget.levelId!,
+                score: next.score,
+                stars: stars,
+              );
+
+          // update xp
+          final xpGain = 50 + (stars * 10);
+          ref.read(userStatsNotifierProvider.notifier).addXp(xpGain);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Level is lost! Progress not saved.'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        }
+      }
+    });
+
     return PopScope(
       canPop: false,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
+
+        // If game is over, just pop without confirmation (state usually saved or lost)
+        if (gameState.isGameOver) {
+          Navigator.of(context).pop();
+          return;
+        }
 
         final shouldPop = await showDialog<bool>(
           context: context,
@@ -154,25 +186,9 @@ class _GamePageState extends ConsumerState<GamePage> {
                       ],
                       const SizedBox(height: 30),
                       ElevatedButton(
-                        onPressed: () async {
-                          if (gameState.isVictory && widget.levelId != null) {
-                            await ref
-                                .read(progressionNotifierProvider.notifier)
-                                .completeLevel(
-                                  levelId: widget.levelId!,
-                                  score: gameState.score,
-                                  stars: _calculateStars(gameState.score),
-                                );
-
-                            // Award XP: 50 base + 10 per star
-                            final xpGain =
-                                50 + (_calculateStars(gameState.score) * 10);
-                            await ref
-                                .read(userStatsNotifierProvider.notifier)
-                                .addXp(xpGain);
-                          }
+                        onPressed: () {
                           ref.read(gameStateProvider.notifier).reset();
-                          if (context.mounted) Navigator.of(context).pop();
+                          Navigator.of(context).pop();
                         },
                         style: ElevatedButton.styleFrom(
                           padding: const EdgeInsets.symmetric(
@@ -391,7 +407,7 @@ class _GamePageState extends ConsumerState<GamePage> {
   int _calculateStars(int score) {
     if (score >= 15) return 3;
     if (score >= 10) return 2;
-    if (score >= 5) return 1;
+    if (score >= 8) return 1;
     return 0;
   }
 }
