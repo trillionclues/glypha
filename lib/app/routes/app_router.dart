@@ -8,7 +8,7 @@ import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
 import 'package:glypha/features/home/presentation/pages/home_page.dart';
 import 'package:glypha/features/home/presentation/pages/shell_scaffold.dart';
 import 'package:glypha/features/leaderboard/presentation/leaderboard_page.dart';
-import 'package:glypha/features/practice/presentation/practice_page.dart';
+import 'package:glypha/features/practice/presentation/questions_page.dart';
 import 'package:glypha/features/profile/presentation/profile_page.dart';
 import 'package:glypha/features/splash/presentation/pages/splash_page.dart';
 import 'package:glypha/features/game/presentation/game_page.dart';
