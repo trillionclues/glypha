@@ -41,7 +41,6 @@ class _OnboardingPageState extends ConsumerState<OnboardingPage> {
     _confettiController =
         ConfettiController(duration: const Duration(seconds: 3));
 
-    // Initialize default time in notifier
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .read(onboardingNotifierProvider.notifier)
@@ -392,7 +391,12 @@ class _GoalStep extends ConsumerWidget {
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onBackground.withOpacity(0.6),
             ),
-          ),
+          )
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
+              .shimmer(
+                  duration: 2000.ms,
+                  delay: 1000.ms,
+                  color: theme.colorScheme.primary.withOpacity(0.2)),
           const SizedBox(height: 32),
           ListView.separated(
             shrinkWrap: true,
@@ -451,7 +455,12 @@ class _InterestsStep extends ConsumerWidget {
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onBackground.withOpacity(0.6),
             ),
-          ),
+          )
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
+              .shimmer(
+                  duration: 2000.ms,
+                  delay: 1000.ms,
+                  color: theme.colorScheme.primary.withOpacity(0.2)),
           const SizedBox(height: 32),
           Wrap(
             spacing: 12,
@@ -533,10 +542,13 @@ class _ReminderStep extends StatelessWidget {
             style: theme.textTheme.bodyLarge?.copyWith(
               color: theme.colorScheme.onBackground.withOpacity(0.6),
             ),
-          ),
+          )
+              .animate(onPlay: (controller) => controller.repeat(reverse: true))
+              .shimmer(
+                  duration: 2000.ms,
+                  delay: 1000.ms,
+                  color: theme.colorScheme.primary.withOpacity(0.2)),
           const SizedBox(height: 48),
-
-          // Time Picker Card
           Center(
             child: GestureDetector(
               onTap: onTimeTap,
@@ -550,7 +562,17 @@ class _ReminderStep extends StatelessWidget {
                 child: Column(
                   children: [
                     Icon(Icons.notifications_active,
-                        size: 32, color: theme.colorScheme.primary),
+                            size: 32, color: theme.colorScheme.primary)
+                        .animate(
+                            onPlay: (controller) =>
+                                controller.repeat(reverse: true))
+                        .scale(
+                            begin: const Offset(1, 1),
+                            end: const Offset(1.2, 1.2),
+                            duration: 1000.ms,
+                            curve: Curves.easeInOut)
+                        .then()
+                        .shake(hz: 4, curve: Curves.easeInOut),
                     const SizedBox(height: 16),
                     Text(
                       selectedTime.format(context),
@@ -799,10 +821,22 @@ class _SelectableCard extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon,
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? theme.colorScheme.primary.withOpacity(0.1)
+                    : theme.colorScheme.surfaceVariant.withOpacity(0.5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
                 color: isSelected
                     ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface.withOpacity(0.5)),
+                    : theme.colorScheme.onSurfaceVariant,
+                size: 24,
+              ),
+            ),
             const SizedBox(width: 16),
             Expanded(
               child: Column(
@@ -811,7 +845,7 @@ class _SelectableCard extends StatelessWidget {
                   Text(
                     title,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.bold,
                       color: isSelected
                           ? theme.colorScheme.primary
                           : theme.colorScheme.onSurface,
@@ -822,18 +856,28 @@ class _SelectableCard extends StatelessWidget {
                     Text(
                       subtitle!,
                       style: theme.textTheme.bodySmall?.copyWith(
-                        color: theme.colorScheme.onSurface.withOpacity(0.6),
+                        color: theme.colorScheme.onSurfaceVariant,
                       ),
-                    ),
+                    ).animate(target: isSelected ? 1 : 0).shimmer(
+                        duration: 1200.ms,
+                        color: theme.colorScheme.primary.withOpacity(0.3)),
                   ],
                 ],
               ),
             ),
             if (isSelected)
-              Icon(Icons.check_circle, color: theme.colorScheme.primary)
-            else
-              Icon(Icons.circle_outlined,
-                  color: theme.colorScheme.outline.withOpacity(0.3)),
+              Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: theme.colorScheme.primary,
+                ),
+                padding: const EdgeInsets.all(4),
+                child: const Icon(
+                  Icons.check,
+                  size: 16,
+                  color: Colors.white,
+                ),
+              ).animate().scale(duration: 200.ms, curve: Curves.easeOutBack),
           ],
         ),
       ),

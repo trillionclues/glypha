@@ -30,7 +30,6 @@ class _HomePageState extends ConsumerState<HomePage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToCurrentLevel();
     });
-    ref.read(userStatsNotifierProvider.notifier).rechargeEnergy();
   }
 
   void _scrollToCurrentLevel() {

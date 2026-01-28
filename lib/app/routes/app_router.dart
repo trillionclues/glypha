@@ -53,9 +53,15 @@ GoRouter appRouter(AppRouterRef ref) {
 
       if (isSplashing || isOnboarding) return null;
 
-      if (authState is AuthAuthenticated) {
-        if (isLoggingIn) return HomePage.route;
-      } else if (authState is AuthUnauthenticated) {
+      // if (authState is AuthAuthenticated) {
+      //   if (!authState.user.isOnboardingCompleted) {
+      //     if (!isOnboarding) return OnboardingPage.route;
+      //     return null;
+      //   }
+
+      //   if (isLoggingIn || isOnboarding) return HomePage.route;
+      // } else
+      if (authState is AuthUnauthenticated) {
         if (!isLoggingIn) return LoginPage.route;
       }
 

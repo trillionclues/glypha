@@ -11,7 +11,6 @@ class TopStatsBar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final statsAsync = ref.watch(userStatsNotifierProvider);
-
     return Positioned(
       top: 0,
       left: 0,

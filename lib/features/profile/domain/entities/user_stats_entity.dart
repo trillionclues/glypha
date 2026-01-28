@@ -7,7 +7,7 @@ part 'user_stats_entity.g.dart';
 class UserStats {
   final int xp;
   final int streak;
-  final double energy; // 0.0 to 1.0
+  final double energy; // 0.0 to 1.0 (represents 0% to 100%)
 
   @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp)
   final DateTime lastEnergyUpdate;

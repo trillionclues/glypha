@@ -18,13 +18,35 @@ class UserStatsNotifier extends _$UserStatsNotifier {
           .snapshots()
           .map((snapshot) {
         final data = snapshot.data();
-        if (data != null && data.containsKey('stats')) {
-          return UserStats.fromJson(data['stats'] as Map<String, dynamic>);
-        }
-        return UserStats.initial();
+        final stats = data != null && data.containsKey('stats')
+            ? UserStats.fromJson(data['stats'] as Map<String, dynamic>)
+            : UserStats.initial();
+
+        return _calculateCurrentEnergy(stats);
       });
     }
     return Stream.value(UserStats.initial());
+  }
+
+  UserStats _calculateCurrentEnergy(UserStats stats) {
+    if (stats.energy >= 1.0) {
+      return stats;
+    }
+
+    final now = DateTime.now();
+    final minutesElapsed = now.difference(stats.lastEnergyUpdate).inMinutes;
+
+    if (minutesElapsed <= 0) {
+      return stats;
+    }
+
+    // Calculate recharge: 1% per minute
+    final recharge = minutesElapsed * 0.01;
+    final newEnergy = (stats.energy + recharge).clamp(0.0, 1.0);
+
+    return stats.copyWith(
+      energy: newEnergy,
+    );
   }
 
   Future<void> addXp(int amount) async {
@@ -123,26 +145,67 @@ class UserStatsNotifier extends _$UserStatsNotifier {
     }
   }
 
+// Consume energy when starting a level
+// ONLY method that writes energy to Firebase
   Future<void> consumeEnergy(double amount) async {
     final authState = ref.read(authNotifierProvider);
-    if (authState is AuthAuthenticated) {
-      final docRef =
-          FirebaseFirestore.instance.collection('users').doc(authState.user.id);
-      await FirebaseFirestore.instance.runTransaction((transaction) async {
-        final snapshot = await transaction.get(docRef);
-        final data = snapshot.data() ?? {};
-        final statsMap = data['stats'] as Map<String, dynamic>?;
-        final currentStats = statsMap != null
-            ? UserStats.fromJson(statsMap)
-            : UserStats.initial();
-
-        final updatedStats = currentStats.copyWith(
-          energy: (currentStats.energy - amount).clamp(0.0, 1.0),
-          lastEnergyUpdate: DateTime.now(),
-        );
-
-        transaction.update(docRef, {'stats': updatedStats.toJson()});
-      });
+    if (authState is! AuthAuthenticated) {
+      throw Exception('User not authenticated');
     }
+
+    final docRef =
+        FirebaseFirestore.instance.collection('users').doc(authState.user.id);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(docRef);
+      final data = snapshot.data() ?? {};
+      final statsMap = data['stats'] as Map<String, dynamic>?;
+      final currentStats =
+          statsMap != null ? UserStats.fromJson(statsMap) : UserStats.initial();
+
+      final statsWithRecharge = _calculateCurrentEnergy(currentStats);
+
+      if (statsWithRecharge.energy < amount) {
+        throw Exception(
+            'Not enough energy. Current: ${statsWithRecharge.energy}, Required: $amount');
+      }
+
+      final updatedStats = currentStats.copyWith(
+        energy: (statsWithRecharge.energy - amount).clamp(0.0, 1.0),
+        lastEnergyUpdate: DateTime.now(),
+      );
+
+      transaction.update(docRef, {'stats': updatedStats.toJson()});
+    });
+  }
+
+  // Optional: Force sync energy to Firebase without consuming
+  // Useful to persist the recharged energy occasionally
+  Future<void> syncEnergyToFirebase() async {
+    final authState = ref.read(authNotifierProvider);
+    if (authState is! AuthAuthenticated) return;
+
+    final docRef =
+        FirebaseFirestore.instance.collection('users').doc(authState.user.id);
+
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      final snapshot = await transaction.get(docRef);
+      final data = snapshot.data() ?? {};
+      final statsMap = data['stats'] as Map<String, dynamic>?;
+      final currentStats =
+          statsMap != null ? UserStats.fromJson(statsMap) : UserStats.initial();
+
+      final statsWithRecharge = _calculateCurrentEnergy(currentStats);
+
+      if (statsWithRecharge.energy == currentStats.energy) {
+        return;
+      }
+
+      final updatedStats = statsWithRecharge.copyWith(
+        lastEnergyUpdate: DateTime.now(),
+      );
+
+      transaction.update(docRef, {'stats': updatedStats.toJson()});
+    });
   }
 }

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:glypha/features/home/data/model/level_data.dart';
+import 'package:glypha/features/profile/presentation/provider/user_stats_provider.dart';
 import 'package:go_router/go_router.dart';
 
-class LevelBottomSheet extends StatelessWidget {
+class LevelBottomSheet extends ConsumerWidget {
   final LevelData level;
 
   const LevelBottomSheet({super.key, required this.level});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+    final statsAsync = ref.watch(userStatsNotifierProvider);
 
     return Container(
       decoration: const BoxDecoration(
@@ -104,6 +107,37 @@ class LevelBottomSheet extends StatelessWidget {
                     ],
                   ),
                 ),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: Colors.orange.withOpacity(0.3),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.bolt,
+                        color: Colors.orange,
+                        size: 20,
+                      ),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Costs 10 energy to play',
+                        style: TextStyle(
+                          color: Colors.orange[800],
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
                 const SizedBox(height: 24),
               ],
               Row(
@@ -132,40 +166,82 @@ class LevelBottomSheet extends StatelessWidget {
                   if (level.isCompleted) const SizedBox(width: 12),
                   Expanded(
                     flex: level.isCompleted ? 1 : 2,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        HapticFeedback.mediumImpact();
-                        Navigator.pop(context);
-                        context.pushNamed(
-                          'game',
-                          extra: {
-                            'gameType': level.gameType,
-                            'levelId': level.id,
-                          },
+                    child: statsAsync.when(
+                      data: (stats) {
+                        // Check if user has enough energy (10 energy = 0.10)
+                        final hasEnoughEnergy = stats.energy >= 0.10;
+
+                        return ElevatedButton(
+                          onPressed: hasEnoughEnergy
+                              ? () => _startLevel(context, ref)
+                              : null,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: hasEnoughEnergy
+                                ? theme.colorScheme.primary
+                                : Colors.grey,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            elevation: 0,
+                          ),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              if (!hasEnoughEnergy) ...[
+                                const Icon(Icons.bolt_outlined, size: 20),
+                                const SizedBox(width: 4),
+                              ],
+                              Text(
+                                hasEnoughEnergy
+                                    ? (level.isCompleted
+                                        ? 'Play Again'
+                                        : 'Start Level')
+                                    : 'Not Enough Energy',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              if (hasEnoughEnergy) ...[
+                                const SizedBox(width: 8),
+                                const Icon(Icons.arrow_forward_rounded,
+                                    size: 20),
+                              ],
+                            ],
+                          ),
                         );
                       },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: theme.colorScheme.primary,
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(16),
-                        ),
-                        elevation: 0,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            level.isCompleted ? 'Play Again' : 'Start Level',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+                      loading: () => ElevatedButton(
+                        onPressed: null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
                           ),
-                          const SizedBox(width: 8),
-                          const Icon(Icons.arrow_forward_rounded, size: 20),
-                        ],
+                        ),
+                        child: const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor:
+                                AlwaysStoppedAnimation<Color>(Colors.white),
+                          ),
+                        ),
+                      ),
+                      error: (_, __) => ElevatedButton(
+                        onPressed: null,
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.grey,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(16),
+                          ),
+                        ),
+                        child: const Text('Error'),
                       ),
                     ),
                   ),
@@ -176,6 +252,52 @@ class LevelBottomSheet extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _startLevel(BuildContext context, WidgetRef ref) async {
+    HapticFeedback.mediumImpact();
+
+    try {
+      // Consume energy before starting level (10 energy = 0.10)
+      await ref.read(userStatsNotifierProvider.notifier).consumeEnergy(0.10);
+
+      if (context.mounted) {
+        Navigator.pop(context);
+        context.pushNamed(
+          'game',
+          extra: {
+            'gameType': level.gameType,
+            'levelId': level.id,
+          },
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Row(
+              children: [
+                Icon(Icons.bolt, color: Colors.orange),
+                SizedBox(width: 8),
+                Text('Not Enough Energy'),
+              ],
+            ),
+            content: Text(
+              e.toString().contains('Not enough energy')
+                  ? 'You need at least 10 energy to play this level. Energy recharges at 1% per minute.'
+                  : 'Something went wrong. Please try again.',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('OK'),
+              ),
+            ],
+          ),
+        );
+      }
+    }
   }
 }
 
