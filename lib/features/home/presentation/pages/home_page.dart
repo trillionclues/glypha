@@ -4,6 +4,7 @@ import 'package:glypha/features/home/presentation/widgets/map_view.dart';
 import 'package:glypha/features/home/presentation/widgets/topstats_bar.dart';
 import 'package:glypha/features/home/presentation/provider/level_provider.dart';
 import 'package:glypha/features/home/presentation/provider/progression_provider.dart';
+import 'package:glypha/features/profile/presentation/provider/user_stats_provider.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   static const String route = '/home';
@@ -29,6 +30,7 @@ class _HomePageState extends ConsumerState<HomePage>
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollToCurrentLevel();
     });
+    ref.read(userStatsNotifierProvider.notifier).rechargeEnergy();
   }
 
   void _scrollToCurrentLevel() {

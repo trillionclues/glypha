@@ -12,6 +12,8 @@ UserStats _$UserStatsFromJson(Map<String, dynamic> json) => UserStats(
       energy: (json['energy'] as num).toDouble(),
       lastEnergyUpdate:
           UserStats._timestampToDateTime(json['lastEnergyUpdate']),
+      lastPlayedDate:
+          UserStats._timestampToDateTimeNullable(json['lastPlayedDate']),
     );
 
 Map<String, dynamic> _$UserStatsToJson(UserStats instance) => <String, dynamic>{
@@ -20,4 +22,6 @@ Map<String, dynamic> _$UserStatsToJson(UserStats instance) => <String, dynamic>{
       'energy': instance.energy,
       'lastEnergyUpdate':
           UserStats._dateTimeToTimestamp(instance.lastEnergyUpdate),
+      'lastPlayedDate':
+          UserStats._dateTimeToTimestampNullable(instance.lastPlayedDate),
     };

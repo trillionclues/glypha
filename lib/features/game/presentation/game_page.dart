@@ -62,9 +62,10 @@ class _GamePageState extends ConsumerState<GamePage> {
                 stars: stars,
               );
 
-          // update xp
+          // update xp and streak
           final xpGain = 50 + (stars * 10);
           ref.read(userStatsNotifierProvider.notifier).addXp(xpGain);
+          ref.read(userStatsNotifierProvider.notifier).updateStreak();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
