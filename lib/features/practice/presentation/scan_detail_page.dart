@@ -1,0 +1,511 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:glypha/core/themes/app_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
+import 'package:uuid/uuid.dart';
+import 'package:glypha/features/practice/presentation/provider/scan_record_provider.dart';
+import 'package:glypha/features/practice/domain/entities/scan_record_entity.dart';
+import 'package:glypha/features/practice/presentation/provider/gen_ai_provider.dart';
+import 'package:glypha/features/game/data/repositories/question_repository.dart';
+import 'package:glypha/features/game/domain/entities/question_entity.dart';
+import 'package:glypha/features/game/domain/entities/game_type.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_notifier.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
+
+class ScanDetailPage extends ConsumerStatefulWidget {
+  final String scanId;
+
+  const ScanDetailPage({super.key, required this.scanId});
+
+  @override
+  ConsumerState<ScanDetailPage> createState() => _ScanDetailPageState();
+}
+
+class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
+  ScanRecord? _scan;
+  bool _isLoading = true;
+  bool _isGenerating = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadScan();
+  }
+
+  Future<void> _loadScan() async {
+    try {
+      final repository = ref.read(scanRecordRepositoryProvider);
+      final scan = await repository.getScan(widget.scanId);
+      setState(() {
+        _scan = scan;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _togglePublic() async {
+    if (_scan == null) return;
+
+    final newValue = !_scan!.isPublic;
+    try {
+      await ref
+          .read(scanRecordRepositoryProvider)
+          .togglePublic(widget.scanId, newValue);
+      setState(() {
+        _scan = _scan!.copyWith(isPublic: newValue);
+      });
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to update: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _deleteScan() async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Delete Scan',
+            style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+        content: Text('Are you sure you want to delete this scan?',
+            style: GoogleFonts.outfit()),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text('Cancel', style: GoogleFonts.outfit()),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: Text('Delete', style: GoogleFonts.outfit(color: Colors.red)),
+          ),
+        ],
+      ),
+    );
+
+    if (confirm == true) {
+      try {
+        await ref.read(scanRecordRepositoryProvider).deleteScan(widget.scanId);
+        if (mounted) Navigator.pop(context);
+      } catch (e) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to delete: $e')),
+          );
+        }
+      }
+    }
+  }
+
+  void _copyToClipboard() {
+    if (_scan == null) return;
+    Clipboard.setData(ClipboardData(text: _scan!.extractedText));
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Copied to clipboard', style: GoogleFonts.outfit()),
+        behavior: SnackBarBehavior.floating,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      ),
+    );
+  }
+
+  Future<void> _generateQuestions() async {
+    if (_scan == null || _isGenerating) return;
+
+    setState(() {
+      _isGenerating = true;
+    });
+
+    try {
+      final genAi = ref.read(genAiServiceProvider);
+      final authState = ref.read(authNotifierProvider);
+      final userId =
+          authState is AuthAuthenticated ? authState.user.id : 'anonymous';
+
+      // this generates questions from the extracted text
+      final questionsData =
+          await genAi.generateQuestionsFromText(_scan!.extractedText);
+
+      // ...and then converts them to question entities
+      final questions = questionsData.map((data) {
+        final questionType =
+            _parseQuestionType(data['type'] as String? ?? 'mcq');
+        final options = List<String>.from(data['options'] ?? []);
+        final id = const Uuid().v4();
+
+        return Question(
+          id: id,
+          prompt: data['prompt'] as String? ?? '',
+          type: questionType,
+          options: options,
+          correctIndex: data['correctIndex'] as int? ?? 0,
+          explanation: data['explanation'] as String?,
+          difficulty: data['difficulty'] as int? ?? 3,
+          tags: List<String>.from(data['tags'] ?? []),
+          ownerId: userId,
+          isPublic: _scan!.isPublic,
+          createdAt: DateTime.now(),
+          compatibleModes: _determineCompatibleModes(questionType, options),
+        );
+      }).toList();
+
+      // ...and saves to the allQuestions collection
+      await ref.read(questionRepositoryProvider).saveQuestionsBatch(questions);
+
+      final updatedScan = _scan!.copyWith(
+        generatedQuestionIds: questions.map((q) => q.id).toList(),
+      );
+      await ref.read(scanRecordRepositoryProvider).updateScan(updatedScan);
+
+      setState(() {
+        _scan = updatedScan;
+        _isGenerating = false;
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Generated ${questions.length} questions!',
+                style: GoogleFonts.outfit()),
+            behavior: SnackBarBehavior.floating,
+            backgroundColor: const Color(0xFF10B981),
+          ),
+        );
+      }
+    } catch (e) {
+      setState(() {
+        _isGenerating = false;
+      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Failed to generate: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  QuestionType _parseQuestionType(String type) {
+    switch (type.toLowerCase()) {
+      case 'binary':
+        return QuestionType.binary;
+      case 'input':
+        return QuestionType.input;
+      default:
+        return QuestionType.mcq;
+    }
+  }
+
+  List<GameType> _determineCompatibleModes(
+      QuestionType type, List<String> options) {
+    final modes = <GameType>[];
+
+    switch (type) {
+      case QuestionType.binary:
+        modes.addAll([GameType.swipe, GameType.runner]);
+        break;
+      case QuestionType.mcq:
+        if (options.length == 2) {
+          modes.addAll([GameType.swipe, GameType.runner]);
+        } else if (options.length <= 4) {
+          modes.addAll([GameType.runner]);
+        }
+        break;
+      case QuestionType.matchPair:
+        modes.addAll([GameType.swipe]);
+        break;
+      case QuestionType.input:
+        break;
+    }
+
+    if (modes.isEmpty) {
+      modes.addAll([GameType.swipe]);
+    }
+
+    return modes;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (_scan == null) {
+      return Scaffold(
+        appBar: AppBar(title: const Text('Scan Not Found')),
+        body: const Center(child: Text('Could not load scan')),
+      );
+    }
+
+    final dateFormat = DateFormat('MMMM d, yyyy');
+    final timeFormat = DateFormat('h:mm a');
+
+    return Scaffold(
+      backgroundColor: AppTheme.lightBackground,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios_rounded,
+              color: Color(0xFF1E293B)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Text(
+          'Scan Details',
+          style: GoogleFonts.outfit(
+            color: const Color(0xFF1E293B),
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
+        ),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.delete_outline_rounded,
+                color: Color(0xFFDC2626)),
+            onPressed: _deleteScan,
+          ),
+        ],
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF6366F1).withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: const Icon(
+                          Icons.document_scanner_rounded,
+                          color: Color(0xFF6366F1),
+                          size: 24,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              dateFormat.format(_scan!.createdAt),
+                              style: GoogleFonts.outfit(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: const Color(0xFF1E293B),
+                              ),
+                            ),
+                            Text(
+                              timeFormat.format(_scan!.createdAt),
+                              style: GoogleFonts.outfit(
+                                fontSize: 13,
+                                color: const Color(0xFF94A3B8),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 20),
+                  const Divider(height: 1),
+                  const SizedBox(height: 16),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Visibility',
+                            style: GoogleFonts.outfit(
+                              fontWeight: FontWeight.w600,
+                              color: const Color(0xFF1E293B),
+                            ),
+                          ),
+                          Text(
+                            _scan!.isPublic
+                                ? 'Others can see this scan'
+                                : 'Only you can see this',
+                            style: GoogleFonts.outfit(
+                              fontSize: 12,
+                              color: const Color(0xFF94A3B8),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Switch.adaptive(
+                        value: _scan!.isPublic,
+                        onChanged: (_) => _togglePublic(),
+                        activeColor: const Color(0xFF10B981),
+                      ),
+                    ],
+                  ),
+                  if (_scan!.generatedQuestionIds.isNotEmpty) ...[
+                    const SizedBox(height: 16),
+                    const Divider(height: 1),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Icon(Icons.quiz_rounded,
+                            size: 18, color: Colors.grey.shade500),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${_scan!.generatedQuestionIds.length} questions generated',
+                          style: GoogleFonts.outfit(
+                            color: const Color(0xFF64748B),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ],
+              ),
+            ),
+            const SizedBox(height: 24),
+            // Extracted text section
+            Text(
+              'Extracted Text',
+              style: GoogleFonts.outfit(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: const Color(0xFF1E293B),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.03),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: SelectableText(
+                _scan!.extractedText,
+                style: GoogleFonts.outfit(
+                  fontSize: 15,
+                  height: 1.6,
+                  color: const Color(0xFF334155),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border(top: BorderSide(color: Colors.grey.shade200)),
+        ),
+        child: SafeArea(
+          child: Row(
+            children: [
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: _copyToClipboard,
+                  icon: const Icon(Icons.copy_rounded, size: 18),
+                  label: Text('Copy',
+                      style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF64748B),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    side: BorderSide(color: Colors.grey.shade300),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                flex: 2,
+                child: ElevatedButton.icon(
+                  onPressed: _scan!.generatedQuestionIds.isNotEmpty
+                      ? null
+                      : (_isGenerating ? null : _generateQuestions),
+                  icon: _isGenerating
+                      ? const SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : Icon(
+                          _scan!.generatedQuestionIds.isNotEmpty
+                              ? Icons.check_circle_rounded
+                              : Icons.auto_awesome_rounded,
+                          size: 18,
+                        ),
+                  label: Text(
+                    _isGenerating
+                        ? 'Generating...'
+                        : (_scan!.generatedQuestionIds.isNotEmpty
+                            ? 'Questions Generated'
+                            : 'Generate Questions'),
+                    style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: _scan!.generatedQuestionIds.isNotEmpty
+                        ? const Color(0xFF10B981)
+                        : const Color(0xFF6366F1),
+                    foregroundColor: Colors.white,
+                    disabledBackgroundColor: const Color(0xFF10B981),
+                    disabledForegroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

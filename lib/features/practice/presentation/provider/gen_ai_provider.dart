@@ -2,37 +2,66 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:glypha/features/game/domain/entities/question_entity.dart';
 
 part 'gen_ai_provider.g.dart';
 
 class GenAIService {
-  final GenerativeModel _model;
+  final GenerativeModel _ocrModel;
+  final GenerativeModel _questionGenModel;
 
   GenAIService(String apiKey)
-      : _model = GenerativeModel(
-          model: 'gemini-1.5-flash',
+      : _ocrModel = GenerativeModel(
+          model: 'gemini-2.0-flash',
           apiKey: apiKey,
           systemInstruction: Content.system(
-              'You are an expert educational content creator. Your task is to extract 5-10 high-quality multiple-choice questions from the provided document (image or text). '
+              'You are an OCR expert. Extract all readable text from the provided image. '
+              'Return ONLY the extracted text, no JSON, no formatting, just the raw text content.'),
+        ),
+        _questionGenModel = GenerativeModel(
+          model: 'gemini-2.0-flash',
+          apiKey: apiKey,
+          systemInstruction: Content.system(
+              'You are an expert educational content creator. Generate 5-10 high-quality questions from the provided text. '
+              'Create a mix of question types based on the content. '
               'Always respond with a valid JSON object. '
-              'Schema: { "bankName": "String", "questions": [ { "prompt": "String", "options": ["String"], "correctIndex": int, "type": "mcq" } ] }'),
+              'Schema: { "questions": [ { '
+              '"prompt": "String - the question text", '
+              '"type": "mcq | binary", '
+              '"options": ["String"] - 3 options for mcq, 2 for binary (True/False or Yes/No), '
+              '"correctIndex": int - 0-indexed, '
+              '"explanation": "String - brief explanation of the answer", '
+              '"difficulty": int - 1 to 5, '
+              '"tags": ["String"] - subject/topic tags '
+              '} ] }'),
         );
 
-  Future<Map<String, dynamic>> extractFromText(String text) async {
-    final response = await _model.generateContent([Content.text(text)]);
-    return _parseResponse(response.text);
-  }
-
-  Future<Map<String, dynamic>> extractFromImage(File image) async {
+  // Stage 1: Extract raw text from image using OCR
+  Future<String> extractTextFromImage(File image) async {
     final bytes = await image.readAsBytes();
-    final response = await _model.generateContent([
+    final response = await _ocrModel.generateContent([
       Content.multi([
-        TextPart('Extract questions from this document.'),
+        TextPart(
+            'Extract all text from this image. Return only the text content.'),
         DataPart('image/jpeg', bytes),
       ])
     ]);
-    return _parseResponse(response.text);
+
+    final text = response.text;
+    if (text == null || text.trim().isEmpty) {
+      throw Exception('Could not extract text from the image');
+    }
+    return text.trim();
+  }
+
+  // Stage 2: Generate questions from extracted text
+  Future<List<Map<String, dynamic>>> generateQuestionsFromText(
+      String text) async {
+    final response = await _questionGenModel.generateContent([
+      Content.text('Generate educational questions from this content:\n\n$text')
+    ]);
+
+    final result = _parseResponse(response.text);
+    return List<Map<String, dynamic>>.from(result['questions'] ?? []);
   }
 
   Map<String, dynamic> _parseResponse(String? text) {
@@ -41,10 +70,15 @@ class GenAIService {
     // Clean potential markdown code blocks
     String cleaned = text.trim();
     if (cleaned.startsWith('```json')) {
-      cleaned = cleaned.substring(7, cleaned.length - 3).trim();
-    } else if (cleaned.startsWith('```')) {
-      cleaned = cleaned.substring(3, cleaned.length - 3).trim();
+      cleaned = cleaned.substring(7);
     }
+    if (cleaned.startsWith('```')) {
+      cleaned = cleaned.substring(3);
+    }
+    if (cleaned.endsWith('```')) {
+      cleaned = cleaned.substring(0, cleaned.length - 3);
+    }
+    cleaned = cleaned.trim();
 
     return jsonDecode(cleaned) as Map<String, dynamic>;
   }
@@ -52,7 +86,6 @@ class GenAIService {
 
 @riverpod
 GenAIService genAiService(GenAiServiceRef ref) {
-  // TODO: Get API Key from secure storage or env
   const apiKey = String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
   if (apiKey.isEmpty) {
     throw Exception(

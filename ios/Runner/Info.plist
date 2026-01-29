@@ -47,6 +47,10 @@
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSCameraUsageDescription</key>
+	<string>Glypha needs camera access to scan your handwritten notes and convert them into questions.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>Glypha needs photo library access to upload images of your notes for text extraction.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>

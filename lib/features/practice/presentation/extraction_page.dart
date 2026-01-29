@@ -1,82 +1,83 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
-import 'dart:io';
+import 'package:uuid/uuid.dart';
 import 'package:glypha/features/practice/presentation/provider/gen_ai_provider.dart';
-import 'package:glypha/features/game/domain/entities/question_entity.dart';
+import 'package:glypha/features/practice/presentation/provider/scan_record_provider.dart';
+import 'package:glypha/features/practice/domain/entities/scan_record_entity.dart';
 import 'package:glypha/features/auth/presentation/provider/auth_notifier.dart';
 import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
-import 'package:glypha/features/practice/domain/entities/question_bank_entity.dart';
-import 'package:glypha/features/practice/presentation/provider/question_bank_provider.dart';
-import 'package:uuid/uuid.dart';
 
-enum ExtractionStage { input, processing, review, error }
+enum ExtractionStage { capture, processing, result, error }
 
 class ExtractionPage extends ConsumerStatefulWidget {
   static const String route = '/extraction';
-  const ExtractionPage({super.key});
+  final bool useCamera;
+
+  const ExtractionPage({super.key, this.useCamera = false});
 
   @override
   ConsumerState<ExtractionPage> createState() => _ExtractionPageState();
 }
 
 class _ExtractionPageState extends ConsumerState<ExtractionPage> {
-  ExtractionStage _stage = ExtractionStage.input;
+  ExtractionStage _stage = ExtractionStage.capture;
   File? _selectedImage;
-  final TextEditingController _textController = TextEditingController();
+  String _extractedText = '';
+  String _errorMessage = '';
   final ImagePicker _picker = ImagePicker();
 
-  String _bankName = '';
-  List<Question> _extractedQuestions = [];
-  String _errorMessage = '';
+  @override
+  void initState() {
+    super.initState();
+    // Auto-open camera or gallery based on parameter
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _pickImage(widget.useCamera ? ImageSource.camera : ImageSource.gallery);
+    });
+  }
 
   Future<void> _pickImage(ImageSource source) async {
-    final XFile? image = await _picker.pickImage(source: source);
-    if (image != null) {
+    try {
+      final XFile? image = await _picker.pickImage(
+        source: source,
+        requestFullMetadata: false,
+        imageQuality: 85,
+      );
+
+      if (image != null) {
+        setState(() {
+          _selectedImage = File(image.path);
+        });
+        _startExtraction();
+      } else {
+        // User cancelled, go back
+        if (mounted) Navigator.pop(context);
+      }
+    } catch (e) {
       setState(() {
-        _selectedImage = File(image.path);
+        _stage = ExtractionStage.error;
+        _errorMessage =
+            'Could not access camera/gallery. Please check permissions.';
       });
     }
   }
 
   Future<void> _startExtraction() async {
+    if (_selectedImage == null) return;
+
     setState(() {
       _stage = ExtractionStage.processing;
     });
 
     try {
       final genAi = ref.read(genAiServiceProvider);
-      final authState = ref.read(authNotifierProvider);
-      final userId =
-          authState is AuthAuthenticated ? authState.user.id : 'anonymous';
-
-      Map<String, dynamic> result;
-
-      if (_selectedImage != null) {
-        result = await genAi.extractFromImage(_selectedImage!);
-      } else {
-        result = await genAi.extractFromText(_textController.text);
-      }
+      final text = await genAi.extractTextFromImage(_selectedImage!);
 
       setState(() {
-        _bankName = result['bankName'] ?? 'New Question Bank';
-        final List<dynamic> questionsJson = result['questions'] ?? [];
-        _extractedQuestions = questionsJson
-            .map((q) => Question(
-                  id: DateTime.now().millisecondsSinceEpoch.toString() +
-                      (questionsJson.indexOf(q)).toString(),
-                  prompt: q['prompt'],
-                  options: List<String>.from(q['options']),
-                  correctIndex: q['correctIndex'],
-                  type: q['type'] == 'mcq'
-                      ? QuestionType.mcq
-                      : QuestionType.binary,
-                  ownerId: userId,
-                  createdAt: DateTime.now(),
-                ))
-            .toList();
-        _stage = ExtractionStage.review;
+        _extractedText = text;
+        _stage = ExtractionStage.result;
       });
     } catch (e) {
       setState(() {
@@ -86,22 +87,24 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
     }
   }
 
-  Future<void> _saveBank() async {
+  Future<void> _saveScan() async {
     final authState = ref.read(authNotifierProvider);
     final userId =
         authState is AuthAuthenticated ? authState.user.id : 'anonymous';
 
-    final bank = QuestionBank(
+    final scan = ScanRecord(
       id: const Uuid().v4(),
-      name: _bankName,
-      questionIds: _extractedQuestions.map((q) => q.id).toList(),
-      ownerId: userId,
+      userId: userId,
+      extractedText: _extractedText,
+      isPublic: false,
       createdAt: DateTime.now(),
     );
 
     try {
-      await ref.read(questionBankRepositoryProvider).saveBank(bank);
-      if (mounted) Navigator.pop(context);
+      await ref.read(scanRecordRepositoryProvider).saveScan(scan);
+      if (mounted) {
+        Navigator.pop(context, scan);
+      }
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -114,281 +117,106 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        title: Text('New Extraction',
-            style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
-        leading: IconButton(
-          icon: const Icon(Icons.close_rounded),
-          onPressed: () => Navigator.pop(context),
-        ),
-        elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: Colors.black,
-      ),
+      backgroundColor: const Color(0xFFFAF9F6),
+      appBar: _stage == ExtractionStage.result
+          ? AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              leading: IconButton(
+                icon: const Icon(Icons.delete_outline_rounded,
+                    color: Color(0xFFDC2626)),
+                onPressed: () => Navigator.pop(context),
+              ),
+              title: Text('Result',
+                  style: GoogleFonts.outfit(
+                    color: const Color(0xFF1E293B),
+                    fontWeight: FontWeight.bold,
+                  )),
+              centerTitle: true,
+              actions: [
+                IconButton(
+                  icon: Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: const BoxDecoration(
+                      color: Color(0xFF3B82F6),
+                      shape: BoxShape.circle,
+                    ),
+                    child:
+                        const Icon(Icons.check, color: Colors.white, size: 20),
+                  ),
+                  onPressed: _saveScan,
+                ),
+                const SizedBox(width: 8),
+              ],
+            )
+          : null,
       body: AnimatedSwitcher(
-        duration: const Duration(milliseconds: 400),
+        duration: const Duration(milliseconds: 300),
         child: _buildStageContent(),
       ),
-      bottomNavigationBar:
-          _stage == ExtractionStage.input ? _buildInputActions() : null,
     );
   }
 
   Widget _buildStageContent() {
     switch (_stage) {
-      case ExtractionStage.input:
-        return _buildInputStage();
+      case ExtractionStage.capture:
+        return _buildCaptureStage();
       case ExtractionStage.processing:
         return _buildProcessingStage();
-      case ExtractionStage.review:
-        return _buildReviewStage();
+      case ExtractionStage.result:
+        return _buildResultStage();
       case ExtractionStage.error:
         return _buildErrorStage();
     }
   }
 
-  Widget _buildErrorStage() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(32),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.error_outline_rounded,
-                color: Colors.red, size: 64),
-            const SizedBox(height: 24),
-            Text(
-              'Extraction Failed',
-              style:
-                  GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              _errorMessage,
-              textAlign: TextAlign.center,
-              style: GoogleFonts.outfit(color: Colors.grey[600]),
-            ),
-            const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: () => setState(() => _stage = ExtractionStage.input),
-              child: const Text('Try Again'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInputStage() {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Provide Study Material',
-            style:
-                GoogleFonts.outfit(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Take a photo of your notes or paste text to convert into a game.',
-            style: GoogleFonts.outfit(color: Colors.grey[600]),
-          ),
-          const SizedBox(height: 32),
-          if (_selectedImage != null)
-            Stack(
-              children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Image.file(_selectedImage!,
-                      height: 200, width: double.infinity, fit: BoxFit.cover),
-                ),
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: GestureDetector(
-                    onTap: () => setState(() => _selectedImage = null),
-                    child: Container(
-                      padding: const EdgeInsets.all(4),
-                      decoration: const BoxDecoration(
-                          color: Colors.black54, shape: BoxShape.circle),
-                      child: const Icon(Icons.close_rounded,
-                          size: 20, color: Colors.white),
-                    ),
-                  ),
-                ),
-              ],
-            )
-          else
-            Row(
-              children: [
-                Expanded(
-                  child: _buildInputTypeCard(
-                    'Camera',
-                    Icons.camera_alt_rounded,
-                    () => _pickImage(ImageSource.camera),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: _buildInputTypeCard(
-                    'Gallery',
-                    Icons.image_rounded,
-                    () => _pickImage(ImageSource.gallery),
-                  ),
-                ),
-              ],
-            ),
-          const SizedBox(height: 32),
-          Text(
-            'Or Paste Text',
-            style:
-                GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.w600),
-          ),
-          const SizedBox(height: 12),
-          TextField(
-            controller: _textController,
-            maxLines: 8,
-            decoration: InputDecoration(
-              hintText: 'Paste your study notes here...',
-              filled: true,
-              fillColor: Colors.grey[50],
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: Colors.grey[200]!),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(16),
-                borderSide: BorderSide(color: Colors.grey[200]!),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildInputTypeCard(String label, IconData icon, VoidCallback onTap) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 24),
-        decoration: BoxDecoration(
-          color: const Color(0xFF6366F1).withOpacity(0.05),
-          borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFF6366F1).withOpacity(0.1)),
-        ),
-        child: Column(
-          children: [
-            Icon(icon, color: const Color(0xFF6366F1), size: 32),
-            const SizedBox(height: 12),
-            Text(label, style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInputActions() {
-    final bool canStart =
-        _selectedImage != null || _textController.text.length > 20;
-    return Container(
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.grey[200]!)),
-      ),
-      child: ElevatedButton(
-        onPressed: canStart ? _startExtraction : null,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: const Color(0xFF6366F1),
-          foregroundColor: Colors.white,
-          minimumSize: const Size(double.infinity, 56),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          elevation: 0,
-        ),
-        child: Text('Generate Questions',
-            style:
-                GoogleFonts.outfit(fontSize: 16, fontWeight: FontWeight.bold)),
-      ),
+  Widget _buildCaptureStage() {
+    return const Center(
+      child: CircularProgressIndicator(),
     );
   }
 
   Widget _buildProcessingStage() {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const SizedBox(
-              width: 80,
-              height: 80,
-              child: CircularProgressIndicator(
-                  strokeWidth: 6, color: Color(0xFF6366F1))),
-          const SizedBox(height: 32),
-          Text(
-            'AI is analyzing your content...',
-            style:
-                GoogleFonts.outfit(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            'This usually takes about 10-15 seconds',
-            style: GoogleFonts.outfit(color: Colors.grey[600]),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildReviewStage() {
-    return Column(
+    return Stack(
       children: [
-        Expanded(
-          child: ListView.builder(
-            padding: const EdgeInsets.all(20),
-            itemCount: _extractedQuestions.length,
-            itemBuilder: (context, index) =>
-                _buildQuestionCard(_extractedQuestions[index], index),
+        // Show captured image in bg
+        if (_selectedImage != null)
+          Positioned.fill(
+            child: Image.file(
+              _selectedImage!,
+              fit: BoxFit.cover,
+              color: Colors.black.withOpacity(0.5),
+              colorBlendMode: BlendMode.darken,
+            ),
           ),
-        ),
-        Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            border: Border(top: BorderSide(color: Colors.grey[200]!)),
-          ),
-          child: Row(
+
+        Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Expanded(
-                child: OutlinedButton(
-                  onPressed: () =>
-                      setState(() => _stage = ExtractionStage.input),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: const Size(0, 56),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
-                  ),
-                  child: const Text('Redo'),
+              const SizedBox(
+                width: 48,
+                height: 48,
+                child: CircularProgressIndicator(
+                  strokeWidth: 3,
+                  color: Colors.white,
                 ),
               ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: _extractedQuestions.isEmpty ? null : _saveBank,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF6366F1),
-                    foregroundColor: Colors.white,
-                    minimumSize: const Size(0, 56),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(16)),
-                    elevation: 0,
-                  ),
-                  child: const Text('Save Bank',
-                      style: TextStyle(fontWeight: FontWeight.bold)),
+              const SizedBox(height: 24),
+              Text(
+                'Processing your notes...',
+                style: GoogleFonts.outfit(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Extracting text from image',
+                style: GoogleFonts.outfit(
+                  fontSize: 14,
+                  color: Colors.white70,
                 ),
               ),
             ],
@@ -398,74 +226,202 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
     );
   }
 
-  Widget _buildQuestionCard(Question question, int index) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.grey[50],
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.grey[200]!),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
+  Widget _buildResultStage() {
+    return Column(
+      children: [
+        // (Preview only for now)
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.all(4),
+          decoration: BoxDecoration(
+            color: const Color(0xFFF1F5F9),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Row(
             children: [
-              CircleAvatar(
-                  radius: 12,
-                  backgroundColor: const Color(0xFF6366F1),
-                  child: Text('${index + 1}',
-                      style:
-                          const TextStyle(fontSize: 12, color: Colors.white))),
-              const SizedBox(width: 12),
-              Text(
-                  question.type == QuestionType.mcq
-                      ? 'Multiple Choice'
-                      : 'True/False',
-                  style: const TextStyle(
+              Expanded(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 4,
+                      ),
+                    ],
+                  ),
+                  child: Text(
+                    'Preview',
+                    textAlign: TextAlign.center,
+                    style: GoogleFonts.outfit(
                       fontWeight: FontWeight.w600,
-                      fontSize: 13,
-                      color: Colors.grey)),
-              const Spacer(),
-              const Icon(Icons.edit_rounded, size: 18, color: Colors.grey),
+                      color: const Color(0xFF1E293B),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    // add Raw tab later
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      'Raw',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.outfit(
+                        color: const Color(0xFF94A3B8),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: GestureDetector(
+                  onTap: () {
+                    // add Photo tab later
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Text(
+                      'Photo',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.outfit(
+                        color: const Color(0xFF94A3B8),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-          const SizedBox(height: 12),
-          Text(
-            question.prompt,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+        ),
+
+        // extracted text content
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: SelectableText(
+              _extractedText,
+              style: GoogleFonts.outfit(
+                fontSize: 16,
+                height: 1.6,
+                color: const Color(0xFF334155),
+              ),
+            ),
           ),
-          const SizedBox(height: 12),
-          ...question.options.asMap().entries.map((entry) =>
-              _buildOptionPlaceholder(
-                  entry.value, entry.key == question.correctIndex)),
-        ],
-      ),
+        ),
+
+        Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            border: Border(
+              top: BorderSide(color: Colors.grey.shade200),
+            ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: ElevatedButton.icon(
+                  onPressed: () {
+                    // Copy to clipboard
+                  },
+                  icon: const Icon(Icons.copy_rounded, size: 18),
+                  label: Text('Copy',
+                      style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF374151),
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    elevation: 0,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    // Share functionality
+                  },
+                  icon: const Icon(Icons.ios_share_rounded, size: 18),
+                  label: Text('Share',
+                      style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: const Color(0xFF374151),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    side: BorderSide(color: Colors.grey.shade300),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 
-  Widget _buildOptionPlaceholder(String text, bool isCorrect) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: isCorrect ? Colors.green.withOpacity(0.1) : Colors.white,
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(
-            color:
-                isCorrect ? Colors.green.withOpacity(0.3) : Colors.grey[300]!),
-      ),
-      child: Row(
-        children: [
-          Icon(isCorrect ? Icons.check_circle_rounded : Icons.circle_outlined,
-              size: 16, color: isCorrect ? Colors.green : Colors.grey),
-          const SizedBox(width: 8),
-          Text(text,
-              style: TextStyle(
-                  fontSize: 13,
-                  color: isCorrect ? Colors.green[800] : Colors.black87)),
-        ],
+  Widget _buildErrorStage() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(32),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(20),
+              decoration: const BoxDecoration(
+                color: Color(0xFFFEE2E2),
+                shape: BoxShape.circle,
+              ),
+              child: const Icon(Icons.error_outline_rounded,
+                  color: Color(0xFFDC2626), size: 48),
+            ),
+            const SizedBox(height: 24),
+            Text(
+              'Something went wrong',
+              style: GoogleFonts.outfit(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: const Color(0xFF1E293B),
+              ),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              _errorMessage,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.outfit(
+                color: const Color(0xFF64748B),
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton(
+              onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF6366F1),
+                foregroundColor: Colors.white,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                elevation: 0,
+              ),
+              child: Text('Go Back',
+                  style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
       ),
     );
   }
