@@ -51,6 +51,7 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
   }
 
   Future<void> _togglePublic() async {
+    final theme = Theme.of(context);
     if (_scan == null) return;
 
     final newValue = !_scan!.isPublic;
@@ -64,13 +65,19 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to update: $e')),
+          SnackBar(
+            content: Text('Failed to update: $e'),
+            duration: const Duration(milliseconds: 1000),
+            backgroundColor: theme.colorScheme.error,
+          ),
         );
       }
     }
   }
 
   Future<void> _deleteScan() async {
+    final theme = Theme.of(context);
+
     final confirm = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
@@ -98,7 +105,11 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
       } catch (e) {
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Failed to delete: $e')),
+            SnackBar(
+              content: Text('Failed to delete: $e'),
+              duration: const Duration(milliseconds: 1000),
+              backgroundColor: theme.colorScheme.error,
+            ),
           );
         }
       }
@@ -106,18 +117,22 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
   }
 
   void _copyToClipboard() {
+    final theme = Theme.of(context);
     if (_scan == null) return;
     Clipboard.setData(ClipboardData(text: _scan!.extractedText));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text('Copied to clipboard', style: GoogleFonts.outfit()),
         behavior: SnackBarBehavior.floating,
+        backgroundColor: theme.colorScheme.primary,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
       ),
     );
   }
 
   Future<void> _generateQuestions() async {
+    final theme = Theme.of(context);
+
     if (_scan == null || _isGenerating) return;
 
     setState(() {
@@ -129,6 +144,7 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
         SnackBar(
           content: Text('Generating questions...', style: GoogleFonts.outfit()),
           behavior: SnackBarBehavior.floating,
+          backgroundColor: theme.colorScheme.primary,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         ),
@@ -203,7 +219,7 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
             content: Text('Generated ${questions.length} questions!',
                 style: GoogleFonts.outfit()),
             behavior: SnackBarBehavior.floating,
-            backgroundColor: const Color(0xFF10B981),
+            backgroundColor: theme.colorScheme.primary,
           ),
         );
       }
@@ -215,7 +231,7 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Failed to generate: $e'),
-            backgroundColor: Colors.red,
+            backgroundColor: theme.colorScheme.error,
           ),
         );
       }
@@ -492,7 +508,11 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
               heroTag: 'fab_generated',
               onPressed: () {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Questions already generated!')),
+                  SnackBar(
+                    content: const Text('Questions already generated!'),
+                    duration: const Duration(milliseconds: 1000),
+                    backgroundColor: theme.colorScheme.primary,
+                  ),
                 );
                 setState(() => _isFabMenuOpen = false);
               },
