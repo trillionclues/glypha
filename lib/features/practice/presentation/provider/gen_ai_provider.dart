@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_generative_ai/google_generative_ai.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,7 +12,7 @@ class GenAIService {
 
   GenAIService(String apiKey)
       : _ocrModel = GenerativeModel(
-          model: 'gemini-2.0-flash',
+          model: 'gemini-2.5-flash',
           apiKey: apiKey,
           systemInstruction: Content.system(
               'You are an OCR expert. Extract all readable text from the provided image. '
@@ -86,8 +87,10 @@ class GenAIService {
 
 @riverpod
 GenAIService genAiService(GenAiServiceRef ref) {
-  const apiKey = String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
-  if (apiKey.isEmpty) {
+  // const apiKey = String.fromEnvironment('GEMINI_API_KEY', defaultValue: '');
+  final apiKey = dotenv.env['GEMINI_API_KEY'];
+
+  if (apiKey == null || apiKey.isEmpty) {
     throw Exception(
         'GEMINI_API_KEY not found. Please set it via --dart-define');
   }

@@ -6,7 +6,7 @@ part of 'gen_ai_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$genAiServiceHash() => r'd3f190292aa48b502d04b6adb3576f344e62455d';
+String _$genAiServiceHash() => r'a10246166eaa3e774d7a6dfa55556c9708884938';
 
 /// See also [genAiService].
 @ProviderFor(genAiService)

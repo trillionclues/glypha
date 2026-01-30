@@ -1,9 +1,12 @@
 import 'dart:io';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
+import 'package:glypha/core/themes/app_theme.dart';
 import 'package:glypha/features/practice/presentation/provider/gen_ai_provider.dart';
 import 'package:glypha/features/practice/presentation/provider/scan_record_provider.dart';
 import 'package:glypha/features/practice/domain/entities/scan_record_entity.dart';
@@ -179,43 +182,43 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
   Widget _buildProcessingStage() {
     return Stack(
       children: [
-        // Show captured image in bg
         if (_selectedImage != null)
-          Positioned.fill(
+          SizedBox.expand(
             child: Image.file(
-              _selectedImage!,
+              File(_selectedImage!.path),
               fit: BoxFit.cover,
-              color: Colors.black.withOpacity(0.5),
-              colorBlendMode: BlendMode.darken,
             ),
           ),
-
+        Positioned.fill(
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+            child: Container(
+              color: Colors.black.withOpacity(0.4),
+            ),
+          ),
+        ),
         Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const SizedBox(
-                width: 48,
-                height: 48,
-                child: CircularProgressIndicator(
-                  strokeWidth: 3,
-                  color: Colors.white,
-                ),
+              const CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                strokeWidth: 3,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 32),
               Text(
                 'Processing your notes...',
                 style: GoogleFonts.outfit(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               Text(
                 'Extracting text from image',
                 style: GoogleFonts.outfit(
-                  fontSize: 14,
+                  fontSize: 16,
                   color: Colors.white70,
                 ),
               ),
@@ -379,12 +382,12 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
           children: [
             Container(
               padding: const EdgeInsets.all(20),
-              decoration: const BoxDecoration(
-                color: Color(0xFFFEE2E2),
+              decoration: BoxDecoration(
+                color: AppTheme.lightOrange.withValues(alpha: 0.1),
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.error_outline_rounded,
-                  color: Color(0xFFDC2626), size: 48),
+              child: Icon(Icons.error_outline_rounded,
+                  color: AppTheme.primaryOrange, size: 38),
             ),
             const SizedBox(height: 24),
             Text(
@@ -392,7 +395,7 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
               style: GoogleFonts.outfit(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: const Color(0xFF1E293B),
+                color: AppTheme.darkBackground,
               ),
             ),
             const SizedBox(height: 12),
@@ -404,21 +407,32 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
                 height: 1.4,
               ),
             ),
-            const SizedBox(height: 32),
+            const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF6366F1),
+                backgroundColor: AppTheme.primaryOrange,
                 foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(14),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 elevation: 0,
               ),
-              child: Text('Go Back',
-                  style: GoogleFonts.outfit(fontWeight: FontWeight.bold)),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Go Back',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Icon(Icons.arrow_back_rounded, size: 20),
+                ],
+              ),
             ),
           ],
         ),

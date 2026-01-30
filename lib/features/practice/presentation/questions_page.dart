@@ -39,12 +39,10 @@ class QuestionsPage extends ConsumerWidget {
                 color: AppTheme.lightOrange.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.settings_outlined,
+              child: const Icon(Icons.document_scanner_rounded,
                   color: AppTheme.lightOrange, size: 20),
             ),
-            onPressed: () {
-              // Settings (not implemented yet)
-            },
+            onPressed: () => _showScanOptions(context),
           ),
           const SizedBox(width: 8),
         ],
