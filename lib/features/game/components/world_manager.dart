@@ -72,7 +72,9 @@ class WorldManager extends Component with HasGameRef<RunnerGame> {
           }
         }
 
-        if (child.worldZ < Pseudo3DComponent.cameraZ - 10) {
+        // Remove components when they pass the camera (or get too close)
+        // Using -5 instead of -10 to remove earlier and prevent scale explosion
+        if (child.worldZ < Pseudo3DComponent.cameraZ - 5) {
           child.removeFromParent();
           if (child is GateComponent) {
             _activeGates.remove(child);

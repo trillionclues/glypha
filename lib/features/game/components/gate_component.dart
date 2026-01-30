@@ -56,7 +56,6 @@ class GateComponent extends Pseudo3DComponent {
       final gateWidth = gateCount == 1 ? 3.0 : 1.5;
       final gateHeight = 4.0;
 
-      // 1. Gate Frame (Outer Glow/Border)
       final gateFrame = RectangleComponent(
         position: Vector2(laneX - gateWidth / 2, -2.0),
         size: Vector2(gateWidth, gateHeight),
@@ -68,7 +67,6 @@ class GateComponent extends Pseudo3DComponent {
       add(gateFrame);
       _gateRects.add(gateFrame);
 
-      // 2. Glass Background
       add(RectangleComponent(
         position: Vector2(laneX - gateWidth / 2, -2.0),
         size: Vector2(gateWidth, gateHeight),
@@ -77,14 +75,12 @@ class GateComponent extends Pseudo3DComponent {
           ..style = PaintingStyle.fill,
       ));
 
-      // 3. Top accent bar
       add(RectangleComponent(
         position: Vector2(laneX - gateWidth / 2, -2.0),
         size: Vector2(gateWidth, 0.15),
         paint: Paint()..color = const Color(0xFF00E5FF),
       ));
 
-      // 4. Answer Text
       final textComponent = TextComponent(
         text: _wrapText(answers[i], gateCount == 1 ? 20 : 12),
         textRenderer: TextPaint(
@@ -94,13 +90,13 @@ class GateComponent extends Pseudo3DComponent {
             fontWeight: FontWeight.w600,
             fontFamily: 'Roboto',
             height: 1.2,
-            shadows: [
-              Shadow(
-                blurRadius: 2.0,
-                color: Colors.black,
-                offset: Offset(1.0, 1.0),
-              ),
-            ],
+            // shadows: [
+            //   Shadow(
+            //     blurRadius: 2.0,
+            //     color: Colors.black,
+            //     offset: Offset(1.0, 1.0),
+            //   ),
+            // ],
           ),
         ),
         position: Vector2(laneX, 0),
@@ -112,21 +108,32 @@ class GateComponent extends Pseudo3DComponent {
   }
 
   String _wrapText(String text, int maxCharsPerLine) {
-    if (text.length <= maxCharsPerLine) return text;
+    String truncated = text;
+    final maxTotalChars = maxCharsPerLine * 3;
+    if (truncated.length > maxTotalChars) {
+      truncated = '${truncated.substring(0, maxTotalChars - 3)}...';
+    }
 
-    final words = text.split(' ');
+    if (truncated.length <= maxCharsPerLine) return truncated;
+
+    final words = truncated.split(' ');
     final lines = <String>[];
     var currentLine = '';
 
     for (final word in words) {
-      if ((currentLine + word).length <= maxCharsPerLine) {
-        currentLine += (currentLine.isEmpty ? '' : ' ') + word;
+      String wordToAdd = word;
+      if (word.length > maxCharsPerLine) {
+        wordToAdd = '${word.substring(0, maxCharsPerLine - 2)}..';
+      }
+
+      if ((currentLine + wordToAdd).length <= maxCharsPerLine) {
+        currentLine += (currentLine.isEmpty ? '' : ' ') + wordToAdd;
       } else {
         if (currentLine.isNotEmpty) {
           lines.add(currentLine);
-          currentLine = word;
+          currentLine = wordToAdd;
         } else {
-          lines.add(word);
+          lines.add(wordToAdd);
           currentLine = '';
         }
       }
@@ -138,7 +145,7 @@ class GateComponent extends Pseudo3DComponent {
 
     // Limit to 3 lines max
     if (lines.length > 3) {
-      return lines.sublist(0, 3).join('\n');
+      return '${lines.sublist(0, 2).join('\n')}\n${lines[2].substring(0, (lines[2].length > maxCharsPerLine - 3 ? maxCharsPerLine - 3 : lines[2].length))}...';
     }
 
     return lines.join('\n');

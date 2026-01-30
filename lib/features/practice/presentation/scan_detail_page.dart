@@ -27,6 +27,7 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
   ScanRecord? _scan;
   bool _isLoading = true;
   bool _isGenerating = false;
+  bool _isFabMenuOpen = false;
 
   @override
   void initState() {
@@ -396,16 +397,6 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
               ),
             ),
             const SizedBox(height: 24),
-            // Extracted text section
-            Text(
-              'Extracted Text',
-              style: GoogleFonts.outfit(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-                color: const Color(0xFF1E293B),
-              ),
-            ),
-            const SizedBox(height: 12),
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -429,83 +420,103 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
                 ),
               ),
             ),
+            const SizedBox(height: 80),
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(20),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          border: Border(top: BorderSide(color: Colors.grey.shade200)),
-        ),
-        child: SafeArea(
-          child: Row(
-            children: [
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: _copyToClipboard,
-                  icon: const Icon(Icons.copy_rounded, size: 18),
-                  label: Text('Copy',
-                      style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF64748B),
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: BorderSide(color: Colors.grey.shade300),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                flex: 2,
-                child: ElevatedButton.icon(
-                  onPressed: _scan!.generatedQuestionIds.isNotEmpty
-                      ? null
-                      : (_isGenerating ? null : _generateQuestions),
-                  icon: _isGenerating
-                      ? const SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : Icon(
-                          _scan!.generatedQuestionIds.isNotEmpty
-                              ? Icons.check_circle_rounded
-                              : Icons.auto_awesome_rounded,
-                          size: 18,
-                        ),
-                  label: Text(
-                    _isGenerating
-                        ? 'Generating...'
-                        : (_scan!.generatedQuestionIds.isNotEmpty
-                            ? 'Questions Generated'
-                            : 'Generate Questions'),
-                    style: GoogleFonts.outfit(fontWeight: FontWeight.w600),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: _scan!.generatedQuestionIds.isNotEmpty
-                        ? const Color(0xFF10B981)
-                        : const Color(0xFF6366F1),
-                    foregroundColor: Colors.white,
-                    disabledBackgroundColor: const Color(0xFF10B981),
-                    disabledForegroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    elevation: 0,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 80.0),
+        child: _buildFloatingActionMenu(),
       ),
+    );
+  }
+
+  Widget _buildFloatingActionMenu() {
+    final theme = Theme.of(context);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (_isFabMenuOpen) ...[
+          if (_scan!.generatedQuestionIds.isEmpty)
+            FloatingActionButton.small(
+              heroTag: 'fab_generate',
+              onPressed: () {
+                _generateQuestions();
+                setState(() => _isFabMenuOpen = false);
+              },
+              backgroundColor: theme.colorScheme.primary,
+              foregroundColor: theme.colorScheme.onPrimary,
+              shape: const CircleBorder(),
+              child: _isGenerating
+                  ? const SizedBox(
+                      width: 18,
+                      height: 18,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    )
+                  : const Icon(Icons.auto_awesome_rounded),
+            )
+          else
+            FloatingActionButton.small(
+              heroTag: 'fab_generated',
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Questions already generated!')),
+                );
+                setState(() => _isFabMenuOpen = false);
+              },
+              backgroundColor: theme.colorScheme.primary,
+              foregroundColor: theme.colorScheme.onPrimary,
+              shape: const CircleBorder(),
+              child: const Icon(Icons.check_circle_rounded),
+            ),
+          const SizedBox(height: 12),
+          FloatingActionButton.small(
+            heroTag: 'fab_copy',
+            onPressed: () {
+              _copyToClipboard();
+              setState(() => _isFabMenuOpen = false);
+            },
+            backgroundColor: Theme.of(context).cardColor,
+            foregroundColor: Theme.of(context).iconTheme.color,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.copy_rounded),
+          ),
+          const SizedBox(height: 12),
+          FloatingActionButton.small(
+            heroTag: 'fab_share',
+            onPressed: () {
+              // Share placeholder
+              setState(() => _isFabMenuOpen = false);
+            },
+            backgroundColor: Theme.of(context).cardColor,
+            foregroundColor: Theme.of(context).iconTheme.color,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.ios_share_rounded),
+          ),
+          const SizedBox(height: 12),
+        ],
+        FloatingActionButton(
+          heroTag: 'fab_main',
+          onPressed: () {
+            setState(() {
+              _isFabMenuOpen = !_isFabMenuOpen;
+            });
+          },
+          backgroundColor: _isFabMenuOpen
+              ? theme.colorScheme.secondary
+              : theme.colorScheme.primary,
+          foregroundColor: _isFabMenuOpen
+              ? theme.colorScheme.onSecondary
+              : theme.colorScheme.onPrimary,
+          shape: const CircleBorder(),
+          child: Icon(_isFabMenuOpen ? Icons.close_rounded : Icons.add_rounded),
+        ),
+      ],
     );
   }
 }

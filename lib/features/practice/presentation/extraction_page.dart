@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:ui';
+import 'package:flutter/services.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -30,6 +31,7 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
   String _extractedText = '';
   String _errorMessage = '';
   final ImagePicker _picker = ImagePicker();
+  bool _isFabMenuOpen = false;
 
   @override
   void initState() {
@@ -154,6 +156,10 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
               ],
             )
           : null,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 80.0),
+        child: _buildFloatingActionMenu(),
+      ),
       body: AnimatedSwitcher(
         duration: const Duration(milliseconds: 300),
         child: _buildStageContent(),
@@ -312,7 +318,7 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
         // extracted text content
         Expanded(
           child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 100),
             child: SelectableText(
               _extractedText,
               style: GoogleFonts.outfit(
@@ -323,61 +329,74 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
             ),
           ),
         ),
+      ],
+    );
+  }
 
-        Container(
-          padding: const EdgeInsets.all(24),
-          decoration: BoxDecoration(
-            color: theme.cardColor,
-            border: Border(
-              top: BorderSide(
-                  color: isDark ? Colors.grey[800]! : Colors.grey.shade200),
-            ),
+  Widget _buildFloatingActionMenu() {
+    if (_stage != ExtractionStage.result) return const SizedBox.shrink();
+    final theme = Theme.of(context);
+
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        if (_isFabMenuOpen) ...[
+          FloatingActionButton.small(
+            heroTag: 'fab_save',
+            onPressed: () {
+              _saveScan();
+              setState(() => _isFabMenuOpen = false);
+            },
+            backgroundColor: theme.colorScheme.primary,
+            foregroundColor: theme.colorScheme.onPrimary,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.check_rounded),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton.icon(
-                  onPressed: () {
-                    // Copy to clipboard
-                  },
-                  icon: const Icon(Icons.copy_rounded, size: 18),
-                  label: Text('Copy',
-                      style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        isDark ? Colors.grey[800] : const Color(0xFF374151),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                    elevation: 0,
-                  ),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    // Share functionality
-                  },
-                  icon: const Icon(Icons.ios_share_rounded, size: 18),
-                  label: Text('Share',
-                      style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: theme.textTheme.bodyLarge?.color,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: BorderSide(
-                        color:
-                            isDark ? Colors.grey[700]! : Colors.grey.shade300),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(14),
-                    ),
-                  ),
-                ),
-              ),
-            ],
+          const SizedBox(height: 12),
+          FloatingActionButton.small(
+            heroTag: 'fab_copy',
+            onPressed: () {
+              Clipboard.setData(ClipboardData(text: _extractedText));
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text('Copied to clipboard')),
+              );
+              setState(() => _isFabMenuOpen = false);
+            },
+            backgroundColor: Theme.of(context).cardColor,
+            foregroundColor: Theme.of(context).iconTheme.color,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.copy_rounded),
           ),
+          const SizedBox(height: 12),
+          FloatingActionButton.small(
+            heroTag: 'fab_share',
+            onPressed: () {
+              // Share placeholder
+              setState(() => _isFabMenuOpen = false);
+            },
+            backgroundColor: Theme.of(context).cardColor,
+            foregroundColor: Theme.of(context).iconTheme.color,
+            shape: const CircleBorder(),
+            child: const Icon(Icons.ios_share_rounded),
+          ),
+          const SizedBox(height: 12),
+        ],
+        FloatingActionButton(
+          heroTag: 'fab_main',
+          onPressed: () {
+            setState(() {
+              _isFabMenuOpen = !_isFabMenuOpen;
+            });
+          },
+          backgroundColor: _isFabMenuOpen
+              ? Theme.of(context).colorScheme.secondary
+              : Theme.of(context).colorScheme.primary,
+          foregroundColor: _isFabMenuOpen
+              ? Theme.of(context).colorScheme.onSecondary
+              : Theme.of(context).colorScheme.onPrimary,
+          shape: const CircleBorder(),
+          child: Icon(_isFabMenuOpen ? Icons.close_rounded : Icons.add_rounded),
         ),
       ],
     );

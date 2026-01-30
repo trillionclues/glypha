@@ -31,17 +31,24 @@ class QuestionBanner extends PositionComponent with HasGameRef<RunnerGame> {
     );
 
     // Draw question text
+    String displayQuestion = currentQuestion;
+    if (displayQuestion.length > 120) {
+      displayQuestion = '${displayQuestion.substring(0, 117)}...';
+    }
+
     final textPainter = TextPainter(
       text: TextSpan(
-        text: currentQuestion,
-        style: const TextStyle(
+        text: displayQuestion,
+        style: TextStyle(
           color: Colors.white,
-          fontSize: 18,
+          fontSize: displayQuestion.length > 80 ? 15 : 18,
           fontWeight: FontWeight.bold,
         ),
       ),
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,
+      maxLines: 3,
+      ellipsis: '...',
     );
 
     textPainter.layout(maxWidth: size.x - 40);

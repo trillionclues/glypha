@@ -19,10 +19,13 @@ class GenAIService {
               'Return ONLY the extracted text, no JSON, no formatting, just the raw text content.'),
         ),
         _questionGenModel = GenerativeModel(
-          model: 'gemini-2.0-flash',
+          model: 'gemini-2.5-flash',
           apiKey: apiKey,
           systemInstruction: Content.system(
               'You are an expert educational content creator. Generate 5-10 high-quality questions from the provided text. '
+              'IMPORTANT: This is for a FAST-PACED game UI. Keep questions and answers SHORT. '
+              '- Prompts: MAX 100 characters. Be concise. '
+              '- Options: MAX 25 characters each. Use 2-4 word answers. '
               'Create a mix of question types based on the content. '
               'Always respond with a valid JSON object. '
               'Schema: { "questions": [ { '

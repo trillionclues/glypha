@@ -29,10 +29,13 @@ abstract class Pseudo3DComponent extends PositionComponent {
       return;
     }
 
+    // Calculate scale with a cap to prevent oversized textures
+    // Max scale of ~15-20 keeps textures safely under 8192 limit
+    // final rawScaleFactor = projectionScale / effectiveZ;
+    // final scaleFactor = rawScaleFactor.clamp(0.01, 18.0);
     final scaleFactor = projectionScale / effectiveZ;
 
     // Project world coordinates to screen coordinates
-    // Assuming screen center is (0,0) for world coordinates, we'll offset by parent size later if needed
     x = worldX * scaleFactor;
     y = worldY * scaleFactor;
 
