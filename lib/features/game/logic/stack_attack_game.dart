@@ -10,6 +10,8 @@ import '../data/repositories/question_repository.dart';
 import '../domain/entities/question_entity.dart';
 import 'game_state.dart';
 import 'package:glypha/features/home/presentation/provider/level_provider.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_notifier.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
 
 class StackAttackGame extends FlameGame {
   final WidgetRef ref;
@@ -43,24 +45,26 @@ class StackAttackGame extends FlameGame {
 
       if (_questions.isEmpty) {
         final repository = ref.read(questionRepositoryProvider);
-        final allMcq = await repository.getQuestionsByType(QuestionType.mcq);
-        _questions = allMcq.where((q) => q.options.length == 2).toList();
-
-        if (_questions.isEmpty) {
-          _questions = allMcq
-              .where((q) =>
-                  q.prompt.toLowerCase().contains('category') ||
-                  q.id.contains('stack'))
-              .toList();
-        }
+        final authState = ref.read(authNotifierProvider);
+        final userId =
+            authState is AuthAuthenticated ? authState.user.id : 'anonymous';
+        final allMcq = await repository.getQuestionsByTypeForUser(
+            QuestionType.mcq, userId);
+        _questions = allMcq
+            .where((q) => q.options.length >= 2 && q.options.length <= 4)
+            .toList();
       }
 
       if (_questions.isNotEmpty) {
+        ref
+            .read(gameStateProvider.notifier)
+            .startGame(_questions.map((q) => q.id).toList());
         _setupBuckets();
         _spawnBlock();
       } else {
         debugPrint('No questions found for Stack Attack');
-        _endGame();
+        // No questions = game over (not victory)
+        _endGame(isVictory: false);
       }
     } catch (e) {
       debugPrint('Error loading Stack Attack: $e');
@@ -131,7 +135,7 @@ class StackAttackGame extends FlameGame {
 
     final gameState = ref.read(gameStateProvider.notifier);
     if (isCorrect) {
-      gameState.incrementScore();
+      gameState.incrementScore(block.question.id);
     } else {
       gameState.loseLife();
     }

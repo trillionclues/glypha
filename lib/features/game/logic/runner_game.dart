@@ -11,6 +11,8 @@ import 'package:flame/components.dart';
 import 'package:glypha/features/game/data/repositories/question_repository.dart';
 import 'package:glypha/features/game/domain/entities/question_entity.dart';
 import 'package:glypha/features/home/presentation/provider/level_provider.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_notifier.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
 
 class RunnerGame extends FlameGame with PanDetector {
   final WidgetRef ref;
@@ -60,10 +62,19 @@ class RunnerGame extends FlameGame with PanDetector {
 
       if (questions.isEmpty) {
         final repository = ref.read(questionRepositoryProvider);
-        questions = await repository.getQuestionsByType(QuestionType.mcq);
+        final authState = ref.read(authNotifierProvider);
+        final userId =
+            authState is AuthAuthenticated ? authState.user.id : 'anonymous';
+        questions = await repository.getQuestionsByTypeForUser(
+            QuestionType.mcq, userId);
       }
 
       if (questions.isNotEmpty) {
+        // Initialize game state with user question IDs
+        // important for dynamic scoring and progression
+        ref
+            .read(gameStateProvider.notifier)
+            .startGame(questions.map((q) => q.id).toList());
         worldManager.setQuestions(questions);
       } else {
         debugPrint('No MCQ questions available currently!');

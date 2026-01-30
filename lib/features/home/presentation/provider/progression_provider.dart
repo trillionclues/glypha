@@ -34,6 +34,7 @@ class ProgressionNotifier extends _$ProgressionNotifier {
     required String levelId,
     required int score,
     required int stars,
+    List<String>? questionIds,
   }) async {
     final authState = ref.read(authNotifierProvider);
     if (authState is AuthAuthenticated) {
@@ -42,6 +43,7 @@ class ProgressionNotifier extends _$ProgressionNotifier {
             levelId: levelId,
             score: score,
             stars: stars,
+            questionIds: questionIds,
           );
     }
   }

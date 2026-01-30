@@ -124,6 +124,17 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
       _isGenerating = true;
     });
 
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Generating questions...', style: GoogleFonts.outfit()),
+          behavior: SnackBarBehavior.floating,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+        ),
+      );
+    }
+
     try {
       final genAi = ref.read(genAiServiceProvider);
       final authState = ref.read(authNotifierProvider);
@@ -131,14 +142,30 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
           authState is AuthAuthenticated ? authState.user.id : 'anonymous';
 
       // this generates questions from the extracted text
+      // ...and then converts them to question entities
       final questionsData =
           await genAi.generateQuestionsFromText(_scan!.extractedText);
 
-      // ...and then converts them to question entities
       final questions = questionsData.map((data) {
-        final questionType =
-            _parseQuestionType(data['type'] as String? ?? 'mcq');
-        final options = List<String>.from(data['options'] ?? []);
+        var questionType = _parseQuestionType(data['type'] as String? ?? 'mcq');
+        var options = List<String>.from(data['options'] ?? []);
+        var correctIndex = data['correctIndex'] as int? ?? 0;
+
+        // Sanitize gnerated MCQ to max 3 options (Runner limit)
+        if (questionType == QuestionType.mcq && options.length > 3) {
+          final correctAnswer = options[correctIndex];
+          final otherOptions = List<String>.from(options)
+            ..removeAt(correctIndex)
+            ..shuffle();
+
+          // Take exactly 2 others to make 3 total
+          final keptOptions = otherOptions.take(2).toList();
+          final newOptions = [...keptOptions, correctAnswer]..shuffle();
+
+          options = newOptions;
+          correctIndex = newOptions.indexOf(correctAnswer);
+        }
+
         final id = const Uuid().v4();
 
         return Question(
@@ -146,7 +173,7 @@ class _ScanDetailPageState extends ConsumerState<ScanDetailPage> {
           prompt: data['prompt'] as String? ?? '',
           type: questionType,
           options: options,
-          correctIndex: data['correctIndex'] as int? ?? 0,
+          correctIndex: correctIndex,
           explanation: data['explanation'] as String?,
           difficulty: data['difficulty'] as int? ?? 3,
           tags: List<String>.from(data['tags'] ?? []),

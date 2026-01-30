@@ -50,16 +50,18 @@ class _GamePageState extends ConsumerState<GamePage> {
   @override
   Widget build(BuildContext context) {
     final gameState = ref.watch(gameStateProvider);
+    final stars = gameState.stars;
 
     ref.listen(gameStateProvider, (previous, next) {
       if ((previous == null || !previous.isVictory) && next.isVictory) {
-        // Auto-save on victory
+        // Use calculated stars from GameState
         if (widget.levelId != null) {
-          final stars = _calculateStars(next.score);
+          final stars = next.stars;
           ref.read(progressionNotifierProvider.notifier).completeLevel(
                 levelId: widget.levelId!,
                 score: next.score,
                 stars: stars,
+                questionIds: next.correctQuestionIds,
               );
 
           // update xp and streak
@@ -83,7 +85,8 @@ class _GamePageState extends ConsumerState<GamePage> {
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
 
-        // If game is over, just pop without confirmation (state usually saved or lost)
+        // If game is over, just pop without confirmation
+        // (state usually saved or lost)
         if (gameState.isGameOver) {
           Navigator.of(context).pop();
           return;
@@ -178,9 +181,9 @@ class _GamePageState extends ConsumerState<GamePage> {
                             (index) => Icon(
                               Icons.star_rounded,
                               size: 40,
-                              color: index < _calculateStars(gameState.score)
-                                  ? Colors.amber
-                                  : Colors.white24,
+                              // use dynamic scoring/stars
+                              color:
+                                  index < stars ? Colors.amber : Colors.white24,
                             ),
                           ),
                         ),
@@ -396,10 +399,10 @@ class _GamePageState extends ConsumerState<GamePage> {
         return GameWidget<SwipeMasterGame>.controlled(
           gameFactory: () => SwipeMasterGame(ref, levelId: widget.levelId),
         );
-      case GameType.stack:
-        return GameWidget<StackAttackGame>.controlled(
-          gameFactory: () => StackAttackGame(ref, levelId: widget.levelId),
-        );
+      // case GameType.stack:
+      //   return GameWidget<StackAttackGame>.controlled(
+      //     gameFactory: () => StackAttackGame(ref, levelId: widget.levelId),
+      //   );
       default:
         return const Center(child: Text('Game mode not implemented'));
     }

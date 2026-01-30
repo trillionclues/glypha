@@ -14,6 +14,10 @@ LevelProgression _$LevelProgressionFromJson(Map<String, dynamic> json) =>
       stars: (json['stars'] as num).toInt(),
       attempts: (json['attempts'] as num).toInt(),
       lastPlayed: LevelProgression._timestampToDateTime(json['lastPlayed']),
+      questionIds: (json['questionIds'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList() ??
+          const [],
     );
 
 Map<String, dynamic> _$LevelProgressionToJson(LevelProgression instance) =>
@@ -24,4 +28,5 @@ Map<String, dynamic> _$LevelProgressionToJson(LevelProgression instance) =>
       'stars': instance.stars,
       'attempts': instance.attempts,
       'lastPlayed': LevelProgression._dateTimeToTimestamp(instance.lastPlayed),
+      'questionIds': instance.questionIds,
     };

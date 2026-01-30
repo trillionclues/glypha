@@ -56,7 +56,23 @@ class QuestionRepository {
     final snapshot = await _firestore
         .collection('allQuestions')
         .where('type', isEqualTo: type.name)
-        .limit(50)
+        .limit(200)
+        .get();
+
+    return snapshot.docs
+        .map((doc) => Question.fromJson({...doc.data(), 'id': doc.id}))
+        .toList();
+  }
+
+  Future<List<Question>> getQuestionsByTypeForUser(
+      QuestionType type, String userId) async {
+    final snapshot = await _firestore
+        .collection('allQuestions')
+        .where('type', isEqualTo: type.name)
+        .where(Filter.or(
+          Filter('ownerId', isEqualTo: 'SYSTEM'),
+          Filter('ownerId', isEqualTo: userId),
+        ))
         .get();
 
     return snapshot.docs

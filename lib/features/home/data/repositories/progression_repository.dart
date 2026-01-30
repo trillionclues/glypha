@@ -26,20 +26,18 @@ class ProgressionRepository {
         );
   }
 
-  /// Get user progression records
   Future<List<LevelProgression>> getUserProgression(String userId) async {
     final snapshot = await _getProgressionRef(userId).get();
     return snapshot.docs.map((doc) => doc.data()).toList();
   }
 
-  /// Stream user progression for real-time updates
+  // Stream progression for real-time updates
   Stream<List<LevelProgression>> watchUserProgression(String userId) {
     return _getProgressionRef(userId)
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => doc.data()).toList());
   }
 
-  /// Update or create progression record
   Future<void> updateProgression(
       String userId, LevelProgression progression) async {
     await _getProgressionRef(userId)
@@ -47,12 +45,13 @@ class ProgressionRepository {
         .set(progression, SetOptions(merge: true));
   }
 
-  /// Mark level as completed with score and stars
+  // Mark level as completed with score and stars
   Future<void> completeLevel({
     required String userId,
     required String levelId,
     required int score,
     required int stars,
+    List<String>? questionIds,
   }) async {
     final ref = _getProgressionRef(userId).doc(levelId);
     final doc = await ref.get();
@@ -65,6 +64,7 @@ class ProgressionRepository {
         'stars': stars > existing.stars ? stars : existing.stars,
         'attempts': FieldValue.increment(1),
         'lastPlayed': FieldValue.serverTimestamp(),
+        if (questionIds != null) 'questionIds': questionIds,
       });
     } else {
       await ref.set(LevelProgression(
@@ -74,6 +74,7 @@ class ProgressionRepository {
         stars: stars,
         attempts: 1,
         lastPlayed: DateTime.now(),
+        questionIds: questionIds ?? [],
       ));
     }
   }

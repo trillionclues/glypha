@@ -1,58 +1,15 @@
 [
     {
-        "id": "speed_lane_1",
-        "prompt": "Which planet is known as the Red Planet?",
+        "id": "run_geo_1",
+        "prompt": "Capital of France?",
         "type": "mcq",
         "options": [
-            "Venus",
-            "Mars",
-            "Jupiter"
+            "Paris",
+            "Lyon",
+            "Nice"
         ],
-        "correctIndex": 1,
-        "explanation": "Mars appears red due to iron oxide on its surface.",
-        "difficulty": 1,
-        "tags": [
-            "science",
-            "astronomy"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "speed_lane_2",
-        "prompt": "What is 15 x 3?",
-        "type": "mcq",
-        "options": [
-            "35",
-            "45",
-            "55"
-        ],
-        "correctIndex": 1,
-        "explanation": "15 times 3 equals 45.",
-        "difficulty": 1,
-        "tags": [
-            "math"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "speed_lane_3",
-        "prompt": "What is the capital of France?",
-        "type": "mcq",
-        "options": [
-            "Berlin",
-            "London",
-            "Paris"
-        ],
-        "correctIndex": 2,
-        "explanation": "Paris is the capital and largest city of France.",
+        "correctIndex": 0,
+        "explanation": "Paris is the capital.",
         "difficulty": 1,
         "tags": [
             "geography"
@@ -64,20 +21,19 @@
         ]
     },
     {
-        "id": "speed_lane_4",
-        "prompt": "Which gas do plants absorb for photosynthesis?",
+        "id": "run_geo_2",
+        "prompt": "Capital of Italy?",
         "type": "mcq",
         "options": [
-            "CO2",
-            "Oxygen",
-            "Nitrogen"
+            "Milan",
+            "Rome",
+            "Venice"
         ],
-        "correctIndex": 0,
-        "explanation": "Plants take in Carbon Dioxide and release Oxygen.",
-        "difficulty": 2,
+        "correctIndex": 1,
+        "explanation": "Rome is the capital.",
+        "difficulty": 1,
         "tags": [
-            "science",
-            "biology"
+            "geography"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
@@ -86,8 +42,50 @@
         ]
     },
     {
-        "id": "speed_lane_5",
-        "prompt": "What is the largest ocean on Earth?",
+        "id": "run_geo_3",
+        "prompt": "Capital of Spain?",
+        "type": "mcq",
+        "options": [
+            "Madrid",
+            "Barcelona",
+            "Seville"
+        ],
+        "correctIndex": 0,
+        "explanation": "Madrid is the capital.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_geo_4",
+        "prompt": "Capital of Japan?",
+        "type": "mcq",
+        "options": [
+            "Osaka",
+            "Tokyo",
+            "Kyoto"
+        ],
+        "correctIndex": 1,
+        "explanation": "Tokyo is the capital.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_geo_5",
+        "prompt": "Largest Ocean?",
         "type": "mcq",
         "options": [
             "Atlantic",
@@ -95,11 +93,10 @@
             "Pacific"
         ],
         "correctIndex": 2,
-        "explanation": "The Pacific Ocean is the largest oceanic division.",
+        "explanation": "Pacific is largest.",
         "difficulty": 1,
         "tags": [
-            "geography",
-            "science"
+            "geography"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
@@ -108,103 +105,16 @@
         ]
     },
     {
-        "id": "sys_mcq_6",
-        "prompt": "Who wrote 'Romeo and Juliet'?",
+        "id": "run_geo_6",
+        "prompt": "Longest River?",
         "type": "mcq",
         "options": [
-            "Dickens",
-            "Hemingway",
-            "Shakespeare"
+            "Nile",
+            "Amazon",
+            "Yangtze"
         ],
-        "correctIndex": 2,
-        "explanation": "William Shakespeare wrote the famous tragedy.",
-        "difficulty": 2,
-        "tags": [
-            "literature",
-            "history"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_7",
-        "prompt": "What is the square root of 64?",
-        "type": "mcq",
-        "options": [
-            "6",
-            "8",
-            "10"
-        ],
-        "correctIndex": 1,
-        "explanation": "8 times 8 equals 64.",
-        "difficulty": 1,
-        "tags": [
-            "math"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_8",
-        "prompt": "Which element has the chemical symbol 'O'?",
-        "type": "mcq",
-        "options": [
-            "Gold",
-            "Oxygen",
-            "Osmium"
-        ],
-        "correctIndex": 1,
-        "explanation": "O stands for Oxygen.",
-        "difficulty": 1,
-        "tags": [
-            "science",
-            "chemistry"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_9",
-        "prompt": "What is the fastest land animal?",
-        "type": "mcq",
-        "options": [
-            "Lion",
-            "Cheetah",
-            "Horse"
-        ],
-        "correctIndex": 1,
-        "explanation": "The cheetah can reach speeds of up to 112 km/h.",
-        "difficulty": 1,
-        "tags": [
-            "nature",
-            "biology"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_10",
-        "prompt": "Which continent is the Sahara Desert located in?",
-        "type": "mcq",
-        "options": [
-            "Asia",
-            "Africa",
-            "Australia"
-        ],
-        "correctIndex": 1,
-        "explanation": "The Sahara is the largest hot desert in the world, located in Africa.",
+        "correctIndex": 0,
+        "explanation": "Nile is longest.",
         "difficulty": 2,
         "tags": [
             "geography"
@@ -216,20 +126,19 @@
         ]
     },
     {
-        "id": "sys_mcq_11",
-        "prompt": "What does a caterpillar turn into?",
+        "id": "run_geo_7",
+        "prompt": "Desert continent?",
         "type": "mcq",
         "options": [
-            "Butterfly",
-            "Beetle",
-            "Worm"
+            "Europe",
+            "Africa",
+            "Asia"
         ],
-        "correctIndex": 0,
-        "explanation": "Caterpillars metamorphose into butterflies or moths.",
+        "correctIndex": 1,
+        "explanation": "Sahara is in Africa.",
         "difficulty": 1,
         "tags": [
-            "nature",
-            "biology"
+            "geography"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
@@ -238,341 +147,1255 @@
         ]
     },
     {
-        "id": "sys_mcq_12",
-        "prompt": "Who painted the Mona Lisa?",
+        "id": "run_geo_8",
+        "prompt": "Smallest country?",
         "type": "mcq",
         "options": [
-            "Van Gogh",
-            "Da Vinci",
-            "Picasso"
+            "Monaco",
+            "Vatican",
+            "Nauru"
         ],
         "correctIndex": 1,
-        "explanation": "Leonardo da Vinci painted the Mona Lisa.",
+        "explanation": "Vatican City.",
         "difficulty": 2,
         "tags": [
-            "history",
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_geo_9",
+        "prompt": "USA Capital?",
+        "type": "mcq",
+        "options": [
+            "NY",
+            "LA",
+            "DC"
+        ],
+        "correctIndex": 2,
+        "explanation": "Washington DC.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_geo_10",
+        "prompt": "UK Capital?",
+        "type": "mcq",
+        "options": [
+            "London",
+            "Bath",
+            "York"
+        ],
+        "correctIndex": 0,
+        "explanation": "London.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_math_1",
+        "prompt": "5 + 7?",
+        "type": "mcq",
+        "options": [
+            "10",
+            "12",
+            "14"
+        ],
+        "correctIndex": 1,
+        "explanation": "12.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_math_2",
+        "prompt": "10 - 4?",
+        "type": "mcq",
+        "options": [
+            "4",
+            "6",
+            "8"
+        ],
+        "correctIndex": 1,
+        "explanation": "6.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_math_3",
+        "prompt": "3 x 3?",
+        "type": "mcq",
+        "options": [
+            "6",
+            "9",
+            "12"
+        ],
+        "correctIndex": 1,
+        "explanation": "9.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_math_4",
+        "prompt": "20 / 4?",
+        "type": "mcq",
+        "options": [
+            "4",
+            "5",
+            "6"
+        ],
+        "correctIndex": 1,
+        "explanation": "5.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_math_5",
+        "prompt": "Sqrt(64)?",
+        "type": "mcq",
+        "options": [
+            "6",
+            "8",
+            "4"
+        ],
+        "correctIndex": 1,
+        "explanation": "8.",
+        "difficulty": 2,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_math_6",
+        "prompt": "100 / 10?",
+        "type": "mcq",
+        "options": [
+            "1",
+            "10",
+            "100"
+        ],
+        "correctIndex": 1,
+        "explanation": "10.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_math_7",
+        "prompt": "5 squared?",
+        "type": "mcq",
+        "options": [
+            "10",
+            "25",
+            "15"
+        ],
+        "correctIndex": 1,
+        "explanation": "25.",
+        "difficulty": 2,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_math_8",
+        "prompt": "2 + 2 x 2?",
+        "type": "mcq",
+        "options": [
+            "6",
+            "8",
+            "4"
+        ],
+        "correctIndex": 0,
+        "explanation": "Multiply first: 2 + 4 = 6.",
+        "difficulty": 2,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_math_9",
+        "prompt": "15x2?",
+        "type": "mcq",
+        "options": [
+            "20",
+            "25",
+            "30"
+        ],
+        "correctIndex": 2,
+        "explanation": "30.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_math_10",
+        "prompt": "50% of 100?",
+        "type": "mcq",
+        "options": [
+            "25",
+            "50",
+            "75"
+        ],
+        "correctIndex": 1,
+        "explanation": "Half is 50.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_sci_1",
+        "prompt": "H2O is?",
+        "type": "mcq",
+        "options": [
+            "Gold",
+            "Water",
+            "Air"
+        ],
+        "correctIndex": 1,
+        "explanation": "Water.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_sci_2",
+        "prompt": "Red Planet?",
+        "type": "mcq",
+        "options": [
+            "Mars",
+            "Venus",
+            "Pluto"
+        ],
+        "correctIndex": 0,
+        "explanation": "Mars.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_sci_3",
+        "prompt": "Closest star?",
+        "type": "mcq",
+        "options": [
+            "Sun",
+            "Proxima",
+            "Sirius"
+        ],
+        "correctIndex": 0,
+        "explanation": "Sun.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_sci_4",
+        "prompt": "Au symbol?",
+        "type": "mcq",
+        "options": [
+            "Silver",
+            "Gold",
+            "Iron"
+        ],
+        "correctIndex": 1,
+        "explanation": "Gold.",
+        "difficulty": 2,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_sci_5",
+        "prompt": "O symbol?",
+        "type": "mcq",
+        "options": [
+            "Oxygen",
+            "Osmium",
+            "Gold"
+        ],
+        "correctIndex": 0,
+        "explanation": "Oxygen.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_sci_6",
+        "prompt": "Gravity guy?",
+        "type": "mcq",
+        "options": [
+            "Newton",
+            "Einstein",
+            "Tesla"
+        ],
+        "correctIndex": 0,
+        "explanation": "Isaac Newton.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_sci_7",
+        "prompt": "Hardest mineral?",
+        "type": "mcq",
+        "options": [
+            "Gold",
+            "Diamond",
+            "Iron"
+        ],
+        "correctIndex": 1,
+        "explanation": "Diamond.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_sci_8",
+        "prompt": "Speed of light?",
+        "type": "mcq",
+        "options": [
+            "Fast",
+            "Slow",
+            "Medium"
+        ],
+        "correctIndex": 0,
+        "explanation": "Very fast.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_sci_9",
+        "prompt": "Freezing point?",
+        "type": "mcq",
+        "options": [
+            "0C",
+            "100C",
+            "-10C"
+        ],
+        "correctIndex": 0,
+        "explanation": "0 Celsius.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_sci_10",
+        "prompt": "Boiling point?",
+        "type": "mcq",
+        "options": [
+            "50C",
+            "100C",
+            "200C"
+        ],
+        "correctIndex": 1,
+        "explanation": "100 Celsius.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_hist_1",
+        "prompt": "First US Pres?",
+        "type": "mcq",
+        "options": [
+            "Lincoln",
+            "Washington",
+            "Adams"
+        ],
+        "correctIndex": 1,
+        "explanation": "George Washington.",
+        "difficulty": 1,
+        "tags": [
+            "history"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_hist_2",
+        "prompt": "Pyramids are where?",
+        "type": "mcq",
+        "options": [
+            "Egypt",
+            "Rome",
+            "China"
+        ],
+        "correctIndex": 0,
+        "explanation": "Egypt.",
+        "difficulty": 1,
+        "tags": [
+            "history"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_hist_3",
+        "prompt": "WW2 ended?",
+        "type": "mcq",
+        "options": [
+            "1918",
+            "1945",
+            "1950"
+        ],
+        "correctIndex": 1,
+        "explanation": "1945.",
+        "difficulty": 2,
+        "tags": [
+            "history"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_hist_4",
+        "prompt": "Titanic sank?",
+        "type": "mcq",
+        "options": [
+            "1912",
+            "1920",
+            "1900"
+        ],
+        "correctIndex": 0,
+        "explanation": "1912.",
+        "difficulty": 2,
+        "tags": [
+            "history"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_hist_5",
+        "prompt": "Roman language?",
+        "type": "mcq",
+        "options": [
+            "Greek",
+            "Latin",
+            "Italian"
+        ],
+        "correctIndex": 1,
+        "explanation": "Latin.",
+        "difficulty": 2,
+        "tags": [
+            "history"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_tech_1",
+        "prompt": "iPhone maker?",
+        "type": "mcq",
+        "options": [
+            "Samsung",
+            "Apple",
+            "Nokia"
+        ],
+        "correctIndex": 1,
+        "explanation": "Apple.",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_tech_2",
+        "prompt": "Windows maker?",
+        "type": "mcq",
+        "options": [
+            "Apple",
+            "Microsoft",
+            "Dell"
+        ],
+        "correctIndex": 1,
+        "explanation": "Microsoft.",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_tech_3",
+        "prompt": "Google search?",
+        "type": "mcq",
+        "options": [
+            "Engine",
+            "Car",
+            "Bike"
+        ],
+        "correctIndex": 0,
+        "explanation": "Search Engine.",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_tech_4",
+        "prompt": "CPU stands for?",
+        "type": "mcq",
+        "options": [
+            "Central",
+            "Control",
+            "Cyber"
+        ],
+        "correctIndex": 0,
+        "explanation": "Central Processing Unit.",
+        "difficulty": 2,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "run_tech_5",
+        "prompt": "RAM is?",
+        "type": "mcq",
+        "options": [
+            "Memory",
+            "Storage",
+            "Screen"
+        ],
+        "correctIndex": 0,
+        "explanation": "Random Access Memory.",
+        "difficulty": 2,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_1",
+        "prompt": "Fire is hot.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Fire burns.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_2",
+        "prompt": "Ice is hot.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Ice is cold.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_3",
+        "prompt": "Fish fly.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Usually swim.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_4",
+        "prompt": "Sun is yellow.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Appears yellow.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_5",
+        "prompt": "Grass is blue.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Grass is green.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_6",
+        "prompt": "2 + 2 = 4.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Math.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_7",
+        "prompt": "2 + 2 = 5.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Math error.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_8",
+        "prompt": "Earth is flat.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "It surrounds a sphere.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_9",
+        "prompt": "Moon orbits Earth.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Yes.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_10",
+        "prompt": "Humans need air.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Oxygen.",
+        "difficulty": 1,
+        "tags": [
+            "biology"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_11",
+        "prompt": "Dogs bark.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Woof.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_12",
+        "prompt": "Cats bark.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Meow.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_13",
+        "prompt": "Cars have wheels.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Usually 4.",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_14",
+        "prompt": "Bikes have 4 wheels.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "2 wheels.",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_15",
+        "prompt": "London is in UK.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Capital.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_16",
+        "prompt": "Paris is in Germany.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "France.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_17",
+        "prompt": "Gold is a metal.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Precious metal.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_18",
+        "prompt": "Water is solid.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Liquid.",
+        "difficulty": 1,
+        "tags": [
+            "science"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_19",
+        "prompt": "Spiders have 8 legs.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Arachnids.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_20",
+        "prompt": "Insects have 8 legs.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "6 legs.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_21",
+        "prompt": "Winter is cold.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Season.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_22",
+        "prompt": "Summer is snowy.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Hot.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_23",
+        "prompt": "A minute is 60s.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Time.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_24",
+        "prompt": "A day is 10 hours.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "24 hours.",
+        "difficulty": 1,
+        "tags": [
+            "math"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_25",
+        "prompt": "Red + Blue = Purple.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Colors.",
+        "difficulty": 1,
+        "tags": [
             "art"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_13",
-        "prompt": "What is the freezing point of water?",
-        "type": "mcq",
+        "id": "swipe_26",
+        "prompt": "Red + Yellow = Blue.",
+        "type": "binary",
         "options": [
-            "0°C",
-            "100°C",
-            "-10°C"
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Orange.",
+        "difficulty": 1,
+        "tags": [
+            "art"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_27",
+        "prompt": "E=mc^2.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
         ],
         "correctIndex": 0,
-        "explanation": "Water freezes at 0 degrees Celsius.",
-        "difficulty": 1,
-        "tags": [
-            "science",
-            "physics"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_14",
-        "prompt": "Which is the longest river in the world?",
-        "type": "mcq",
-        "options": [
-            "Amazon",
-            "Nile",
-            "Yangtze"
-        ],
-        "correctIndex": 1,
-        "explanation": "The Nile is traditionally considered the longest river.",
-        "difficulty": 3,
-        "tags": [
-            "geography"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_15",
-        "prompt": "How many legs does a spider have?",
-        "type": "mcq",
-        "options": [
-            "6",
-            "8",
-            "10"
-        ],
-        "correctIndex": 1,
-        "explanation": "Spiders are arachnids and have 8 legs.",
-        "difficulty": 1,
-        "tags": [
-            "nature",
-            "biology"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_16",
-        "prompt": "What is the capital of Japan?",
-        "type": "mcq",
-        "options": [
-            "Seoul",
-            "Beijing",
-            "Tokyo"
-        ],
-        "correctIndex": 2,
-        "explanation": "Tokyo is the capital of Japan.",
-        "difficulty": 1,
-        "tags": [
-            "geography"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_17",
-        "prompt": "Which planet is closest to the Sun?",
-        "type": "mcq",
-        "options": [
-            "Venus",
-            "Mercury",
-            "Mars"
-        ],
-        "correctIndex": 1,
-        "explanation": "Mercury is the closest planet to the Sun.",
+        "explanation": "Einstein.",
         "difficulty": 2,
-        "tags": [
-            "science",
-            "astronomy"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_18",
-        "prompt": "What is the chemical symbol for Gold?",
-        "type": "mcq",
-        "options": [
-            "Au",
-            "Ag",
-            "Fe"
-        ],
-        "correctIndex": 0,
-        "explanation": "Au comes from the Latin word 'Aurum'.",
-        "difficulty": 3,
-        "tags": [
-            "science",
-            "chemistry"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_19",
-        "prompt": "Who discovered gravity?",
-        "type": "mcq",
-        "options": [
-            "Einstein",
-            "Darwin",
-            "Newton"
-        ],
-        "correctIndex": 2,
-        "explanation": "Isaac Newton formulated the law of universal gravitation.",
-        "difficulty": 2,
-        "tags": [
-            "science",
-            "history"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_20",
-        "prompt": "What implies a boolean value?",
-        "type": "mcq",
-        "options": [
-            "String",
-            "True/False",
-            "Integer"
-        ],
-        "correctIndex": 1,
-        "explanation": "Boolean values represent truth values: true or false.",
-        "difficulty": 2,
-        "tags": [
-            "tech",
-            "cs"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_bin_21",
-        "prompt": "The sun revolves around the Earth.",
-        "type": "binary",
-        "options": [
-            "True",
-            "False"
-        ],
-        "correctIndex": 1,
-        "explanation": "The Earth revolves around the Sun (Heliocentrism).",
-        "difficulty": 1,
-        "tags": [
-            "science",
-            "astronomy"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "swipe",
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_bin_22",
-        "prompt": "Sharks are mammals.",
-        "type": "binary",
-        "options": [
-            "True",
-            "False"
-        ],
-        "correctIndex": 1,
-        "explanation": "Sharks are fish.",
-        "difficulty": 1,
-        "tags": [
-            "nature",
-            "biology"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "swipe",
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_bin_23",
-        "prompt": "Water boils at 100°C.",
-        "type": "binary",
-        "options": [
-            "True",
-            "False"
-        ],
-        "correctIndex": 0,
-        "explanation": "At sea level, the boiling point of water is 100°C.",
-        "difficulty": 1,
-        "tags": [
-            "science",
-            "physics"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "swipe",
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_bin_24",
-        "prompt": "Mount Everest is the highest mountain.",
-        "type": "binary",
-        "options": [
-            "True",
-            "False"
-        ],
-        "correctIndex": 0,
-        "explanation": "Mount Everest is Earth's highest mountain above sea level.",
-        "difficulty": 1,
-        "tags": [
-            "geography"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "swipe",
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_bin_25",
-        "prompt": "Spiders have 6 legs.",
-        "type": "binary",
-        "options": [
-            "True",
-            "False"
-        ],
-        "correctIndex": 1,
-        "explanation": "Spiders have 8 legs.",
-        "difficulty": 1,
-        "tags": [
-            "nature"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "swipe",
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_bin_26",
-        "prompt": "Deserts are always hot.",
-        "type": "binary",
-        "options": [
-            "True",
-            "False"
-        ],
-        "correctIndex": 1,
-        "explanation": "Some deserts, like Antarctica, are cold.",
-        "difficulty": 2,
-        "tags": [
-            "geography"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "swipe",
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_bin_27",
-        "prompt": "Lightning is hotter than the sun.",
-        "type": "binary",
-        "options": [
-            "True",
-            "False"
-        ],
-        "correctIndex": 0,
-        "explanation": "Lightning can reach 30,000K, while the Sun's surface is ~5,800K.",
-        "difficulty": 3,
         "tags": [
             "science"
         ],
@@ -584,15 +1407,57 @@
         ]
     },
     {
-        "id": "sys_bin_28",
-        "prompt": "Bats are blind.",
+        "id": "swipe_28",
+        "prompt": "Light is slow.",
         "type": "binary",
         "options": [
             "True",
             "False"
         ],
         "correctIndex": 1,
-        "explanation": "Bats can see, though they rely on echolocation in the dark.",
+        "explanation": "Fast.",
+        "difficulty": 1,
+        "tags": [
+            "physics"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_29",
+        "prompt": "Octopus has 8 arms.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Octo.",
+        "difficulty": 1,
+        "tags": [
+            "nature"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_30",
+        "prompt": "Dolphins are fish.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 1,
+        "explanation": "Mammals.",
         "difficulty": 2,
         "tags": [
             "nature"
@@ -605,16 +1470,16 @@
         ]
     },
     {
-        "id": "sys_bin_29",
-        "prompt": "Goldfish have a 3-second memory.",
+        "id": "swipe_31",
+        "prompt": "Python is a snake.",
         "type": "binary",
         "options": [
             "True",
             "False"
         ],
-        "correctIndex": 1,
-        "explanation": "Goldfish can remember things for months.",
-        "difficulty": 2,
+        "correctIndex": 0,
+        "explanation": "Animal.",
+        "difficulty": 1,
         "tags": [
             "nature"
         ],
@@ -626,18 +1491,18 @@
         ]
     },
     {
-        "id": "sys_bin_30",
-        "prompt": "Vatican City is the smallest country.",
+        "id": "swipe_32",
+        "prompt": "Javascript is coffee.",
         "type": "binary",
         "options": [
             "True",
             "False"
         ],
-        "correctIndex": 0,
-        "explanation": "Vatican City is the smallest independent state.",
-        "difficulty": 2,
+        "correctIndex": 1,
+        "explanation": "Code.",
+        "difficulty": 1,
         "tags": [
-            "geography"
+            "tech"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
@@ -647,135 +1512,15 @@
         ]
     },
     {
-        "id": "sys_stack_31",
-        "prompt": "Category: Lion",
-        "type": "mcq",
+        "id": "swipe_33",
+        "prompt": "HTML is code.",
+        "type": "binary",
         "options": [
-            "Mammal",
-            "Reptile"
+            "True",
+            "False"
         ],
         "correctIndex": 0,
-        "explanation": "Lions are mammals.",
-        "difficulty": 1,
-        "tags": [
-            "nature"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "stack"
-        ]
-    },
-    {
-        "id": "sys_stack_32",
-        "prompt": "Category: Snake",
-        "type": "mcq",
-        "options": [
-            "Mammal",
-            "Reptile"
-        ],
-        "correctIndex": 1,
-        "explanation": "Snakes are legless carnivorous reptiles.",
-        "difficulty": 1,
-        "tags": [
-            "nature"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "stack"
-        ]
-    },
-    {
-        "id": "sys_stack_33",
-        "prompt": "Category: Eagle",
-        "type": "mcq",
-        "options": [
-            "Bird",
-            "Mammal"
-        ],
-        "correctIndex": 0,
-        "explanation": "Eagles are large birds of prey.",
-        "difficulty": 1,
-        "tags": [
-            "nature"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "stack"
-        ]
-    },
-    {
-        "id": "sys_stack_34",
-        "prompt": "Category: Whale",
-        "type": "mcq",
-        "options": [
-            "Fish",
-            "Mammal"
-        ],
-        "correctIndex": 1,
-        "explanation": "Whales are marine mammals.",
-        "difficulty": 2,
-        "tags": [
-            "nature"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "stack"
-        ]
-    },
-    {
-        "id": "sys_stack_35",
-        "prompt": "Category: Tomato",
-        "type": "mcq",
-        "options": [
-            "Fruit",
-            "Vegetable"
-        ],
-        "correctIndex": 0,
-        "explanation": "Botanically, a tomato is a fruit.",
-        "difficulty": 2,
-        "tags": [
-            "nature"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "stack"
-        ]
-    },
-    {
-        "id": "sys_stack_36",
-        "prompt": "Category: Cucumber",
-        "type": "mcq",
-        "options": [
-            "Fruit",
-            "Vegetable"
-        ],
-        "correctIndex": 0,
-        "explanation": "Botanically, cucumbers are fruits.",
-        "difficulty": 3,
-        "tags": [
-            "nature"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "stack"
-        ]
-    },
-    {
-        "id": "sys_stack_37",
-        "prompt": "Category: HTML",
-        "type": "mcq",
-        "options": [
-            "Language",
-            "Browser"
-        ],
-        "correctIndex": 0,
-        "explanation": "HTML is a Markup Language.",
+        "explanation": "Markup.",
         "difficulty": 1,
         "tags": [
             "tech"
@@ -783,261 +1528,62 @@
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
-            "stack"
-        ]
-    },
-    {
-        "id": "sys_stack_38",
-        "prompt": "Category: Chrome",
-        "type": "mcq",
-        "options": [
-            "Language",
-            "Browser"
-        ],
-        "correctIndex": 1,
-        "explanation": "Chrome is a web browser.",
-        "difficulty": 1,
-        "tags": [
-            "tech"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "stack"
-        ]
-    },
-    {
-        "id": "sys_stack_39",
-        "prompt": "Category: Python",
-        "type": "mcq",
-        "options": [
-            "Hardware",
-            "Software"
-        ],
-        "correctIndex": 1,
-        "explanation": "Python is a programming language (software).",
-        "difficulty": 1,
-        "tags": [
-            "tech"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "stack"
-        ]
-    },
-    {
-        "id": "sys_stack_40",
-        "prompt": "Category: GPU",
-        "type": "mcq",
-        "options": [
-            "Hardware",
-            "Software"
-        ],
-        "correctIndex": 0,
-        "explanation": "GPU is a hardware component.",
-        "difficulty": 1,
-        "tags": [
-            "tech"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "stack"
-        ]
-    },
-    {
-        "id": "sys_match_41",
-        "prompt": "Capital of USA",
-        "type": "matchPair",
-        "options": [
-            "Washington D.C.",
-            "New York"
-        ],
-        "correctIndex": 0,
-        "explanation": "D.C. is the capital.",
-        "difficulty": 1,
-        "tags": [
-            "geography"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "match"
-        ]
-    },
-    {
-        "id": "sys_match_42",
-        "prompt": "Capital of UK",
-        "type": "matchPair",
-        "options": [
-            "London",
-            "Manchester"
-        ],
-        "correctIndex": 0,
-        "explanation": "London is the capital.",
-        "difficulty": 1,
-        "tags": [
-            "geography"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "match"
-        ]
-    },
-    {
-        "id": "sys_match_43",
-        "prompt": "Currency of Japan",
-        "type": "matchPair",
-        "options": [
-            "Yen",
-            "Won"
-        ],
-        "correctIndex": 0,
-        "explanation": "Yen is Japanese currency.",
-        "difficulty": 1,
-        "tags": [
-            "geography"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "match"
-        ]
-    },
-    {
-        "id": "sys_match_44",
-        "prompt": "Currency of USA",
-        "type": "matchPair",
-        "options": [
-            "Dollar",
-            "Euro"
-        ],
-        "correctIndex": 0,
-        "explanation": "Dollar is US currency.",
-        "difficulty": 1,
-        "tags": [
-            "geography"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "match"
-        ]
-    },
-    {
-        "id": "sys_match_45",
-        "prompt": "Opposite of Hot",
-        "type": "matchPair",
-        "options": [
-            "Cold",
-            "Warm"
-        ],
-        "correctIndex": 0,
-        "explanation": "Cold is opposite of hot.",
-        "difficulty": 1,
-        "tags": [
-            "language"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "match"
-        ]
-    },
-    {
-        "id": "sys_match_46",
-        "prompt": "Opposite of Up",
-        "type": "matchPair",
-        "options": [
-            "Down",
-            "Right"
-        ],
-        "correctIndex": 0,
-        "explanation": "Down is opposite of up.",
-        "difficulty": 1,
-        "tags": [
-            "language"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "match"
-        ]
-    },
-    {
-        "id": "sys_match_47",
-        "prompt": "Synonym for Happy",
-        "type": "matchPair",
-        "options": [
-            "Glad",
-            "Sad"
-        ],
-        "correctIndex": 0,
-        "explanation": "Glad means happy.",
-        "difficulty": 1,
-        "tags": [
-            "language"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "match"
-        ]
-    },
-    {
-        "id": "sys_match_48",
-        "prompt": "Synonym for Angry",
-        "type": "matchPair",
-        "options": [
-            "Mad",
-            "Calm"
-        ],
-        "correctIndex": 0,
-        "explanation": "Mad means angry.",
-        "difficulty": 1,
-        "tags": [
-            "language"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "match"
-        ]
-    },
-    {
-        "id": "sys_mcq_49",
-        "prompt": "How many continents are there?",
-        "type": "mcq",
-        "options": [
-            "5",
-            "7",
-            "9"
-        ],
-        "correctIndex": 1,
-        "explanation": "There are 7 continents.",
-        "difficulty": 1,
-        "tags": [
-            "geography"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_50",
-        "prompt": "What is the largest mammal?",
-        "type": "mcq",
+        "id": "swipe_34",
+        "prompt": "Monitors display.",
+        "type": "binary",
         "options": [
-            "Elephant",
-            "Blue Whale",
-            "Giraffe"
+            "True",
+            "False"
         ],
-        "correctIndex": 1,
-        "explanation": "Blue Whale is the largest animal known.",
+        "correctIndex": 0,
+        "explanation": "Output.",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_35",
+        "prompt": "Keyboard types.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Input.",
+        "difficulty": 1,
+        "tags": [
+            "tech"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_36",
+        "prompt": "Mouse eats cheese.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Animal.",
         "difficulty": 1,
         "tags": [
             "nature"
@@ -1045,314 +1591,188 @@
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_51",
-        "prompt": "Which planet has rings?",
-        "type": "mcq",
+        "id": "swipe_37",
+        "prompt": "Computer Mouse eats.",
+        "type": "binary",
         "options": [
-            "Mars",
-            "Saturn",
-            "Earth"
+            "True",
+            "False"
         ],
         "correctIndex": 1,
-        "explanation": "Saturn is famous for its rings.",
+        "explanation": "Hardware.",
         "difficulty": 1,
         "tags": [
-            "astronomy"
+            "tech"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_52",
-        "prompt": "What color is chlorophyll?",
-        "type": "mcq",
+        "id": "swipe_38",
+        "prompt": "Wifi is wireless.",
+        "type": "binary",
         "options": [
-            "Red",
-            "Green",
-            "Blue"
-        ],
-        "correctIndex": 1,
-        "explanation": "Chlorophyll gives plants their green color.",
-        "difficulty": 2,
-        "tags": [
-            "biology"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_53",
-        "prompt": "Water consists of Hydrogen and...?",
-        "type": "mcq",
-        "options": [
-            "Oxygen",
-            "Carbon",
-            "Nitrogen"
+            "True",
+            "False"
         ],
         "correctIndex": 0,
-        "explanation": "H2O.",
+        "explanation": "Radio waves.",
         "difficulty": 1,
         "tags": [
-            "chemistry"
+            "tech"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_54",
-        "prompt": "Hardest natural substance?",
-        "type": "mcq",
+        "id": "swipe_39",
+        "prompt": "Diamond is soft.",
+        "type": "binary",
         "options": [
-            "Gold",
-            "Iron",
-            "Diamond"
+            "True",
+            "False"
         ],
-        "correctIndex": 2,
-        "explanation": "Diamond is the hardest natural material.",
-        "difficulty": 2,
+        "correctIndex": 1,
+        "explanation": "Hardest.",
+        "difficulty": 1,
         "tags": [
             "science"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_55",
-        "prompt": "Which is a noble gas?",
-        "type": "mcq",
+        "id": "swipe_40",
+        "prompt": "Iron is metal.",
+        "type": "binary",
         "options": [
-            "Oxygen",
-            "Helium",
-            "Nitrogen"
-        ],
-        "correctIndex": 1,
-        "explanation": "Helium is a noble gas.",
-        "difficulty": 3,
-        "tags": [
-            "chemistry"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_56",
-        "prompt": "Speed of light is approx?",
-        "type": "mcq",
-        "options": [
-            "300 km/s",
-            "300,000 km/s",
-            "3000 km/s"
-        ],
-        "correctIndex": 1,
-        "explanation": "~299,792 km/s.",
-        "difficulty": 3,
-        "tags": [
-            "physics"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_57",
-        "prompt": "Center of an atom is?",
-        "type": "mcq",
-        "options": [
-            "Electron",
-            "Nucleus",
-            "Proton"
-        ],
-        "correctIndex": 1,
-        "explanation": "Nucleus contains protons and neutrons.",
-        "difficulty": 2,
-        "tags": [
-            "physics"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_58",
-        "prompt": "Value of Pi approx?",
-        "type": "mcq",
-        "options": [
-            "3.14",
-            "3.41",
-            "3.12"
+            "True",
+            "False"
         ],
         "correctIndex": 0,
-        "explanation": "Pi is approx 3.14159...",
+        "explanation": "Fe.",
         "difficulty": 1,
         "tags": [
-            "math"
+            "science"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_59",
-        "prompt": "Triangle sides?",
-        "type": "mcq",
+        "id": "swipe_41",
+        "prompt": "Trees grow.",
+        "type": "binary",
         "options": [
-            "3",
-            "4",
-            "5"
+            "True",
+            "False"
         ],
         "correctIndex": 0,
-        "explanation": "Tri means three.",
+        "explanation": "Plants.",
         "difficulty": 1,
         "tags": [
-            "math"
+            "nature"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_60",
-        "prompt": "Degrees in a circle?",
-        "type": "mcq",
+        "id": "swipe_42",
+        "prompt": "Rocks grow.",
+        "type": "binary",
         "options": [
-            "180",
-            "360",
-            "90"
+            "True",
+            "False"
         ],
         "correctIndex": 1,
-        "explanation": "A full circle is 360 degrees.",
+        "explanation": "Non-living.",
         "difficulty": 1,
         "tags": [
-            "math"
+            "nature"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_61",
-        "prompt": "Newton's first law is about?",
-        "type": "mcq",
+        "id": "swipe_43",
+        "prompt": "Rain is dry.",
+        "type": "binary",
         "options": [
-            "Gravity",
-            "Inertia",
-            "Action-Reaction"
+            "True",
+            "False"
         ],
         "correctIndex": 1,
-        "explanation": "Law of Inertia.",
-        "difficulty": 2,
+        "explanation": "Wet.",
+        "difficulty": 1,
         "tags": [
-            "physics"
+            "science"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_62",
-        "prompt": "Powerhouse of the cell?",
-        "type": "mcq",
+        "id": "swipe_44",
+        "prompt": "Snow is cold.",
+        "type": "binary",
         "options": [
-            "Nucleus",
-            "Mitochondria",
-            "Ribosome"
-        ],
-        "correctIndex": 1,
-        "explanation": "Mitochondria generate most energy.",
-        "difficulty": 2,
-        "tags": [
-            "biology"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_63",
-        "prompt": "Who invented the telephone?",
-        "type": "mcq",
-        "options": [
-            "Bell",
-            "Edison",
-            "Tesla"
+            "True",
+            "False"
         ],
         "correctIndex": 0,
-        "explanation": "Alexander Graham Bell.",
-        "difficulty": 2,
+        "explanation": "Frozen.",
+        "difficulty": 1,
         "tags": [
-            "history"
+            "science"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_64",
-        "prompt": "Year of first moon landing?",
-        "type": "mcq",
+        "id": "swipe_45",
+        "prompt": "Sun sets in West.",
+        "type": "binary",
         "options": [
-            "1969",
-            "1959",
-            "1979"
+            "True",
+            "False"
         ],
         "correctIndex": 0,
-        "explanation": "Apollo 11 landed in 1969.",
-        "difficulty": 2,
-        "tags": [
-            "history"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_65",
-        "prompt": "Currency of UK?",
-        "type": "mcq",
-        "options": [
-            "Euro",
-            "Pound",
-            "Dollar"
-        ],
-        "correctIndex": 1,
-        "explanation": "The Pound Sterling.",
+        "explanation": "Direction.",
         "difficulty": 1,
         "tags": [
             "geography"
@@ -1360,111 +1780,112 @@
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_66",
-        "prompt": "Tallest building in the world?",
-        "type": "mcq",
+        "id": "swipe_46",
+        "prompt": "Sun rises in West.",
+        "type": "binary",
         "options": [
-            "Empire State",
-            "Burj Khalifa",
-            "Eiffel Tower"
+            "True",
+            "False"
         ],
         "correctIndex": 1,
-        "explanation": "Burj Khalifa in Dubai.",
-        "difficulty": 2,
+        "explanation": "East.",
+        "difficulty": 1,
         "tags": [
-            "general_knowledge"
+            "geography"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_67",
-        "prompt": "Which fruit has seeds on outside?",
-        "type": "mcq",
+        "id": "swipe_47",
+        "prompt": "Brasil is in Asia.",
+        "type": "binary",
         "options": [
-            "Apple",
-            "Strawberry",
-            "Grape"
+            "True",
+            "False"
         ],
         "correctIndex": 1,
-        "explanation": "Strawberries have seeds on their skin.",
-        "difficulty": 2,
+        "explanation": "S. America.",
+        "difficulty": 1,
         "tags": [
-            "nature"
+            "geography"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_68",
-        "prompt": "Chemical symbol for Iron?",
-        "type": "mcq",
+        "id": "swipe_48",
+        "prompt": "Canada is in N. America.",
+        "type": "binary",
         "options": [
-            "Ir",
-            "Fe",
-            "In"
-        ],
-        "correctIndex": 1,
-        "explanation": "Fe stands for Ferrum.",
-        "difficulty": 2,
-        "tags": [
-            "chemistry"
-        ],
-        "ownerId": "SYSTEM",
-        "isPublic": true,
-        "compatibleModes": [
-            "runner"
-        ]
-    },
-    {
-        "id": "sys_mcq_69",
-        "prompt": "Primary colors of light?",
-        "type": "mcq",
-        "options": [
-            "RGB",
-            "RYB",
-            "CMY"
+            "True",
+            "False"
         ],
         "correctIndex": 0,
-        "explanation": "Red, Green, Blue.",
-        "difficulty": 2,
+        "explanation": "North.",
+        "difficulty": 1,
         "tags": [
-            "physics"
+            "geography"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
             "runner"
         ]
     },
     {
-        "id": "sys_mcq_70",
-        "prompt": "Boiling point of water in F?",
-        "type": "mcq",
+        "id": "swipe_49",
+        "prompt": "Antarctica is hot.",
+        "type": "binary",
         "options": [
-            "100",
-            "212",
-            "32"
+            "True",
+            "False"
         ],
         "correctIndex": 1,
-        "explanation": "212 degrees Fahrenheit.",
-        "difficulty": 2,
+        "explanation": "Freezing.",
+        "difficulty": 1,
         "tags": [
-            "science"
+            "geography"
         ],
         "ownerId": "SYSTEM",
         "isPublic": true,
         "compatibleModes": [
+            "swipe",
+            "runner"
+        ]
+    },
+    {
+        "id": "swipe_50",
+        "prompt": "Nile is a river.",
+        "type": "binary",
+        "options": [
+            "True",
+            "False"
+        ],
+        "correctIndex": 0,
+        "explanation": "Water.",
+        "difficulty": 1,
+        "tags": [
+            "geography"
+        ],
+        "ownerId": "SYSTEM",
+        "isPublic": true,
+        "compatibleModes": [
+            "swipe",
             "runner"
         ]
     }

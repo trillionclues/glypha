@@ -45,7 +45,7 @@ final progressionMapProvider =
 typedef ProgressionMapRef
     = AutoDisposeProviderRef<Map<String, LevelProgression>>;
 String _$progressionNotifierHash() =>
-    r'ff498e7dc93d378c022d39f049a8c83ef159ca39';
+    r'b0123bc3235e2aaddda0232631c3d5175b510a33';
 
 /// See also [ProgressionNotifier].
 @ProviderFor(ProgressionNotifier)

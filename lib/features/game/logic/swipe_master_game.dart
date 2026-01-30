@@ -7,6 +7,8 @@ import '../data/repositories/question_repository.dart';
 import '../domain/entities/question_entity.dart';
 import 'game_state.dart';
 import 'package:glypha/features/home/presentation/provider/level_provider.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_notifier.dart';
+import 'package:glypha/features/auth/presentation/provider/auth_state.dart';
 
 class SwipeMasterGame extends FlameGame {
   final WidgetRef ref;
@@ -92,7 +94,11 @@ class SwipeMasterGame extends FlameGame {
 
       if (_questions.isEmpty) {
         final repository = ref.read(questionRepositoryProvider);
-        _questions = await repository.getQuestionsByType(QuestionType.binary);
+        final authState = ref.read(authNotifierProvider);
+        final userId =
+            authState is AuthAuthenticated ? authState.user.id : 'anonymous';
+        _questions = await repository.getQuestionsByTypeForUser(
+            QuestionType.binary, userId);
       }
 
       if (_questions.isEmpty) {
@@ -107,6 +113,10 @@ class SwipeMasterGame extends FlameGame {
         _totalQuestions = _questions.length;
       }
 
+      // Initialize game state with total questions for dynamic scoring
+      ref
+          .read(gameStateProvider.notifier)
+          .startGame(_questions.map((q) => q.id).toList());
       _updateProgress();
       _spawnNextCard();
     } catch (e) {
@@ -133,7 +143,7 @@ class SwipeMasterGame extends FlameGame {
   void _handleResult(bool isCorrect) {
     final gameState = ref.read(gameStateProvider.notifier);
     if (isCorrect) {
-      gameState.incrementScore();
+      gameState.incrementScore(_questions[_currentIndex].id);
     } else {
       gameState.loseLife();
       // Check if game over

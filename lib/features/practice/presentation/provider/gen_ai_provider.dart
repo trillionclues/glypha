@@ -31,7 +31,7 @@ class GenAIService {
               'Schema: { "questions": [ { '
               '"prompt": "String - the question text", '
               '"type": "mcq | binary", '
-              '"options": ["String"] - 3 options for mcq, 2 for binary (True/False or Yes/No), '
+              '"options": ["String"] - EXACTLY 3 options for mcq (NO MORE, NO LESS), 2 for binary, '
               '"correctIndex": int - 0-indexed, '
               '"explanation": "String - brief explanation of the answer", '
               '"difficulty": int - 1 to 5, '

@@ -121,6 +121,7 @@ class WorldManager extends Component with HasGameRef<RunnerGame> {
 
     final gate = GateComponent(
       question: question.prompt,
+      questionId: question.id,
       answers: answers,
       correctAnswerIndex: newCorrectIndex,
       worldX: 0,
@@ -164,7 +165,7 @@ class WorldManager extends Component with HasGameRef<RunnerGame> {
       final gameStateFn = gameRef.ref.read(gameStateProvider.notifier);
       if (isCorrect) {
         // Correct!
-        gameStateFn.incrementScore();
+        gameStateFn.incrementScore(gate.questionId);
         gameStateFn.increaseSpeed();
         gameRef.player.triggerBoost();
       } else {

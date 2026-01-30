@@ -14,6 +14,8 @@ class LevelProgression {
   @JsonKey(fromJson: _timestampToDateTime, toJson: _dateTimeToTimestamp)
   final DateTime lastPlayed;
 
+  final List<String> questionIds;
+
   LevelProgression({
     required this.levelId,
     required this.isCompleted,
@@ -21,6 +23,7 @@ class LevelProgression {
     required this.stars,
     required this.attempts,
     required this.lastPlayed,
+    this.questionIds = const [],
   });
 
   factory LevelProgression.fromJson(Map<String, dynamic> json) =>
