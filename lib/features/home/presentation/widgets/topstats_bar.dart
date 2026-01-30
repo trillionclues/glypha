@@ -53,7 +53,7 @@ class TopStatsBar extends ConsumerWidget {
                         label: 'XP',
                       ),
                       const _StatBadge(
-                        emoji: '�',
+                        emoji: '💙',
                         value: '1.2k',
                         label: 'Gems',
                       ),

@@ -6,7 +6,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:uuid/uuid.dart';
-import 'package:glypha/core/themes/app_theme.dart';
 import 'package:glypha/features/practice/presentation/provider/gen_ai_provider.dart';
 import 'package:glypha/features/practice/presentation/provider/scan_record_provider.dart';
 import 'package:glypha/features/practice/domain/entities/scan_record_entity.dart';
@@ -119,20 +118,22 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: const Color(0xFFFAF9F6),
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: _stage == ExtractionStage.result
           ? AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
               leading: IconButton(
-                icon: const Icon(Icons.delete_outline_rounded,
-                    color: Color(0xFFDC2626)),
+                icon: Icon(Icons.delete_outline_rounded,
+                    color: theme.colorScheme.error),
                 onPressed: () => Navigator.pop(context),
               ),
               title: Text('Result',
                   style: GoogleFonts.outfit(
-                    color: const Color(0xFF1E293B),
+                    color: theme.textTheme.titleLarge?.color,
                     fontWeight: FontWeight.bold,
                   )),
               centerTitle: true,
@@ -140,12 +141,12 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
                 IconButton(
                   icon: Container(
                     padding: const EdgeInsets.all(8),
-                    decoration: const BoxDecoration(
-                      color: Color(0xFF3B82F6),
+                    decoration: BoxDecoration(
+                      color: theme.colorScheme.primary,
                       shape: BoxShape.circle,
                     ),
-                    child:
-                        const Icon(Icons.check, color: Colors.white, size: 20),
+                    child: Icon(Icons.check,
+                        color: theme.colorScheme.onPrimary, size: 20),
                   ),
                   onPressed: _saveScan,
                 ),
@@ -230,6 +231,9 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
   }
 
   Widget _buildResultStage() {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Column(
       children: [
         // (Preview only for now)
@@ -237,7 +241,7 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
           margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           padding: const EdgeInsets.all(4),
           decoration: BoxDecoration(
-            color: const Color(0xFFF1F5F9),
+            color: isDark ? Colors.grey[800] : const Color(0xFFF1F5F9),
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
@@ -246,11 +250,11 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: theme.cardColor,
                     borderRadius: BorderRadius.circular(10),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withOpacity(isDark ? 0.3 : 0.05),
                         blurRadius: 4,
                       ),
                     ],
@@ -260,7 +264,7 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
                     textAlign: TextAlign.center,
                     style: GoogleFonts.outfit(
                       fontWeight: FontWeight.w600,
-                      color: const Color(0xFF1E293B),
+                      color: theme.textTheme.bodyLarge?.color,
                     ),
                   ),
                 ),
@@ -276,7 +280,8 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
                       'Raw',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.outfit(
-                        color: const Color(0xFF94A3B8),
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                       ),
                     ),
                   ),
@@ -293,7 +298,8 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
                       'Photo',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.outfit(
-                        color: const Color(0xFF94A3B8),
+                        color:
+                            theme.textTheme.bodyMedium?.color?.withOpacity(0.6),
                       ),
                     ),
                   ),
@@ -312,7 +318,7 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
               style: GoogleFonts.outfit(
                 fontSize: 16,
                 height: 1.6,
-                color: const Color(0xFF334155),
+                color: theme.textTheme.bodyLarge?.color,
               ),
             ),
           ),
@@ -321,9 +327,10 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
         Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: theme.cardColor,
             border: Border(
-              top: BorderSide(color: Colors.grey.shade200),
+              top: BorderSide(
+                  color: isDark ? Colors.grey[800]! : Colors.grey.shade200),
             ),
           ),
           child: Row(
@@ -337,7 +344,8 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
                   label: Text('Copy',
                       style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF374151),
+                    backgroundColor:
+                        isDark ? Colors.grey[800] : const Color(0xFF374151),
                     foregroundColor: Colors.white,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
@@ -357,9 +365,11 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
                   label: Text('Share',
                       style: GoogleFonts.outfit(fontWeight: FontWeight.w600)),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: const Color(0xFF374151),
+                    foregroundColor: theme.textTheme.bodyLarge?.color,
                     padding: const EdgeInsets.symmetric(vertical: 16),
-                    side: BorderSide(color: Colors.grey.shade300),
+                    side: BorderSide(
+                        color:
+                            isDark ? Colors.grey[700]! : Colors.grey.shade300),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(14),
                     ),
@@ -374,6 +384,8 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
   }
 
   Widget _buildErrorStage() {
+    final theme = Theme.of(context);
+
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(32),
@@ -383,11 +395,11 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: AppTheme.lightOrange.withValues(alpha: 0.1),
+                color: theme.colorScheme.primary.withOpacity(0.1),
                 shape: BoxShape.circle,
               ),
               child: Icon(Icons.error_outline_rounded,
-                  color: AppTheme.primaryOrange, size: 38),
+                  color: theme.colorScheme.primary, size: 38),
             ),
             const SizedBox(height: 24),
             Text(
@@ -395,7 +407,7 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
               style: GoogleFonts.outfit(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppTheme.darkBackground,
+                color: theme.textTheme.titleLarge?.color,
               ),
             ),
             const SizedBox(height: 12),
@@ -403,7 +415,7 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
               _errorMessage,
               textAlign: TextAlign.center,
               style: GoogleFonts.outfit(
-                color: const Color(0xFF64748B),
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
                 height: 1.4,
               ),
             ),
@@ -411,8 +423,8 @@ class _ExtractionPageState extends ConsumerState<ExtractionPage> {
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppTheme.primaryOrange,
-                foregroundColor: Colors.white,
+                backgroundColor: theme.colorScheme.primary,
+                foregroundColor: theme.colorScheme.onPrimary,
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),

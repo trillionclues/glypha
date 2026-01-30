@@ -31,11 +31,13 @@ class ScanOptionsBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bottomPadding = MediaQuery.of(context).viewInsets.bottom;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: isDark ? theme.colorScheme.surface : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: SafeArea(
         child: Padding(
@@ -52,7 +54,7 @@ class ScanOptionsBottomSheet extends StatelessWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: isDark ? Colors.grey[700] : Colors.grey[300],
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -62,7 +64,7 @@ class ScanOptionsBottomSheet extends StatelessWidget {
                 style: GoogleFonts.outfit(
                   fontSize: 20,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF0F172A),
+                  color: theme.textTheme.titleLarge?.color,
                   letterSpacing: -0.3,
                 ),
               ),
@@ -71,7 +73,7 @@ class ScanOptionsBottomSheet extends StatelessWidget {
                 'Choose how you want to capture your notes',
                 style: GoogleFonts.outfit(
                   fontSize: 14,
-                  color: const Color(0xFF94A3B8),
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
                   fontWeight: FontWeight.w400,
                 ),
               ),
@@ -125,6 +127,9 @@ class _OptionTileState extends State<_OptionTile> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return MouseRegion(
       onEnter: (_) => setState(() => _isHovered = true),
       onExit: (_) => setState(() => _isHovered = false),
@@ -135,11 +140,12 @@ class _OptionTileState extends State<_OptionTile> {
           curve: Curves.easeOut,
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           decoration: BoxDecoration(
-            color:
-                _isHovered ? const Color(0xFFF8FAFC) : const Color(0xFFFAFAFA),
+            color: _isHovered
+                ? (isDark ? Colors.grey[800] : const Color(0xFFF8FAFC))
+                : (isDark ? Colors.grey[900] : const Color(0xFFFAFAFA)),
             borderRadius: BorderRadius.circular(20),
             border: Border.all(
-              color: const Color(0xFFE2E8F0),
+              color: isDark ? Colors.grey[700]! : const Color(0xFFE2E8F0),
               width: 1,
             ),
           ),
@@ -149,16 +155,16 @@ class _OptionTileState extends State<_OptionTile> {
                 width: 36,
                 height: 36,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: isDark ? Colors.grey[800] : Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(
-                    color: const Color(0xFFE2E8F0),
+                    color: isDark ? Colors.grey[700]! : const Color(0xFFE2E8F0),
                     width: 1,
                   ),
                 ),
                 child: Icon(
                   widget.icon,
-                  color: const Color(0xFF0F172A),
+                  color: theme.iconTheme.color ?? const Color(0xFF0F172A),
                   size: 18,
                 ),
               ),
@@ -172,7 +178,7 @@ class _OptionTileState extends State<_OptionTile> {
                       style: GoogleFonts.outfit(
                         fontSize: 15,
                         fontWeight: FontWeight.w600,
-                        color: const Color(0xFF0F172A),
+                        color: theme.textTheme.titleMedium?.color,
                         letterSpacing: -0.2,
                       ),
                     ),
@@ -181,7 +187,8 @@ class _OptionTileState extends State<_OptionTile> {
                       widget.subtitle,
                       style: GoogleFonts.outfit(
                         fontSize: 13,
-                        color: const Color(0xFF94A3B8),
+                        color:
+                            theme.textTheme.bodySmall?.color?.withOpacity(0.7),
                         fontWeight: FontWeight.w400,
                         height: 1.3,
                       ),
@@ -189,10 +196,11 @@ class _OptionTileState extends State<_OptionTile> {
                   ],
                 ),
               ),
-              const Icon(
+              Icon(
                 Icons.arrow_forward_ios_rounded,
                 size: 16,
-                color: Color(0xFFCBD5E1),
+                color: theme.iconTheme.color?.withOpacity(0.3) ??
+                    const Color(0xFFCBD5E1),
               ),
             ],
           ),

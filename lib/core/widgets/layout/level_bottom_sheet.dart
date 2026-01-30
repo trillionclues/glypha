@@ -17,9 +17,11 @@ class LevelBottomSheet extends ConsumerWidget {
     final statsAsync = ref.watch(userStatsNotifierProvider);
 
     return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
+      decoration: BoxDecoration(
+        color: theme.brightness == Brightness.dark
+            ? theme.colorScheme.surface
+            : Colors.white,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       child: SafeArea(
         child: Padding(
@@ -36,7 +38,9 @@ class LevelBottomSheet extends ConsumerWidget {
                 width: 40,
                 height: 4,
                 decoration: BoxDecoration(
-                  color: Colors.grey[300],
+                  color: theme.brightness == Brightness.dark
+                      ? Colors.grey[700]
+                      : Colors.grey[300],
                   borderRadius: BorderRadius.circular(2),
                 ),
               ),
@@ -51,7 +55,7 @@ class LevelBottomSheet extends ConsumerWidget {
               Text(
                 level.isCompleted ? 'Completed! 🎉' : 'Ready to start',
                 style: theme.textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey[600],
+                  color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
                 ),
               ),
               const SizedBox(height: 24),
@@ -130,7 +134,9 @@ class LevelBottomSheet extends ConsumerWidget {
                       Text(
                         'Costs 10 energy to play',
                         style: TextStyle(
-                          color: Colors.orange[800],
+                          color: theme.brightness == Brightness.dark
+                              ? Colors.orange[300]
+                              : Colors.orange[800],
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
                         ),
@@ -340,7 +346,8 @@ class _StatItem extends StatelessWidget {
           label,
           style: TextStyle(
             fontSize: 12,
-            color: Colors.grey[600],
+            color:
+                Theme.of(context).textTheme.bodySmall?.color?.withOpacity(0.6),
           ),
         ),
       ],

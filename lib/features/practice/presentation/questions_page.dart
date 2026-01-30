@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:glypha/core/themes/app_theme.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:glypha/features/practice/presentation/provider/scan_record_provider.dart';
 import 'package:glypha/features/practice/domain/entities/scan_record_entity.dart';
@@ -17,8 +16,10 @@ class QuestionsPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final scansAsync = ref.watch(userScansProvider);
 
+    final theme = Theme.of(context);
+
     return Scaffold(
-      backgroundColor: AppTheme.lightBackground,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -26,7 +27,7 @@ class QuestionsPage extends ConsumerWidget {
         title: Text(
           'Note Scans',
           style: GoogleFonts.outfit(
-            color: AppTheme.darkBackground,
+            color: theme.textTheme.titleLarge?.color,
             fontWeight: FontWeight.bold,
             fontSize: 18,
           ),
@@ -36,11 +37,11 @@ class QuestionsPage extends ConsumerWidget {
             icon: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppTheme.lightOrange.withOpacity(0.1),
+                color: theme.colorScheme.primary.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(10),
               ),
-              child: const Icon(Icons.document_scanner_rounded,
-                  color: AppTheme.lightOrange, size: 20),
+              child: Icon(Icons.document_scanner_rounded,
+                  color: theme.colorScheme.primary, size: 20),
             ),
             onPressed: () => _showScanOptions(context),
           ),
@@ -69,13 +70,13 @@ class QuestionsPage extends ConsumerWidget {
               child: Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
-                  color: AppTheme.lightOrange.withOpacity(0.1),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
                   shape: BoxShape.circle,
                 ),
                 child: Icon(
                   Icons.document_scanner_rounded,
                   size: 48,
-                  color: AppTheme.lightOrange.withOpacity(0.6),
+                  color: Theme.of(context).colorScheme.primary.withOpacity(0.6),
                 ),
               ),
             ),
@@ -85,7 +86,7 @@ class QuestionsPage extends ConsumerWidget {
               style: GoogleFonts.outfit(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: AppTheme.darkBackground,
+                color: Theme.of(context).textTheme.titleLarge?.color,
               ),
             ),
             const SizedBox(height: 8),
@@ -94,7 +95,11 @@ class QuestionsPage extends ConsumerWidget {
               textAlign: TextAlign.center,
               style: GoogleFonts.outfit(
                 fontSize: 14,
-                color: const Color(0xFF64748B),
+                color: Theme.of(context)
+                    .textTheme
+                    .bodyMedium
+                    ?.color
+                    ?.withOpacity(0.7),
                 height: 1.4,
               ),
             ),
@@ -120,6 +125,9 @@ class QuestionsPage extends ConsumerWidget {
     final dateFormat = DateFormat('MMM d, yyyy');
     final timeFormat = DateFormat('h:mm a');
 
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -132,12 +140,14 @@ class QuestionsPage extends ConsumerWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: theme.cardColor,
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: const Color(0xFFF1F5F9)),
+          border: Border.all(
+            color: isDark ? Colors.grey[800]! : const Color(0xFFF1F5F9),
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.03),
+              color: Colors.black.withOpacity(isDark ? 0.3 : 0.03),
               blurRadius: 10,
               offset: const Offset(0, 4),
             ),
@@ -170,14 +180,15 @@ class QuestionsPage extends ConsumerWidget {
                         style: GoogleFonts.outfit(
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
-                          color: const Color(0xFF1E293B),
+                          color: theme.textTheme.bodyLarge?.color,
                         ),
                       ),
                       Text(
                         timeFormat.format(scan.createdAt),
                         style: GoogleFonts.outfit(
                           fontSize: 12,
-                          color: const Color(0xFF94A3B8),
+                          color: theme.textTheme.bodySmall?.color
+                              ?.withOpacity(0.7),
                         ),
                       ),
                     ],
@@ -199,7 +210,7 @@ class QuestionsPage extends ConsumerWidget {
                       fontWeight: FontWeight.w600,
                       color: scan.isPublic
                           ? const Color(0xFF059669)
-                          : const Color(0xFF64748B),
+                          : theme.textTheme.bodySmall?.color?.withOpacity(0.7),
                     ),
                   ),
                 ),
@@ -212,7 +223,7 @@ class QuestionsPage extends ConsumerWidget {
               overflow: TextOverflow.ellipsis,
               style: GoogleFonts.outfit(
                 fontSize: 13,
-                color: const Color(0xFF64748B),
+                color: theme.textTheme.bodyMedium?.color?.withOpacity(0.7),
                 height: 1.4,
               ),
             ),
@@ -227,7 +238,7 @@ class QuestionsPage extends ConsumerWidget {
                     '${scan.generatedQuestionIds.length} questions generated',
                     style: GoogleFonts.outfit(
                       fontSize: 12,
-                      color: const Color(0xFF94A3B8),
+                      color: theme.textTheme.bodySmall?.color?.withOpacity(0.7),
                     ),
                   ),
                 ],
